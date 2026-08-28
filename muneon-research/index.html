@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>무네온 채널 성장 분석 리포트</title>
+<meta name="description" content="유튜브 독서 브이로그 채널 '무네온'의 구독자 정체 원인을 데이터로 진단하고, 비슷한 컨셉 채널과 비교해 성장 전략을 제안하는 리포트">
+<style>
+:root{
+  --ink:#1f2430; --sub:#5b6472; --line:#e6e8ee; --bg:#fafbfc; --card:#ffffff;
+  --accent:#2f6f4f; --accent-soft:#e8f2ec; --warn:#b4552d; --warn-soft:#faeee7;
+  --spike:#2f6f4f; --base:#c3cad4;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font-family:"Apple SD Gothic Neo","Pretendard","Noto Sans KR",-apple-system,sans-serif;
+  line-height:1.75;font-size:16px;-webkit-font-smoothing:antialiased}
+.wrap{max-width:880px;margin:0 auto;padding:48px 20px 96px}
+header.hero{padding:56px 0 24px;border-bottom:1px solid var(--line);margin-bottom:40px}
+.hero .kicker{color:var(--accent);font-weight:700;letter-spacing:.08em;font-size:13px}
+.hero h1{font-size:34px;line-height:1.35;margin:10px 0 14px;font-weight:800}
+.hero .meta{color:var(--sub);font-size:14px}
+h2{font-size:24px;margin:64px 0 16px;padding-top:8px;font-weight:800}
+h2 .num{color:var(--accent);margin-right:8px}
+h3{font-size:18px;margin:32px 0 10px;font-weight:700}
+p{margin:0 0 14px}
+.sub{color:var(--sub)}
+.small{font-size:13.5px;color:var(--sub)}
+a{color:var(--accent)}
+.tldr{background:var(--accent-soft);border:1px solid #cfe3d8;border-radius:14px;padding:22px 26px;margin:28px 0}
+.tldr h2{margin:0 0 12px;font-size:19px}
+.tldr ol{margin:0;padding-left:22px}
+.tldr li{margin-bottom:8px}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:20px 0}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 18px}
+.card .v{font-size:26px;font-weight:800}
+.card .k{font-size:13px;color:var(--sub);margin-top:2px}
+table{width:100%;border-collapse:collapse;margin:18px 0;background:var(--card);
+  border:1px solid var(--line);border-radius:12px;overflow:hidden;font-size:14.5px}
+th{background:#f3f5f8;text-align:left;padding:10px 12px;font-weight:700;white-space:nowrap}
+td{padding:10px 12px;border-top:1px solid var(--line);vertical-align:top}
+tr.hl{background:var(--accent-soft);font-weight:700}
+.right{text-align:right}
+.chart{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:22px;margin:18px 0}
+.chart .title{font-weight:700;margin-bottom:16px}
+.bar-row{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.bar-label{flex:0 0 92px;font-size:12.5px;color:var(--sub);text-align:right;white-space:nowrap}
+.bar-track{flex:1;display:flex;align-items:center;gap:8px}
+.bar{height:20px;border-radius:4px;background:var(--base);min-width:2px}
+.bar.spike{background:var(--spike)}
+.bar-val{font-size:12.5px;color:var(--sub);white-space:nowrap}
+.legend{display:flex;gap:18px;margin-top:14px;font-size:13px;color:var(--sub)}
+.legend .dot{display:inline-block;width:11px;height:11px;border-radius:3px;margin-right:6px;vertical-align:-1px}
+.callout{border-left:4px solid var(--accent);background:var(--card);border-radius:0 12px 12px 0;
+  padding:16px 20px;margin:20px 0;border-top:1px solid var(--line);border-right:1px solid var(--line);border-bottom:1px solid var(--line)}
+.callout.warn{border-left-color:var(--warn);background:var(--warn-soft)}
+.callout b.tag{display:block;font-size:13px;letter-spacing:.05em;margin-bottom:6px;color:var(--accent)}
+.callout.warn b.tag{color:var(--warn)}
+.thumb-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;margin:18px 0}
+.thumb{background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.thumb img{width:100%;display:block;aspect-ratio:16/9;object-fit:cover}
+.thumb .cap{padding:12px 14px;font-size:13.5px}
+.thumb .cap b{display:block;margin-bottom:4px}
+.thumb .cap.bad b{color:var(--warn)}
+.thumb .cap.good b{color:var(--accent)}
+.ba{display:grid;grid-template-columns:1fr 1fr;gap:0;background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden;margin:14px 0;font-size:14.5px}
+.ba>div{padding:14px 18px}
+.ba .before{border-right:1px solid var(--line);color:var(--sub)}
+.ba .label{font-size:12px;font-weight:700;letter-spacing:.06em;margin-bottom:6px}
+.ba .before .label{color:var(--warn)}
+.ba .after .label{color:var(--accent)}
+.flow{display:flex;flex-wrap:wrap;gap:8px;margin:16px 0;align-items:stretch}
+.flow .step{flex:1;min-width:150px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px;font-size:13.5px}
+.flow .step b{display:block;font-size:14.5px;margin-bottom:4px}
+.flow .step .t{color:var(--accent);font-weight:700;font-size:12px;letter-spacing:.04em}
+.week{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px 22px;margin:12px 0}
+.week b.wk{color:var(--accent)}
+ul{padding-left:22px;margin:8px 0 14px}
+li{margin-bottom:6px}
+.svgbox{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:22px;margin:18px 0;text-align:center}
+.svgbox svg{max-width:100%;height:auto}
+footer{margin-top:80px;padding-top:24px;border-top:1px solid var(--line);font-size:13px;color:var(--sub)}
+@media (max-width:640px){
+  .hero h1{font-size:26px}
+  .ba{grid-template-columns:1fr}
+  .ba .before{border-right:none;border-bottom:1px solid var(--line)}
+  .bar-label{flex-basis:70px}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="hero">
+  <div class="kicker">YOUTUBE CHANNEL GROWTH REPORT</div>
+  <h1>독서 브이로그 채널 '무네온'은<br>왜 구독자가 늘지 않을까</h1>
+  <div class="meta">
+    분석 대상: <a href="https://www.youtube.com/@muneonnn" target="_blank">youtube.com/@muneonnn</a> ·
+    데이터 수집일: 2026-08-28 ·
+    비교 채널 7곳 · 롱폼 13편 + Shorts 7편 전수 분석
+  </div>
+</header>
+
+<div class="tldr">
+  <h2>요약 — 5줄 결론</h2>
+  <ol>
+    <li>병목은 <b>구독 전환이 아니라 노출(조회수)</b>이다. 조회수 대비 구독 전환 효율은 비교군 7채널 중 1위.</li>
+    <li>데이터는 방향을 이미 알려줬다. <b>필사·문구·언박싱 소재 영상이 일상·데이트 소재보다 평균 8배</b> 더 조회된다.</li>
+    <li>좋아요 패턴을 보면 <b>충성 시청자는 약 10명 안팎</b>. 스파이크로 유입된 시청자를 붙잡는 장치(시리즈·예고·템플릿)가 없다.</li>
+    <li>썸네일이 요소 6개짜리 콜라주라 모바일 피드에서 읽히지 않는다. 성장 채널은 <b>고정 템플릿 + 큰 피사체 1개 + 텍스트 한 줄</b>.</li>
+    <li>개설 5개월·롱폼 13편은 이 장르에서 아직 초기다. 전환 효율이 좋으므로 <b>노출(클릭률·검색·Shorts)만 뚫리면 구독은 따라온다</b>.</li>
+  </ol>
+</div>
+
+<h2><span class="num">1.</span>채널 현황</h2>
+<p>무네온은 2026년 4월 2일 개설된 독서·일상 브이로그 채널이다. 채널 설명은 "책과 하루의 기록💫". 카페에서 책을 읽고 필사하는 일상, 충청권(청주·공주·충주·세종) 카페와 데이트 코스, 문구 언박싱이 주요 소재다.</p>
+<div class="cards">
+  <div class="card"><div class="v">229명</div><div class="k">구독자</div></div>
+  <div class="card"><div class="v">20편</div><div class="k">영상 (롱폼 13 + Shorts 7)</div></div>
+  <div class="card"><div class="v">10,874회</div><div class="k">총 조회수</div></div>
+  <div class="card"><div class="v">5개월</div><div class="k">채널 나이</div></div>
+  <div class="card"><div class="v">9일</div><div class="k">평균 업로드 간격</div></div>
+</div>
+<p>업로드는 4월 29일 첫 영상 이후 평균 9일 간격으로 꾸준하다. 8월에는 3편(9일·20일·24일)으로 오히려 빨라졌다. <b>업로드 성실성은 문제가 아니다.</b></p>
+
+<h2><span class="num">2.</span>영상별 조회수 — 무엇이 터졌고 무엇이 안 터졌나</h2>
+<p>롱폼 13편의 조회수를 게시일 순으로 보면, 대부분 86~375회 사이의 낮은 기준선에 머무르고 딱 3편만 1,300~2,300회로 튄다.</p>
+
+<div class="chart">
+  <div class="title">롱폼 영상 조회수 타임라인 (게시일 순, 2026-08-28 기준)</div>
+  <div class="bar-row"><div class="bar-label">04-29</div><div class="bar-track"><div class="bar" style="width:7.5%"></div><div class="bar-val">173 · 공주 데이트, 메일맨</div></div></div>
+  <div class="bar-row"><div class="bar-label">05-14</div><div class="bar-track"><div class="bar" style="width:7.6%"></div><div class="bar-val">176 · 채널 소개</div></div></div>
+  <div class="bar-row"><div class="bar-label">05-31</div><div class="bar-track"><div class="bar" style="width:14.7%"></div><div class="bar-val">339 · 카페 독서 데이트</div></div></div>
+  <div class="bar-row"><div class="bar-label">06-08</div><div class="bar-track"><div class="bar" style="width:10.6%"></div><div class="bar-val">245 · 주말, 산책, 러닝</div></div></div>
+  <div class="bar-row"><div class="bar-label">06-17</div><div class="bar-track"><div class="bar" style="width:5.7%"></div><div class="bar-val">131 · 아빠랑 알라딘</div></div></div>
+  <div class="bar-row"><div class="bar-label">06-25</div><div class="bar-track"><div class="bar" style="width:4.2%"></div><div class="bar-val">96 · 남편이랑 카페, 수목원</div></div></div>
+  <div class="bar-row"><div class="bar-label">07-07</div><div class="bar-track"><div class="bar" style="width:3.7%"></div><div class="bar-val">86 · 충주 책방, 데이트 코스</div></div></div>
+  <div class="bar-row"><div class="bar-label">07-14</div><div class="bar-track"><div class="bar spike" style="width:16.3%"></div><div class="bar-val">375 · 카페 필사, 알바</div></div></div>
+  <div class="bar-row"><div class="bar-label">07-21</div><div class="bar-track"><div class="bar spike" style="width:57.7%"></div><div class="bar-val"><b>1,327 · 아날로그키퍼 언박싱</b></div></div></div>
+  <div class="bar-row"><div class="bar-label">07-31</div><div class="bar-track"><div class="bar spike" style="width:64.6%"></div><div class="bar-val"><b>1,486 · 스티커·볼펜, 고사리 잡화점</b></div></div></div>
+  <div class="bar-row"><div class="bar-label">08-09</div><div class="bar-track"><div class="bar spike" style="width:100%"></div><div class="bar-val"><b>2,301 · 일단 책상에 앉고 시작하자</b></div></div></div>
+  <div class="bar-row"><div class="bar-label">08-20</div><div class="bar-track"><div class="bar" style="width:4.0%"></div><div class="bar-val">93 · 한옥 북카페, 오이김밥</div></div></div>
+  <div class="bar-row"><div class="bar-label">08-24</div><div class="bar-track"><div class="bar" style="width:9.3%"></div><div class="bar-val">215 · 동생 카페, 남편 생일</div></div></div>
+  <div class="legend">
+    <span><span class="dot" style="background:var(--spike)"></span>필사·문구·언박싱 소재</span>
+    <span><span class="dot" style="background:var(--base)"></span>일상·가족·카페 소재</span>
+  </div>
+</div>
+
+<p>소재별로 평균을 내면 격차가 뚜렷하다.</p>
+<table>
+  <tr><th>소재 그룹</th><th>영상</th><th class="right">평균 조회수</th><th class="right">격차</th></tr>
+  <tr class="hl"><td>필사 · 문구 · 언박싱 · 책상 루틴</td><td>4편 (07-14 ~ 08-09)</td><td class="right">1,372회</td><td class="right"><b>8.0배</b></td></tr>
+  <tr><td>일상 · 가족 · 카페 · 데이트</td><td>8편</td><td class="right">172회</td><td class="right">1.0배</td></tr>
+</table>
+
+<div class="callout warn">
+  <b class="tag">핵심 발견 ①</b>
+  7월 중순~8월 초 필사·문구 소재 4연타로 조회수가 계단식 상승(375 → 1,327 → 1,486 → 2,301)하며 알고리즘이 채널을 밀어주기 시작했다.
+  그런데 바로 다음 영상이 "한옥 북카페 + 오이김밥" 일상물로 돌아가자 조회수가 93회로 폭락했다.
+  <b>알고리즘이 열어준 문을 소재 전환으로 스스로 닫은 것</b>이다. 유입 시청자가 기대한 '다음 영상'이 없었다.
+</div>
+
+<h2><span class="num">3.</span>퍼널 진단 — 병목은 어디인가</h2>
+<p>유튜브 성장은 <b>노출 → 클릭 → 시청 유지 → 구독</b>의 퍼널이다. 각 단계를 공개 데이터로 추정해 보면 병목의 위치가 명확하다.</p>
+
+<div class="flow">
+  <div class="step"><span class="t">1단계 · 노출</span><b>🔴 병목</b>총 조회 1.1만회. 성장 채널들은 10만~89만회. 절대 트래픽이 10~80배 부족.</div>
+  <div class="step"><span class="t">2단계 · 클릭</span><b>🔴 병목</b>썸네일·제목에 클릭 유인 없음 (5·6장 분석). 터진 영상도 검색 키워드 덕으로 추정.</div>
+  <div class="step"><span class="t">3단계 · 시청 유지</span><b>⚠️ 확인 필요</b>공개 데이터로는 측정 불가. 스튜디오의 '평균 시청 지속 시간'으로 확인해야 함.</div>
+  <div class="step"><span class="t">4단계 · 구독</span><b>🟢 정상 (비교군 1위)</b>조회 47.5회당 구독 1명. 디에떼(106회), 북엔디어(214회)보다 효율적.</div>
+</div>
+
+<div class="chart">
+  <div class="title">구독자 1명을 얻는 데 필요한 조회수 (낮을수록 효율적)</div>
+  <div class="bar-row"><div class="bar-label">무네온</div><div class="bar-track"><div class="bar spike" style="width:22%"></div><div class="bar-val"><b>47.5회 — 1위</b></div></div></div>
+  <div class="bar-row"><div class="bar-label">두치즈</div><div class="bar-track"><div class="bar" style="width:30%"></div><div class="bar-val">64.1회</div></div></div>
+  <div class="bar-row"><div class="bar-label">amylog</div><div class="bar-track"><div class="bar" style="width:30%"></div><div class="bar-val">63.5회</div></div></div>
+  <div class="bar-row"><div class="bar-label">joolog</div><div class="bar-track"><div class="bar" style="width:43%"></div><div class="bar-val">91.3회</div></div></div>
+  <div class="bar-row"><div class="bar-label">디에떼</div><div class="bar-track"><div class="bar" style="width:50%"></div><div class="bar-val">105.8회</div></div></div>
+  <div class="bar-row"><div class="bar-label">허니로그</div><div class="bar-track"><div class="bar" style="width:53%"></div><div class="bar-val">112.7회</div></div></div>
+  <div class="bar-row"><div class="bar-label">니나내나</div><div class="bar-track"><div class="bar" style="width:56%"></div><div class="bar-val">118.6회</div></div></div>
+  <div class="bar-row"><div class="bar-label">북엔디어</div><div class="bar-track"><div class="bar" style="width:100%"></div><div class="bar-val">213.7회</div></div></div>
+</div>
+
+<div class="callout">
+  <b class="tag">핵심 발견 ②</b>
+  "영상을 본 사람이 구독을 안 하는" 채널이 아니라 <b>"애초에 보는 사람이 적은"</b> 채널이다.
+  콘텐츠 자체의 구독 설득력은 이미 비교군 최상위이므로, 전략의 전부를 <b>노출과 클릭(1·2단계)</b>에 집중하면 된다.
+</div>
+
+<h2><span class="num">4.</span>비슷한 컨셉 채널 벤치마크</h2>
+<p>같은 '독서 브이로그' 검색 결과 상위에 노출되는 채널 7곳과 비교했다. 모두 개인이 운영하는 독서·일상 브이로그다.</p>
+<table>
+  <tr><th>채널</th><th>개설</th><th class="right">영상</th><th class="right">구독자</th><th class="right">총 조회수</th><th class="right">월평균 구독 증가</th></tr>
+  <tr><td>디에떼 <span class="small">@d.ete_book</span></td><td>2024.04</td><td class="right">120</td><td class="right">8,410</td><td class="right">89.0만</td><td class="right">약 290명</td></tr>
+  <tr><td>허니로그 <span class="small">@kimhoneylog</span></td><td>2024.02</td><td class="right">89</td><td class="right">3,720</td><td class="right">41.9만</td><td class="right">약 124명</td></tr>
+  <tr><td>joolog <span class="small">@joolog</span></td><td>—</td><td class="right">71</td><td class="right">3,100</td><td class="right">28.3만</td><td class="right">—</td></tr>
+  <tr><td>amylog <span class="small">@amylog</span></td><td>—</td><td class="right">12</td><td class="right">1,660</td><td class="right">10.5만</td><td class="right">—</td></tr>
+  <tr><td>니나내나 <span class="small">@ninanaena</span></td><td>2025.02</td><td class="right">117</td><td class="right">1,550</td><td class="right">18.4만</td><td class="right">약 86명</td></tr>
+  <tr><td>두치즈 <span class="small">@doocheese</span></td><td>2025.06</td><td class="right">10</td><td class="right">885</td><td class="right">5.7만</td><td class="right">약 63명</td></tr>
+  <tr><td>북엔디어 <span class="small">@BookEndear</span></td><td>2025.09</td><td class="right">82</td><td class="right">787</td><td class="right">16.8만</td><td class="right">약 72명</td></tr>
+  <tr class="hl"><td>무네온 <span class="small">@muneonnn</span></td><td>2026.04</td><td class="right">20</td><td class="right">229</td><td class="right">1.1만</td><td class="right">약 46명</td></tr>
+</table>
+<p>여기서 세 가지를 읽을 수 있다.</p>
+<ul>
+  <li><b>이 장르는 원래 느리다.</b> 주 2회씩 11개월 올린 북엔디어도 787명이다. 5개월 차 229명은 실패가 아니라 평균 범위다.</li>
+  <li><b>물량이 아니라 편당 효율이 가른다.</b> 두치즈는 단 10편으로 885명(편당 5,700회), amylog는 12편으로 1,660명(편당 8,800회)을 만들었다. 반면 북엔디어는 82편을 올리고도 편당 2,000회다. 편당 조회수를 끌어올리는 패키징(썸네일·제목·소재)이 물량보다 중요하다.</li>
+  <li><b>1등 채널의 공통점은 '매 편 반복되는 시청자 효용'.</b> 디에떼는 120편 전부에 '책 추천'이 들어간다. 시청자는 "구독하면 매주 책 추천을 받는다"는 계약을 맺는 것이다. 무네온에는 이 계약이 없다.</li>
+</ul>
+
+<h2><span class="num">5.</span>좋아요 데이터로 본 시청자 구성</h2>
+<p>영상별 좋아요를 조회수로 나눠 보면 시청자가 누구인지 보인다.</p>
+<table>
+  <tr><th>구간</th><th class="right">조회수</th><th class="right">좋아요</th><th class="right">좋아요 비율</th><th>해석</th></tr>
+  <tr><td>평시 영상 (10편)</td><td class="right">86~375</td><td class="right">7~13개</td><td class="right"><b>3.7~8.6%</b></td><td>이례적으로 높음 — 지인·고정팬 중심</td></tr>
+  <tr><td>스파이크 영상 (3편)</td><td class="right">1,327~2,301</td><td class="right">10~25개</td><td class="right">0.7~1.1%</td><td>알고리즘 유입 — 가볍게 보고 이탈</td></tr>
+  <tr><td><span class="small">참고: 디에떼 최근 3편</span></td><td class="right"><span class="small">3,525~5,585</span></td><td class="right"><span class="small">118~148개</span></td><td class="right"><span class="small">2.6~3.6%</span></td><td><span class="small">대량 유입을 팬으로 전환 중</span></td></tr>
+</table>
+<div class="callout">
+  <b class="tag">핵심 발견 ③</b>
+  평시 영상의 좋아요가 조회수와 무관하게 7~13개로 고정돼 있다. 즉 <b>어떤 영상이든 좋아요를 눌러주는 핵심 시청자가 약 10명</b>이고, 나머지는 흘러가는 트래픽이다.
+  성장이란 이 10명을 100명, 1,000명으로 만드는 일이고, 그 수단이 시리즈화·예고·고정 업로드 요일 같은 '재방문 장치'다. 지금 채널에는 이 장치가 하나도 없다.
+</div>
+
+<h2><span class="num">6.</span>Shorts — 이미 증명된 유입 경로를 안 쓰고 있다</h2>
+<p>Shorts 7편은 전부 331~807회로, <b>롱폼 평시(86~375회)보다 높다.</b> 신규 노출 수단으로 이미 작동하고 있다는 뜻이다.</p>
+<table>
+  <tr><th>Shorts 제목</th><th class="right">조회수</th></tr>
+  <tr><td>어떤 소비를 하고 계시나요?</td><td class="right">807</td></tr>
+  <tr><td>나는 죽여주는 우편배달부였다!</td><td class="right">729</td></tr>
+  <tr><td>삶을 바꾸는 가장 간단한 방법 📖</td><td class="right">728</td></tr>
+  <tr><td>지금 내야 해야 할 단 하나는 무엇인가</td><td class="right">491</td></tr>
+  <tr><td>가성비 필기구 추천📝</td><td class="right">407</td></tr>
+  <tr><td>끝내 작별하지 못한 이야기</td><td class="right">375</td></tr>
+  <tr><td>잊지 않으려고 시작한 매일의 습관</td><td class="right">331</td></tr>
+</table>
+<p>문제는 Shorts가 롱폼과 연결돼 있지 않다는 것. 책 소개 Shorts를 보고 온 시청자가 흘러갈 곳(관련 롱폼 링크, 고정 댓글, 시리즈)이 없다. Shorts를 <b>롱폼 예고편</b>으로 재설계하면 — 필사 타임랩스 30초, 문구 하울 펼침샷 15초, "전체 영상은 채널에" — 이미 검증된 유입이 구독으로 이어진다.</p>
+
+<h2><span class="num">7.</span>썸네일 비교 분석</h2>
+<p>실제 썸네일을 나란히 놓고 보면 클릭률 차이의 원인이 보인다. 위 3장이 무네온, 아래 3장이 성장 채널이다.</p>
+
+<h3>무네온 — 요소 6개짜리 콜라주</h3>
+<div class="thumb-grid">
+  <div class="thumb"><img src="https://i.ytimg.com/vi/4uBuW0MlEGQ/mqdefault.jpg" alt="무네온 썸네일 — 최신 영상" loading="lazy">
+    <div class="cap bad"><b>215회 · 최신 영상</b>셀카 + 카페 외경 2장 + 책 표지 + 손글씨 + 하트 5개 + '책추천' 뱃지. 피드 크기로 줄이면 아무것도 안 읽힌다.</div></div>
+  <div class="thumb"><img src="https://i.ytimg.com/vi/iTYGadaCyGA/mqdefault.jpg" alt="무네온 썸네일 — 최고 조회 영상" loading="lazy">
+    <div class="cap bad"><b>2,301회 · 최고 조회 영상</b>텍스트 없는 카페 인물 사진. 조회수는 제목의 '책상·독서 루틴' 키워드 덕이지 썸네일의 공이 아니다.</div></div>
+  <div class="thumb"><img src="https://i.ytimg.com/vi/0tYAa5n9cQE/mqdefault.jpg" alt="무네온 썸네일 — 언박싱 영상" loading="lazy">
+    <div class="cap bad"><b>1,327회 · 언박싱 영상</b>셀카가 화면의 60%. 정작 클릭 동기인 '아날로그키퍼'는 우측 구석에 작게. 피사체와 소구점이 어긋나 있다.</div></div>
+</div>
+
+<h3>성장 채널 — 고정 템플릿 또는 어그로 텍스트</h3>
+<div class="thumb-grid">
+  <div class="thumb"><img src="https://i.ytimg.com/vi/2fJApiWLboI/mqdefault.jpg" alt="디에떼 썸네일" loading="lazy">
+    <div class="cap good"><b>디에떼 · 3,525회</b>3분할 그리드 고정 템플릿. 중앙에 책 표지 크게 + 'reading vlog' 필기체. 피드에서 스쳐도 "그 독서 채널"로 인지된다.</div></div>
+  <div class="thumb"><img src="https://i.ytimg.com/vi/ounVOiEKPw0/mqdefault.jpg" alt="디에떼 썸네일 2" loading="lazy">
+    <div class="cap good"><b>디에떼 · 4,454회</b>같은 템플릿의 반복. 일관성 자체가 브랜딩이고, 매 편 바뀌는 것은 '이번 주의 책'뿐이라 클릭 동기가 명확하다.</div></div>
+  <div class="thumb"><img src="https://i.ytimg.com/vi/XRcsBf9r_vA/mqdefault.jpg" alt="니나내나 썸네일" loading="lazy">
+    <div class="cap good"><b>니나내나 · 642회</b>어그로형: 인물 표정 + 말풍선 + 화면 1/3을 덮는 대형 텍스트 "가난에 긁혀서 읽은 책". 엄지손톱 크기에서도 읽힌다.</div></div>
+</div>
+
+<h2><span class="num">8.</span>가이드 ① — 썸네일 템플릿</h2>
+<p>무네온의 감성(밝고 정갈한 톤)을 유지하면서 클릭률을 만드는 템플릿 제안이다.</p>
+
+<div class="svgbox">
+<svg viewBox="0 0 640 360" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="추천 썸네일 템플릿 와이어프레임">
+  <rect width="640" height="360" fill="#f6f4ef"/>
+  <rect x="24" y="24" width="360" height="312" rx="10" fill="#dde8e0" stroke="#2f6f4f" stroke-width="2" stroke-dasharray="8 5"/>
+  <text x="204" y="168" text-anchor="middle" font-size="22" fill="#2f6f4f" font-weight="700">메인 피사체 1개</text>
+  <text x="204" y="198" text-anchor="middle" font-size="15" fill="#5b6472">필사 스프레드 · 책 표지 · 문구 펼침샷</text>
+  <text x="204" y="220" text-anchor="middle" font-size="15" fill="#5b6472">(화면의 50% 이상, 꽉 차게)</text>
+  <rect x="408" y="24" width="208" height="200" rx="10" fill="#efe9df" stroke="#b4552d" stroke-width="2" stroke-dasharray="8 5"/>
+  <text x="512" y="110" text-anchor="middle" font-size="19" fill="#b4552d" font-weight="700">큰 카피 한 줄</text>
+  <text x="512" y="138" text-anchor="middle" font-size="14" fill="#5b6472">"필사 100일차"</text>
+  <text x="512" y="158" text-anchor="middle" font-size="14" fill="#5b6472">2~4어절 · 고딕 굵게</text>
+  <rect x="408" y="248" width="208" height="88" rx="10" fill="#e2e6ec" stroke="#5b6472" stroke-width="2" stroke-dasharray="8 5"/>
+  <text x="512" y="285" text-anchor="middle" font-size="15" fill="#5b6472" font-weight="700">채널 시그니처</text>
+  <text x="512" y="308" text-anchor="middle" font-size="13" fill="#5b6472">로고 · 고정 색 띠 · 회차 표기</text>
+</svg>
+<p class="small" style="margin-top:12px">추천 레이아웃 — 좌측: 메인 피사체 1개 크게 / 우상단: 카피 한 줄 / 우하단: 매 편 동일한 시그니처</p>
+</div>
+
+<h3>체크리스트 (업로드 전 30초 점검)</h3>
+<ul>
+  <li><b>1 썸네일 1 메시지</b> — 이번 영상의 핵심 하나만. 콜라주 금지, 사진은 최대 2장.</li>
+  <li><b>텍스트는 한 줄, 2~4어절</b> — 손글씨 장식이 아니라 읽히는 카피. "아날로그키퍼 첫인상", "필사 3개월차".</li>
+  <li><b>레이아웃·폰트·색 고정</b> — 템플릿을 한 번 만들고 12편 이상 유지. 일관성이 곧 채널 인지도다.</li>
+  <li><b>축소 테스트</b> — 만든 썸네일을 엄지손톱 크기로 줄여서 보라. 그 크기에서 안 읽히면 다시 만든다.</li>
+  <li><b>인물 셀카는 보조로</b> — 얼굴은 감성을 주지만 클릭 이유는 못 준다. 피사체는 '시청자가 얻을 것'이어야 한다.</li>
+</ul>
+
+<h2><span class="num">9.</span>가이드 ② — 제목 리라이트</h2>
+<p>현재 제목은 "나에게 일어난 일"의 나열이다. 클릭은 "시청자에게 걸리는 질문"에서 나온다. 실제 제목을 리라이트해 보면:</p>
+
+<div class="ba">
+  <div class="before"><div class="label">BEFORE · 93회</div>독서 브이로그 | 더워도 지쳐도 이겨내🔥 | 대형 한옥 북카페 후마니타스☕️ | 독서하며 달래는 일상들📖🩵 | 홍진경 오이김밥🥒 | 미뤘던 스티커 정리 드디어 완료📓</div>
+  <div class="after"><div class="label">AFTER</div>세종 한옥 북카페 '후마니타스' 솔직 후기 — 책 읽으러 갈 만한가?</div>
+</div>
+<div class="ba">
+  <div class="before"><div class="label">BEFORE · 1,327회</div>독서 브이로그 | 아날로그키퍼 언박싱📦 | 독서하고 필사하는 일상📖 | 하남 미사 카페추천 | 엄마랑 같이 독서💛 | 양평 수수카페🌿 | 청사과 왁뿌🍏</div>
+  <div class="after"><div class="label">AFTER</div>아날로그키퍼 언박싱 — 다이어리 유목민이 정착한 이유 3가지</div>
+</div>
+<div class="ba">
+  <div class="before"><div class="label">BEFORE · 215회</div>브이로그 | 오랜만에 동생이랑 카페, 남편 생일 기념 데이트, 낭만의 도시 청주, 야외 정원이 이쁜 청주 카페 추천, 모리와 함께한 화요일📖</div>
+  <div class="after"><div class="label">AFTER</div>청주 야외정원 카페에서 「모리와 함께한 화요일」 완독한 날</div>
+</div>
+
+<h3>제목 공식 4가지</h3>
+<ul>
+  <li><b>결과 먼저</b> — "필사 100일, 글씨가 이렇게 변했습니다" / "다이어리 6개월 쓰고 남은 것"</li>
+  <li><b>숫자·비교</b> — "5만원어치 문구 하울, 후회한 것과 아닌 것" / "청주 북카페 3곳 직접 가서 비교"</li>
+  <li><b>반전·고백</b> — "책 읽으려고 카페 알바를 시작했습니다" / "아날로그키퍼, 솔직히 이건 별로였어요"</li>
+  <li><b>검색 고유명사를 맨 앞에</b> — '아날로그키퍼 언박싱'이 1,327회가 된 건 검색 유입 덕이다. 브랜드명·카페명을 뒤쪽 꾸밈말이 아니라 첫 어절에 둔다.</li>
+</ul>
+<p class="small">원칙: 키워드 나열(| 5~6개)은 검색에도 추천에도 불리하다. 소구점 1개 + 검색 고유명사 1개, 총 40자 이내.</p>
+
+<h2><span class="num">10.</span>가이드 ③ — 영상 구조 (10분 기준)</h2>
+<p class="small">※ 이 섹션은 영상 본편의 시청 지속률 데이터를 볼 수 없어 장르 관행 기반 제안이다. 스튜디오의 '시청 지속 시간' 그래프에서 이탈 지점을 확인한 뒤 조정할 것.</p>
+
+<div class="flow">
+  <div class="step"><span class="t">0:00–0:20</span><b>콜드오픈</b>인사·풍경 대신 이번 영상의 결과물부터. 완성된 필사 스프레드, 이번 주 책 스택. "이게 어떻게 나왔는지 보여드릴게요."</div>
+  <div class="step"><span class="t">0:20–1:00</span><b>오늘의 약속</b>이 영상에서 얻어갈 것 한 문장 + 챕터 예고. "오늘은 ○○ 언박싱하고, △△ 카페에서 2시간 필사합니다."</div>
+  <div class="step"><span class="t">1:00–8:30</span><b>본편 (챕터 분할)</b>카페 / 책 / 문구를 챕터(타임스탬프)로 분리. 소재 혼합이 검색에 각각 걸리는 강점으로 바뀐다.</div>
+  <div class="step"><span class="t">8:30–10:00</span><b>정리 + 예고</b>오늘 읽은 책 한 줄 평 → 다음 편 예고 한 문장 → "매주 ○요일에 올라옵니다" 구독 멘트.</div>
+</div>
+<ul>
+  <li><b>첫 30초가 추천량을 정한다.</b> 유튜브는 초반 이탈률이 높은 영상의 노출을 줄인다.</li>
+  <li><b>챕터는 반드시 설명란에 타임스탬프로.</b> "0:00 인트로 / 1:12 아날로그키퍼 언박싱 / 4:30 청주 ○○카페 / 7:10 필사 타임" 형식.</li>
+  <li><b>8~13분 길이는 현재 그대로 유지.</b> 디에떼도 같은 대역(13~20분)이다. 길이가 아니라 구조가 문제다.</li>
+</ul>
+
+<h2><span class="num">11.</span>가이드 ④ — 4주 실행 플랜</h2>
+
+<div class="week"><b class="wk">1주차 — 정체성 확정</b>
+<ul>
+  <li>채널명 옆 한 줄 정의 확정: <b>"매주 ○요일, 필사와 문구가 있는 독서 루틴"</b>. 배너·채널 설명·모든 영상 설명란에 동일하게.</li>
+  <li>썸네일 템플릿 1종 제작(섹션 8). 기존 스파이크 영상 3편의 썸네일부터 교체 — 지금도 트래픽이 흐르는 영상이라 효과가 가장 빠르다.</li>
+  <li>스튜디오에서 확인: 스파이크 3편의 트래픽 소스(검색어·추천), 평균 시청 지속 시간, 시청자층.</li>
+</ul></div>
+
+<div class="week"><b class="wk">2주차 — 시리즈 론칭</b>
+<ul>
+  <li>터진 소재를 정규 시리즈로 승격: <b>"필사로그 ep.1"</b>. 회차 번호를 제목·썸네일에 명시하고 재생목록 생성.</li>
+  <li>업로드 요일 고정 공지(커뮤니티 탭 + 배너). 재방문 장치의 시작.</li>
+  <li>영상 구조 가이드(섹션 10) 적용: 콜드오픈 + 챕터 + 다음 편 예고.</li>
+</ul></div>
+
+<div class="week"><b class="wk">3주차 — Shorts 연결</b>
+<ul>
+  <li>롱폼 1편당 Shorts 2개 제작: 필사 타임랩스 30초 / 문구·책 하이라이트 15초.</li>
+  <li>Shorts에 관련 롱폼 연결(관련 동영상 기능 + 고정 댓글). 이미 검증된 유입(331~807회)을 구독 퍼널로.</li>
+  <li>영상 사이에 커뮤니티 탭 포스트 1회(필사 사진 한 장 + 질문 한 줄).</li>
+</ul></div>
+
+<div class="week"><b class="wk">4주차 — 측정과 조정</b>
+<ul>
+  <li>지표 확인: 노출 클릭률(목표 4% 이상), 평균 시청 지속률(목표 40% 이상), 구독 전환.</li>
+  <li>썸네일 교체한 구작 3편 vs 신작의 클릭률 비교 → 템플릿 v2 조정.</li>
+  <li>일상·카페 소재는 버리지 말고 시리즈의 '배경'으로 유지 — 축은 필사·문구, 양념은 일상.</li>
+</ul></div>
+
+<h2><span class="num">12.</span>데이터와 방법론</h2>
+<ul>
+  <li>수집일: 2026-08-28. 유튜브 공개 페이지(채널 정보·영상 목록·각 영상 페이지)에서 조회수·좋아요·게시일·구독자 수를 수집했다.</li>
+  <li>비교 채널은 '독서 브이로그' 검색 상위 노출 채널 중 개인 운영 브이로그 7곳을 선정했다.</li>
+  <li>좋아요 비율은 좋아요 ÷ 조회수. 댓글 수는 공개 API로 안정적으로 수집되지 않아 제외했다.</li>
+  <li><b>한계:</b> 노출 수·클릭률·시청 지속률·트래픽 소스는 채널 소유자만 볼 수 있다. 이 리포트의 퍼널 1~3단계는 공개 데이터 기반 추정이므로, 유튜브 스튜디오 데이터로 교차 확인이 필요하다.</li>
+  <li>월평균 구독 증가는 (현재 구독자 ÷ 개설 후 개월 수)의 단순 평균으로, 최근 증가 속도와 다를 수 있다.</li>
+</ul>
+
+<footer>
+  무네온 채널 성장 분석 리포트 · 2026-08-28 · 공개 데이터 기반 분석이며 채널 운영자를 위한 참고 자료입니다.<br>
+  썸네일 이미지는 유튜브 공식 CDN(i.ytimg.com)에서 직접 로드되며 각 저작권자에게 귀속됩니다.
+</footer>
+
+</div>
+</body>
+</html>
