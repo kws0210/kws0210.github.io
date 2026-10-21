@@ -100,3 +100,40 @@ test('새 쿠폰 횟수는 0으로만 생성하며 임의 쿠폰 필드와 초�
   await assertSucceeds(setDoc(reference(db), { ...initial, counts: { ...initial.counts, donkiCoupon: 0 } }));
   await assertFails(writeOperation(db, { kakao: 3, union: 5, donkiCoupon: 1000001 }, 1, 'import'));
 });
+
+test('돈키호테 전용 할인은 기존 KB 10%와 별도 3회 한도로 저장하고 과거 계정을 유지한다', async () => {
+  const db = authenticated();
+  await assertFails(setDoc(reference(db), { ...initial, counts: { ...initial.counts, unionDonki4000: 1 } }));
+  await setDoc(reference(db), initial);
+  const counts = { kakao: 0, union: 3, donkiCoupon: 1, unionDonki500: 0, unionDonki4000: 1 };
+  await assertSucceeds(writeOperation(db, counts, 1, 'calculate'));
+  await assertSucceeds(writeOperation(db, { ...counts, unionDonki500: 3, unionDonki4000: 3 }, 2));
+  await assertFails(writeOperation(db, { ...counts, unionDonki4000: 4 }, 3));
+  await assertFails(writeOperation(db, { ...counts, unionDonki500: 4 }, 3));
+  await assertFails(writeOperation(db, { ...counts, unionDonki500: -1 }, 3));
+  await assertFails(writeOperation(db, { kakao: 0, union: 3, donkiCoupon: 1 }, 3));
+  await assertSucceeds(writeOperation(db, { ...counts, unionDonki500: 2, unionDonki4000: 2 }, 3));
+});
+
+test('보유 설정은 번호별로 별도 저장하며 횟수를 건드리지 않고 잘못된 설정을 거절한다', async () => {
+  const db = authenticated();
+  const preference = doc(reference(db), 'preferences', 'current');
+  const settings = { kakaoReady: false, kakaoDonki: false, kakaoAirport: false, kakaoStoreCoupon: false, kakaoStackConfirmed: false, unionCard: false, unionRegistered: false, unionStoreCoupon: false, unionDonki4000Registered: false, travelCard: true };
+  await assertFails(getDoc(doc(reference(environment.unauthenticatedContext().firestore()), 'preferences', 'current')));
+  await assertSucceeds(getDoc(preference));
+  await assertFails(setDoc(preference, { settings, revision: 1 }));
+  await setDoc(reference(db), initial);
+  await assertFails(setDoc(preference, { settings: { ...settings, travelCard: false }, revision: 1 }));
+  await assertFails(setDoc(preference, { settings: { ...settings, phone: '01012345678' }, revision: 1 }));
+  await assertFails(setDoc(preference, { settings: { ...settings, unionCard: 'yes' }, revision: 1 }));
+  await assertFails(setDoc(preference, { settings, revision: 2 }));
+  await assertSucceeds(setDoc(preference, { settings, revision: 1 }));
+  await assertFails(setDoc(preference, { settings, revision: 1 }));
+  await assertSucceeds(setDoc(preference, { settings: { ...settings, unionCard: true }, revision: 2 }));
+  await assertSucceeds(writeOperation(db, { kakao: 1, union: 2 }, 1));
+  assert.equal((await getDoc(preference)).data().revision, 2);
+  await assertSucceeds(setDoc(preference, { settings, revision: 3 }));
+  assert.deepEqual((await getDoc(reference(db))).data().counts, { kakao: 1, union: 2 });
+  await assertFails(getDocs(collection(reference(db), 'preferences')));
+  await assertFails(deleteDoc(preference));
+});

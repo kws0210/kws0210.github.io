@@ -4,12 +4,16 @@ service cloud.firestore {
     function signedIn() { return request.auth != null; }
     function validState(data) {
       return data.keys().hasOnly(['counts', 'version', 'lastOperation'])
-        && data.counts.keys().hasOnly(['kakao', 'union', 'donkiCoupon'])
+        && data.counts.keys().hasOnly(['kakao', 'union', 'donkiCoupon', 'unionDonki500', 'unionDonki4000'])
         && data.counts.kakao is int && data.counts.union is int
         && data.counts.kakao >= 0 && data.counts.union >= 0
         && data.counts.kakao <= 1000000 && data.counts.union <= 1000000
         && data.counts.get('donkiCoupon', 0) is int
         && data.counts.get('donkiCoupon', 0) >= 0 && data.counts.get('donkiCoupon', 0) <= 1000000
+        && data.counts.get('unionDonki500', 0) is int
+        && data.counts.get('unionDonki500', 0) >= 0 && data.counts.get('unionDonki500', 0) <= 3
+        && data.counts.get('unionDonki4000', 0) is int
+        && data.counts.get('unionDonki4000', 0) >= 0 && data.counts.get('unionDonki4000', 0) <= 3
         && data.version is int && data.version >= 0
         && data.lastOperation is string;
     }
@@ -22,10 +26,14 @@ service cloud.firestore {
         && validState(request.resource.data)
         && request.resource.data.counts.kakao == 0 && request.resource.data.counts.union == 0
         && request.resource.data.counts.get('donkiCoupon', 0) == 0
+        && request.resource.data.counts.get('unionDonki500', 0) == 0
+        && request.resource.data.counts.get('unionDonki4000', 0) == 0
         && request.resource.data.version == 0 && request.resource.data.lastOperation == '';
       allow update: if signedIn() && validState(request.resource.data)
         // 새 쿠폰 기록을 이전 버전의 화면이 누락해 지우는 것을 막는다.
         && (!('donkiCoupon' in resource.data.counts) || 'donkiCoupon' in request.resource.data.counts)
+        && (!('unionDonki500' in resource.data.counts) || 'unionDonki500' in request.resource.data.counts)
+        && (!('unionDonki4000' in resource.data.counts) || 'unionDonki4000' in request.resource.data.counts)
         && request.resource.data.version == resource.data.version + 1
         && request.resource.data.lastOperation.matches('^[a-zA-Z0-9-]{16,80}$')
         && existsAfter(/databases/$(database)/documents/paymentAccounts/$(account)/operations/$(request.resource.data.lastOperation))
@@ -49,6 +57,28 @@ service cloud.firestore {
           && getAfter(/databases/$(database)/documents/paymentAccounts/$(account)).data.lastOperation == operation
           && getAfter(/databases/$(database)/documents/paymentAccounts/$(account)).data.version == request.resource.data.result.version
           && getAfter(/databases/$(database)/documents/paymentAccounts/$(account)).data.counts == request.resource.data.result.counts;
+      }
+      match /preferences/{preference} {
+        function validPreferences() {
+          let data = request.resource.data;
+          let settings = data.settings;
+          return data.keys().hasOnly(['settings', 'revision'])
+            && settings.keys().hasAll(['kakaoReady', 'kakaoDonki', 'kakaoAirport', 'kakaoStoreCoupon', 'kakaoStackConfirmed', 'unionCard', 'unionRegistered', 'unionStoreCoupon', 'unionDonki4000Registered', 'travelCard'])
+            && settings.keys().hasOnly(['kakaoReady', 'kakaoDonki', 'kakaoAirport', 'kakaoStoreCoupon', 'kakaoStackConfirmed', 'unionCard', 'unionRegistered', 'unionStoreCoupon', 'unionDonki4000Registered', 'travelCard'])
+            && settings.kakaoReady is bool && settings.kakaoDonki is bool && settings.kakaoAirport is bool
+            && settings.kakaoStoreCoupon is bool && settings.kakaoStackConfirmed is bool
+            && settings.unionCard is bool && settings.unionRegistered is bool && settings.unionStoreCoupon is bool
+            && settings.unionDonki4000Registered is bool && settings.travelCard is bool
+            && (settings.kakaoReady || settings.unionCard || settings.travelCard)
+            && data.revision is int && data.revision > 0;
+        }
+        allow get: if signedIn() && account.matches('^[a-f0-9]{64}$') && preference == 'current';
+        allow create: if signedIn() && preference == 'current' && validPreferences()
+          && existsAfter(/databases/$(database)/documents/paymentAccounts/$(account))
+          && request.resource.data.revision == 1;
+        allow update: if signedIn() && preference == 'current' && validPreferences()
+          && request.resource.data.revision == resource.data.revision + 1;
+        allow list, delete: if false;
       }
     }
   }

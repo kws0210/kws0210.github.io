@@ -75,6 +75,10 @@
     .action-link { display:flex; justify-content:space-between; align-items:center; gap:10px; min-height:50px; margin-top:16px; padding:13px 15px; border:1px solid var(--green); border-radius:11px; background:var(--green); color:white; text-decoration:none; font-size:14px; font-weight:700; line-height:1.6; word-break:keep-all; }
     .action-link.secondary { border-color:#d3decb; background:#f3f7ef; color:var(--green); }
     .reference-link { color:var(--green); text-underline-offset:3px; }
+    .discount-example { width:100%; margin-top:14px; border-collapse:collapse; font-size:13px; line-height:1.7; }
+    .discount-example caption { margin-bottom:8px; text-align:left; font-weight:700; }
+    .discount-example th,.discount-example td { padding:10px 5px; border-bottom:1px solid var(--line); text-align:left; vertical-align:top; }
+    .discount-example th:last-child,.discount-example td:last-child { width:39%; text-align:right; }
     .numbered-list { margin:14px 0 0; padding-left:23px; }
     .numbered-list li { margin-top:10px; padding-left:3px; font-size:14px; line-height:1.85; word-break:keep-all; }
     .benefit-summary { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin:18px 0; }
@@ -186,13 +190,31 @@
             <figure><a class="screen-button" href="images/kakao-donki-max7-redeem.webp" data-screen data-title="지금 사용하기는 결제 현장에서만"><img src="images/kakao-donki-max7-redeem.webp" alt="지금 교환하시겠습니까 팝업. 지금 사용 버튼을 누르면 쿠폰이 즉시 확인 완료로 변경되니 주의하라는 안내와 지금 사용하기·나중에 버튼이 있다." width="946" height="2048" loading="lazy"></a><figcaption>미리 교환하지 않고 결제 현장에서 직원과 진행한다.</figcaption></figure>
           </details>
           <p>이 쿠폰은 <b>결제 전에 매장 직원에게 보여주는 할인 쿠폰</b>이다. 카카오페이 2,000엔 결제 할인 쿠폰과 별도로 계산한다.</p>
-          <p>쿠폰이 있다면 계산기에서 ‘돈키호테 최대 7% 할인 쿠폰이 있어요’를 체크하고, 쿠폰이나 매장에서 확인한 <b>실제 할인액</b>을 입력한다. 이 금액을 뺀 뒤 결제 할인 조건과 최종 할인액을 비교한다.</p>
-          <p>예를 들어 쿠폰 할인 전 16,000엔이고 실제 쿠폰 할인액이 800엔이라면 결제 기준은 15,200엔이다. 카카오페이 2,000엔 할인 조건을 충족하므로 총 예상 할인은 2,800엔이다. 예시의 매장 할인액은 실제 쿠폰에서 확인한 금액으로 바꿔 계산한다.</p>
+          <p>쿠폰이 있다면 계산기 상단 <b>설정</b>에서 ‘돈키호테 최대 7% 할인 쿠폰이 있어요’를 체크해 저장한다. 계산할 때 이번 결제에 사용할 수 있는지 확인하고, 쿠폰이나 매장에서 확인한 <b>실제 할인액</b>을 입력한다. 이 금액을 뺀 뒤 결제 할인 조건과 최종 할인액을 비교한다.</p>
+          <p>카카오페이 2,000엔 할인과 <b>중복 적용을 확인한 경우에만</b> 설정의 중복 조건 확인 항목을 체크한다. 유니온페이 전용 쿠폰은 아래 KB 행사에서 따로 받고, 설정에서 보유 여부를 저장한 후 계산할 때 그 쿠폰의 실제 할인액을 별도로 입력한다.</p>
+          <p>예를 들어 쿠폰 할인 전 16,000엔이고 실제 쿠폰 할인액이 800엔이라면 결제 기준은 15,200엔이다. 카카오페이 2,000엔 쿠폰과 중복이 확인되고 결제 혜택이 남아 있다면 총 예상 할인은 <b>2,800엔 (17.5%)</b>이다. 예시의 매장 할인액은 실제 쿠폰에서 확인한 금액으로 바꿔 계산한다.</p>
+          <div class="reminder" id="stack-evidence"><strong>두 쿠폰의 중복 적용은 어디까지 확인됐나?</strong><p>최대 7% 쿠폰의 실제 약관 6항에는 <b>“알리페이에서 제공하는 프로모션과 중복 사용할 수 있습니다.”</b>라고 명시되어 있다. 다만 현재 2,000엔 결제 쿠폰의 전체 약관과 제외 조건은 공개 자료에서 확인되지 않았다. 이 두 쿠폰의 조합을 확정한 안내로 보지 말고, 받은 2,000엔 쿠폰의 상세 조건도 확인한다.</p></div>
+          <details>
+            <summary>약관과 공개 사용 사례의 차이 보기</summary>
+            <p class="note">아래 ‘거래당 1회·중복 할인 약관’은 실제 제공된 최대 7% 쿠폰의 근거다. <a class="reference-link" href="https://blog.naver.com/ecko18/224385377139" target="_blank" rel="noopener noreferrer">10월 13일 갱신 후기</a>는 돈키호테 할인 쿠폰과 2,000엔 결제 프로모션을 함께 이용하는 방법을 안내한다. <a class="reference-link" href="https://blog.naver.com/hug387/224307344529" target="_blank" rel="noopener noreferrer">6월 사용 후기</a>에는 매장 할인 후 34,661엔에서 결제 할인 2,000엔을 추가로 받은 사례가 있다.</p>
+            <p class="note">공개 후기의 일반 돈키호테 쿠폰은 제공된 쿠폰과 발급 경로가 다르다. 과거 사용 사례나 후기만으로 현재 두 쿠폰의 중복 조건을 확정하지 않는다. 이 A+ 쿠폰을 KB에 그대로 적용하지 않는다. KB는 공식 행사에서 연결하는 유니온페이 전용 매장 쿠폰을 사용한다.</p>
+          </details>
+          <table class="discount-example">
+            <caption>30,000엔 · 실제 매장 쿠폰 할인액 2,100엔인 경우</caption>
+            <thead><tr><th scope="col">사용 조합</th><th scope="col">총 예상 할인</th></tr></thead>
+            <tbody>
+              <tr><td>카카오페이와 쿠폰 중복 확인</td><td>4,100엔<br>13.67%</td></tr>
+              <tr><td>KB만 사용</td><td>3,000엔<br>10%</td></tr>
+              <tr><td>유니온페이 전용 쿠폰 2,100엔 + KB 10%</td><td>4,890엔<br>16.3%</td></tr>
+            </tbody>
+          </table>
+          <p class="note">1달러=150엔, 양쪽 쿠폰의 실제 할인액이 2,100엔이고 결제 혜택이 모두 남아 있다는 가정의 예시다. KB는 10%, 건당 최대 20달러다. 쿠폰 할인율을 모든 금액에서 7%로 가정하지 않으며 수수료·환전 차이·면세액은 제외한다.</p>
+          <p><b>20,000엔을 무조건 기준으로 나누지 않는다.</b> 카카오페이에만 쿠폰이 중복되면 ‘매장 할인액 + 2,000엔’과 ‘KB 10% (최대 20달러)’를 비교한다. 각 결제수단의 전용 쿠폰 할인액이 같고 카카오페이 중복도 확인됐다면 쿠폰 할인 후 20,000엔에서 결제 할인액이 2,000엔으로 같아진다. KB 한도가 먼저 걸리면 환율에 따라 달라진다. 카카오페이는 쿠폰 할인 후에도 15,000엔 이상이어야 한다.</p>
           <div class="reminder"><strong>‘거래당 1회’와 전체 사용 한도를 구분한다</strong><p>보내주신 약관은 거래당 1회만 사용 가능하다고 안내한다. 전체 사용 한도는 이 화면에 명시되어 있지 않다. 카카오페이 결제 할인 1회와 별도로 관리하고, 매번 앱에 유효한 쿠폰이 있는지 확인한다.</p></div>
           <ul class="checks">
             <li>세금 제외 10,000엔 또는 30,000엔 이상의 단일 면세 거래가 대상이다. 이 약관 화면만으로 각 금액 구간의 할인율을 단정하지 않는다.</li>
-            <li><b>알리페이 제공 프로모션과 중복 사용 가능</b>하다. 카카오페이 결제 할인은 쿠폰 적용 후 실제 결제 금액으로 최소 조건을 판단한다.</li>
-            <li>돈키호테 자체 할인·프로모션과 중복할 수 없다. KB 유니온페이 결제 할인과의 중복 여부는 이 약관에 명시되어 있지 않다.</li>
+            <li><b>알리페이 제공 프로모션과 중복 사용 가능</b>하다고 명시한다. 2,000엔 결제 쿠폰의 개별 조건도 확인하며, 중복 적용 시 매장 쿠폰 할인 후 금액으로 최소 조건을 판단한다.</li>
+            <li>돈키호테 자체 할인·프로모션과 중복할 수 없다. KB 유니온페이에 이 A+ 쿠폰을 적용할 수 있다는 내용은 없다. 유니온페이 전용 쿠폰과 구분한다.</li>
             <li>일본 돈키호테·APITA·PIAGO 일부 점포를 제외한 매장에서 사용한다. 일본 도착 후 쿠폰을 수령한다.</li>
             <li>주류·담배·POSA 카드·게임 콘솔·단품 100,000엔(세금 제외) 이상·가격 제한 상품은 할인과 최소 금액 합산에서 제외된다.</li>
             <li>스크린샷은 사용할 수 없으며 반드시 결제 완료 전에 제시한다.</li>
@@ -284,6 +306,28 @@
           </ol>
           <p class="note">공식 안내상 등록 성공 후 혜택 적용까지 약 2분이 걸린다.<br>등록과 선택확인이 완료된 뒤 결제한다.</p>
         </li>
+        <li class="step-card" id="union-donki">
+          <h3>돈키호테는 전용 쿠폰과 별도 행사도 준비하기</h3>
+          <p><b>매장 쿠폰</b>과 <b>카드 결제 즉시 할인</b>을 따로 준비한다. 카카오페이에서 받은 최대 7% 쿠폰과 유니온페이 전용 쿠폰은 발급 경로가 다르다.</p>
+          <a class="action-link" id="kb-japan-event" href="https://card.kbcard.com/BON/DVIEW/HBBMCXCRVNEC0001?mainCC=a&amp;eventNum=1002289" target="_blank" rel="noopener noreferrer"><span>KB 일본 10% + 추가 할인 전체 안내</span><span aria-hidden="true">↗</span></a>
+          <a class="action-link secondary" id="union-donki-coupon" href="https://japanportal.donki-global.com/coupon/cp001_ko.html" target="_blank" rel="noopener noreferrer"><span>유니온페이 전용 돈키호테 쿠폰</span><span aria-hidden="true">↗</span></a>
+          <ol class="numbered-list">
+            <li>위 KB 행사 안내의 <b>돈키호테 쿠폰다운</b>을 통해 전용 쿠폰을 준비한다. 공식 안내상 세금 제외 10,000엔 이상 30,000엔 미만은 5%, 30,000엔 이상 50,000엔 미만은 7%다. 그 외 금액과 제외 상품은 실제 쿠폰 조건을 확인한다.</li>
+            <li><b>결제 전에 쿠폰을 점원에게 보여준다.</b> 할인 바코드가 실제로 표시되는지 확인한다. 쿠폰이 표시되지 않으면 발급 완료로 보지 않는다.</li>
+            <li><b>4,000엔 행사 등록</b>은 KB 10% 행사와 따로 진행한다. 아래 등록 페이지에서 등록하기 → 문자 인증 → 카드 등록 → 혜택받을 카드 선택확인까지 마친다.</li>
+            <li>매장 쿠폰 적용 후에도 <b>40,000엔 이상</b>이고 오늘 혜택이 남아 있을 때 4,000엔 즉시 할인과 비교한다. 최대 3회, 하루 1회다. 10,000엔 이상 500엔 행사는 별도 등록 없이 적용되며 최대 3회·하루 1회다.</li>
+            <li>계산기에서 전용 쿠폰의 <b>실제 할인액</b>을 입력하고, 대상 점포·등록·당일 잔여 혜택을 확인한 행사만 체크한다. KB 10%와 돈키호테 즉시 할인은 <b>가장 큰 하나만</b> 적용한다.</li>
+          </ol>
+          <a class="action-link" id="union-donki-registration" href="https://marketing.unionpayintl.com/offer-promote/?language=kr&amp;insCode=299990156#/offer?offerNo=260907112832" target="_blank" rel="noopener noreferrer"><span>돈키호테 4,000엔 행사 별도 등록</span><span aria-hidden="true">↗</span></a>
+          <a class="action-link secondary" id="union-donki-official" href="https://m.unionpayintl.com/cardholderServ/serviceCenter/wap/merchant/121795293892?type=1" target="_blank" rel="noopener noreferrer"><span>500엔·4,000엔 조건과 대상 점포 확인</span><span aria-hidden="true">↗</span></a>
+          <details>
+            <summary>공식 안내에 나온 대상 8개 점포 보기</summary>
+            <p class="note">신주쿠점, 신주쿠 가부키쵸점, 롯폰기점, 산노미야점, 긴자본관, 아키하바라점, 우에노점, 도톤보리점이다. 모든 돈키호테에서 적용된다고 가정하지 않고 위 공식 페이지에서 최신 목록을 확인한다.</p>
+          </details>
+          <div class="reminder"><strong>10% + 4,000엔으로 더하지 않는다</strong><p>KB 공식 안내는 ‘즉시할인 행사 할인이 중복되는 경우 가장 큰 할인 혜택이 적용됩니다’라고 명시한다. 전용 매장 쿠폰 할인액에, 조건이 맞는 결제 즉시 할인 하나를 더해 비교한다.</p></div>
+          <p>예를 들어 세금 제외 45,000엔에서 전용 쿠폰으로 3,150엔을 할인받으면 결제 기준은 41,850엔이다. 등록·대상 점포·잔여 혜택이 확인되면 4,000엔을 추가로 할인받아 <b>총 7,150엔 (15.89%)</b>이다. 같은 매장 할인액과 카카오페이 2,000엔이 중복되는 경우의 5,150엔보다 2,000엔 유리하다.</p>
+          <p class="note">행사 기간은 2026. 10. 1. ~ 12. 31.이다. 돈키호테 500엔·4,000엔 사용 기록은 KB 해외 10% 기록과 구분하며, 하루 사용 여부와 실제 남은 혜택은 매번 확인한다. 예산이 소진되면 조기 종료될 수 있다.</p>
+        </li>
         <li class="step-card">
           <h3>현지에서 등록한 카드로 결제하기</h3>
           <ul class="checks">
@@ -297,9 +341,25 @@
           <a class="action-link secondary" href="https://card.kbcard.com/BON/DVIEW/HBBMCXCRVNEC0001?eventNum=1001987&amp;mainCC=a" target="_blank" rel="noopener noreferrer"><span>KB국민카드 공식 행사 안내</span><span aria-hidden="true">↗</span></a>
         </li>
       </ol>
+      <details>
+        <summary>츠루하·빅카메라 전용 쿠폰도 확인하기</summary>
+        <p class="note"><a class="reference-link" href="https://marketing.unionpayintl.com/offer-promote/?language=kr&amp;insCode=299990156&amp;countryCode=all#/offer?couponno=230619106577&amp;couponType=04&amp;merchantNo=259803441637850&amp;createFlag=01" target="_blank" rel="noopener noreferrer">츠루하 전용 쿠폰</a> · <a class="reference-link" href="https://marketing.unionpayintl.com/offer-promote/?language=kr&amp;insCode=299990156&amp;countryCode=392#/offer?couponno=241126109048&amp;couponType=04&amp;merchantNo=259803449481335&amp;createFlag=01" target="_blank" rel="noopener noreferrer">빅카메라 전용 쿠폰</a></p>
+        <p class="note">위 KB 전체 안내에서 연결하는 공식 링크다. 계산기의 ‘그 외’는 KB 공통 10% 조건으로 계산하며, 이 매장들의 개별 쿠폰·추가 행사를 자동 비교하지 않는다.</p>
+      </details>
     </section>
 
-    <a class="next" href="../"><span>준비 후 결제수단 계산하기</span><span aria-hidden="true">→</span></a>
+    <section class="step-card" id="calculator-settings">
+      <h2>준비를 마치면 내 카드·쿠폰 설정하기</h2>
+      <ol class="numbered-list">
+        <li>계산 페이지에 로그인하고 상단 <b>설정</b>을 누른다.</li>
+        <li>보유한 KB 유니온페이·트래블카드, 일본 페이머니 준비 여부를 선택한다. 실제로 받은 쿠폰과 완료한 행사 등록만 체크한다.</li>
+        <li><b>저장하고 계산하기</b>를 누른다. 설정은 전화번호별로 유지되며, 보유하지 않은 카드·쿠폰은 추천에서 제외한다.</li>
+        <li>매장 쿠폰의 실제 할인액과 대상 점포·당일 사용 가능 여부는 매 계산에서 확인한다. 쿠폰을 새로 받으면 설정을 수정한다.</li>
+      </ol>
+      <p class="note">설정을 바꾸거나 로그아웃해도 기존 사용 횟수는 유지된다. 계산 결과는 이번 한 건의 예상 할인액을 비교한다.</p>
+    </section>
+
+    <a class="next" href="../"><span>준비 후 카드·쿠폰 설정하고 계산하기</span><span aria-hidden="true">→</span></a>
     <footer>준비 가이드는 로그인 없이 확인할 수 있다.<br>쿠폰 화면·공식 행사 확인 기준 · 2026. 10. 21.</footer>
   </main>
 

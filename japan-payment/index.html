@@ -24,7 +24,18 @@
     .flag { display:grid; place-items:center; background:white; width:25px; height:18px; border:1px solid var(--line); border-radius:3px; }
     .flag::after { content:""; width:8px; height:8px; background:#ce594d; border-radius:50%; }
     .top-actions { display:flex; align-items:center; gap:13px; }
-    #logout { padding:7px 9px; border:1px solid #d1d9cb; border-radius:8px; background:transparent; color:var(--muted); font-size:11px; }
+    #logout,#open-settings { min-height:35px; padding:7px 9px; border:1px solid #d1d9cb; border-radius:8px; background:transparent; color:var(--muted); font-size:11px; }
+    .settings-group + .settings-group { margin-top:22px; padding-top:20px; border-top:1px solid var(--line); }
+    .settings-group legend { margin-bottom:8px; font-size:15px; }
+    .settings-group fieldset { margin:12px 0 0 8px; padding-left:12px; border-left:2px solid var(--line); }
+    .settings-group fieldset:disabled { opacity:.5; }
+    .settings-group a { color:var(--green); font-size:12px; line-height:1.8; text-underline-offset:3px; }
+    .settings-buttons { display:flex; gap:9px; margin-top:24px; }
+    .settings-buttons button { flex:1; min-height:48px; border:1px solid #d1d9cb; border-radius:11px; background:white; color:var(--ink); font-size:14px; font-weight:700; }
+    #save-settings { background:var(--green); border-color:var(--green); color:white; }
+    #save-settings:disabled { opacity:.5; }
+    .settings-summary { margin:0 0 18px; padding:13px; border:1px solid #d8e1d2; border-radius:12px; font-size:12px; line-height:1.8; }
+    .settings-summary p { margin:0 0 5px; }
     .login-label { display:block; margin-bottom:12px; font-size:13px; font-weight:700; }
     #phone { width:100%; min-height:53px; padding:12px 14px; border:1.5px solid var(--line); border-radius:12px; background:#fcfdfb; color:var(--ink); font-size:19px; }
     #login-button { width:100%; min-height:49px; margin-top:15px; border:0; border-radius:12px; background:var(--green); color:white; font-size:14px; font-weight:700; }
@@ -66,12 +77,14 @@
     .coupon-check { display:flex; gap:9px; align-items:flex-start; margin:9px 0; font-size:12px; line-height:1.8; }
     .coupon-check input { flex:none; width:17px; height:17px; margin:3px 0 0; accent-color:var(--green); }
     .coupon-options a,.rules a,.usage-note a { color:var(--green); text-underline-offset:3px; }
-    #coupon-discount { width:100%; min-width:0; min-height:44px; padding:8px 0; border:0; outline:0; background:transparent; font-size:14px; color:var(--ink); }
+    #coupon-discount,#union-coupon-discount { width:100%; min-width:0; min-height:44px; padding:8px 0; border:0; outline:0; background:transparent; font-size:14px; color:var(--ink); }
     .savings { margin:12px 0 0; font-size:13px; font-weight:700; line-height:1.8; }
     .comparison { width:100%; border-collapse:collapse; margin-top:12px; font-size:11px; line-height:1.8; }
     .comparison caption { text-align:left; font-weight:700; margin-bottom:6px; }
     .comparison th,.comparison td { padding:7px 3px; border-bottom:1px solid #dce5d6; text-align:left; vertical-align:top; }
     .comparison td:last-child,.comparison th:last-child { text-align:right; white-space:nowrap; }
+    .comparison-rate { display:block; color:var(--muted); font-size:10px; }
+    .coupon-reminder { margin:12px 0; padding:12px; border:1px solid #cddcc4; border-radius:10px; background:#fff; color:var(--green); font-size:14px; font-weight:750; line-height:1.8; }
     .input-note { margin:10px 0 0; color:var(--muted); font-size:11px; line-height:1.6; }
     .error { margin:12px 0 0; color:#aa442e; font-size:12px; line-height:1.7; }
     .result { margin-top:18px; padding:18px; border:1px solid #c8ddc7; border-radius:15px; background:#eff6ed; animation:arrive .25s ease-out; }
@@ -132,14 +145,14 @@
     #cancel-change { background:#eff1eb; color:var(--muted); }
     #confirm-change { background:var(--green); color:white; }
     @keyframes arrive { from { opacity:0; transform:translateY(5px); } to { opacity:1; transform:translateY(0); } }
-    @media (max-width:359px) { main { padding-left:15px; padding-right:15px; } .panel { padding:16px; } .place-face { font-size:12px; gap:4px; } .controls { gap:7px; } .usage-card { padding:14px; } }
+    @media (max-width:359px) { main { padding-left:15px; padding-right:15px; } .panel { padding:16px; } .place-face { font-size:12px; gap:4px; } .controls { gap:7px; } .usage-card { padding:14px; } .top-actions { gap:6px; } .japan { display:none; } }
     @media (prefers-reduced-motion:reduce) { *,*::before,*::after { animation:none !important; transition:none !important; } }
   </style>
 </head>
 <body>
   <main>
     <header>
-      <div class="topline"><span class="eyebrow">TRIP / PAYMENT</span><div class="top-actions"><span class="japan"><span class="flag" aria-hidden="true"></span>JAPAN</span><button id="logout" type="button" hidden>로그아웃</button></div></div>
+      <div class="topline"><span class="eyebrow">TRIP / PAYMENT</span><div class="top-actions"><span class="japan"><span class="flag" aria-hidden="true"></span>JAPAN</span><button id="open-settings" type="button" hidden>설정</button><button id="logout" type="button" hidden>로그아웃</button></div></div>
       <h1>이번엔, 뭘로 결제할까요?</h1>
       <p class="intro">결제할 곳과 금액을 입력하면<br>남은 혜택에 맞춰 알려드려요.</p>
     </header>
@@ -163,8 +176,47 @@
       <p id="login-storage-warning" class="input-note" hidden>자동 로그인 저장이 제한되어 있어요.<br>다시 접속하면 전화번호를 입력해주세요.</p>
     </section>
 
+    <section id="settings-view" class="panel" aria-label="보유 카드와 쿠폰 설정" hidden>
+      <p class="account-label" id="settings-account"></p>
+      <form id="ownership-form">
+        <fieldset class="settings-group">
+          <legend>카카오페이</legend>
+          <label class="coupon-check"><input type="checkbox" data-setting="kakaoReady"><span>일본 페이머니로 결제할 준비가 됐어요</span></label>
+          <fieldset id="kakao-settings">
+            <label class="coupon-check"><input type="checkbox" data-setting="kakaoDonki"><span>돈키호테 2,000엔 결제 할인 쿠폰이 있어요</span></label>
+            <label class="coupon-check"><input type="checkbox" data-setting="kakaoAirport"><span>간사이공항 1,200엔 결제 할인 쿠폰이 있어요</span></label>
+            <label class="coupon-check"><input type="checkbox" data-setting="kakaoStoreCoupon"><span>돈키호테 최대 7% 할인 쿠폰이 있어요</span></label>
+            <label class="coupon-check"><input type="checkbox" data-setting="kakaoStackConfirmed"><span>최대 7% 쿠폰과 2,000엔 쿠폰의 중복 조건을 확인했어요</span></label>
+            <p class="input-note">최대 7%는 점원에게 보여주는 매장 쿠폰이에요.<br>실제 할인액과 이번 결제의 사용 가능 여부는 계산할 때 입력해요.</p>
+          </fieldset>
+          <a href="prepare/#kakaopay">쿠폰 받기 · 일본 페이머니 준비 방법 ↗</a><br>
+          <a href="prepare/#stack-evidence">중복 할인 확인 근거 보기 ↗</a>
+        </fieldset>
+        <fieldset class="settings-group">
+          <legend>KB 유니온페이</legend>
+          <label class="coupon-check"><input type="checkbox" data-setting="unionCard"><span>KB 유니온페이 실물 카드가 있어요</span></label>
+          <fieldset id="union-settings">
+            <label class="coupon-check"><input type="checkbox" data-setting="unionRegistered"><span>일본 10% 행사 등록과 카드 선택확인을 마쳤어요</span></label>
+            <label class="coupon-check"><input type="checkbox" data-setting="unionStoreCoupon"><span>유니온페이 전용 돈키호테 매장 쿠폰이 있어요</span></label>
+            <label class="coupon-check"><input type="checkbox" data-setting="unionDonki4000Registered"><span>돈키호테 4,000엔 행사도 별도로 등록했어요</span></label>
+            <p class="input-note">돈키호테 500엔 행사는 등록이 필요 없어요.<br>대상 점포와 당일 혜택 잔여 여부는 계산할 때 확인해요.</p>
+          </fieldset>
+          <a href="prepare/#unionpay">카드 발급 · 10% 행사 등록 방법 ↗</a><br>
+          <a href="prepare/#union-donki">돈키호테 전용 쿠폰 · 4,000엔 행사 등록 ↗</a>
+        </fieldset>
+        <fieldset class="settings-group">
+          <legend>트래블카드</legend>
+          <label class="coupon-check"><input type="checkbox" data-setting="travelCard"><span>엔화 결제가 가능한 트래블카드가 있어요</span></label>
+        </fieldset>
+        <p class="input-note">사용할 결제수단을 하나 이상 선택해주세요.<br>설정은 이 전화번호에 저장돼요. 쿠폰을 새로 받거나 준비 상태가 바뀌면 수정해주세요.<br>체크를 해제해도 사용 횟수는 유지돼요.</p>
+        <p id="settings-error" class="error" role="alert" hidden></p>
+        <div class="settings-buttons"><button id="cancel-settings" type="button">취소</button><button id="save-settings" type="submit">저장하고 계산하기</button></div>
+      </form>
+    </section>
+
     <div id="calculator-view" hidden>
     <p id="account-label" class="account-label"></p>
+    <div class="settings-summary"><p id="ownership-summary">보유 카드와 쿠폰을 먼저 설정해주세요.</p><button id="edit-settings" class="text-button" type="button">카드·쿠폰 설정하기 →</button></div>
     <section class="panel" aria-label="결제수단 계산">
       <form id="payment-form" autocomplete="off">
         <fieldset>
@@ -182,23 +234,44 @@
         </div>
         <p class="input-note" id="amount-note">엔화 금액을 숫자로 입력해주세요.</p>
         <div id="donki-options" class="coupon-options" hidden>
-          <label class="coupon-check"><input id="donki-eligible" type="checkbox" aria-describedby="donki-coupon-help"><span>돈키호테 최대 7% 할인 쿠폰이 있어요</span></label>
+          <div id="kakao-coupon-options">
+          <label class="coupon-check"><input id="donki-eligible" type="checkbox" aria-describedby="donki-coupon-help"><span>이번 결제에 최대 7% 쿠폰을 사용할 수 있어요</span></label>
           <p class="input-note" id="donki-coupon-help">카카오페이의 ‘현지 쿠폰 받기’에서 받은 쿠폰이에요.<br>결제 전에 매장 직원에게 보여주세요.<br>2,000엔 결제 할인 쿠폰과는 별도로 계산해요.</p>
           <p class="input-note">면세·할인 대상 상품의 세금 제외 금액을 입력해주세요.<br>주류·담배 등 제외 상품이 섞이면 따로 계산해주세요.</p>
           <div id="coupon-discount-field" hidden>
             <label class="field-label" for="coupon-discount">최대 7% 쿠폰으로 할인받는 금액</label>
             <div class="amount-box"><input id="coupon-discount" type="text" inputmode="numeric" pattern="[0-9]+" placeholder="쿠폰 화면에서 확인한 금액" maxlength="9" aria-describedby="coupon-discount-note"><span class="yen">엔</span></div>
             <p class="input-note" id="coupon-discount-note">최소 10,000엔 이상이며 할인율은 쿠폰 상세 조건에 따라 달라요.<br>쿠폰이나 계산대에서 확인한 할인액을 입력하면 결제 혜택까지 비교해요.</p>
-            <p class="input-note">이 쿠폰은 알리페이 프로모션과 중복 가능해요.<br>카카오페이 결제 할인과 함께 계산해요.</p>
-            <label class="coupon-check"><input id="donki-stack-union" type="checkbox"><span>KB 결제 할인과도 중복 적용을 확인했어요</span></label>
+            <p class="input-note">설정에서 중복 적용을 확인한 결제 할인만 쿠폰과 합산해요.<br>최대 7% 쿠폰 약관은 알리페이 중복을 허용하지만, 2,000엔 쿠폰의 개별 조건도 확인해야 해요.</p>
+            <p class="input-note" id="kakao-stack-status"></p>
+            <a href="prepare/#stack-evidence">중복 할인 확인 근거와 계산 예시 보기 ↗</a>
           </div>
           <a href="prepare/#donki-store-coupon">이 쿠폰은 어디서 받나요? 사용법 보기 ↗</a>
+          </div>
+          <div id="union-store-options">
+          <label class="coupon-check"><input id="union-coupon-eligible" type="checkbox"><span>이번 결제에 유니온페이 전용 매장 쿠폰을 사용할 수 있어요</span></label>
+          <div id="union-coupon-field" hidden>
+            <label class="field-label" for="union-coupon-discount">유니온페이 전용 쿠폰의 실제 할인액</label>
+            <div class="amount-box"><input id="union-coupon-discount" type="text" inputmode="numeric" pattern="[0-9]+" placeholder="쿠폰·계산대에서 확인한 금액" maxlength="9"><span class="yen">엔</span></div>
+            <p class="input-note">카카오페이 쿠폰과 다른 쿠폰이에요. KB 공식 안내의 전용 쿠폰은 세금 제외 금액별 5~7% 할인이에요.<br>쿠폰을 점원에게 보여준 후 할인받는 실제 금액을 입력해주세요.<br>이 할인 후 금액으로 KB 10%·돈키호테 4,000엔 조건을 비교해요.</p>
+            <a href="https://japanportal.donki-global.com/coupon/cp001_ko.html" target="_blank" rel="noopener noreferrer">유니온페이 전용 돈키호테 쿠폰 열기 ↗</a>
+          </div>
+          </div>
+          <details id="union-instant-options">
+            <summary>돈키호테 전용 유니온페이 행사도 비교</summary>
+            <p class="input-note">지정 점포에서만 적용돼요. 아래 항목은 매번 확인해주세요.<br>각 할인은 최대 3회·하루 1회 제한이 있어요.<br>KB 10%와 더하지 않고 가장 큰 즉시 할인 하나만 비교해요.</p>
+            <label class="coupon-check"><input id="donki-union-500" type="checkbox"><span>대상 점포이며 오늘 500엔 할인을 받을 수 있어요 (10,000엔 이상 · 등록 불필요)</span></label>
+            <label class="coupon-check" id="donki-union-4000-option"><input id="donki-union-4000" type="checkbox"><span>대상 점포에서 오늘 4,000엔 할인을 받을 수 있어요 (40,000엔 이상 · 설정에서 별도 등록 완료)</span></label>
+            <p class="input-note">오늘 사용 여부와 남은 혜택을 확인한 경우만 체크해주세요.<br>유니온페이 전용 매장 쿠폰은 함께 비교해요.<br>카카오페이에서 받은 쿠폰과는 합산하지 않아요.</p>
+            <a href="prepare/#union-donki">대상 8개 점포 · 별도 등록 방법 보기 ↗</a>
+          </details>
         </div>
         <p class="error" id="calculation-error" role="alert" hidden></p>
       </form>
 
       <div id="result" class="result" role="status" aria-live="polite" aria-atomic="true" hidden>
         <p class="result-meta" id="result-meta"></p>
+        <p id="result-coupon-reminder" class="coupon-reminder" hidden>최대 7% 할인 쿠폰을 먼저 점원에게 보여주세요.<br>쿠폰 할인 적용 후, 아래 결제수단으로 결제해주세요.</p>
         <strong class="result-title" id="result-title"></strong>
         <p class="result-detail" id="result-detail"></p>
         <p id="result-savings" class="savings"></p>
@@ -222,19 +295,33 @@
       <div class="usage-card" id="union-card">
         <div class="usage-main">
           <div class="brand kb" aria-hidden="true">KB</div>
-          <div class="usage-info"><p class="usage-name">KB 유니온페이</p><p class="usage-limit">50달러 이상 · 총 3회</p></div>
+          <div class="usage-info"><p class="usage-name">KB 유니온페이 10%</p><p class="usage-limit">50달러 이상 · 총 3회</p></div>
           <div class="controls"><button type="button" class="count-button" data-provider="union" data-delta="-1" aria-label="KB 유니온페이 사용 횟수 줄이기" disabled>−</button><output class="count" id="union-count" aria-label="KB 유니온페이 사용 횟수">0</output><button type="button" class="count-button" data-provider="union" data-delta="1" aria-label="KB 유니온페이 사용 횟수 늘리기">+</button></div>
         </div>
         <div class="usage-bottom"><div class="progress" aria-hidden="true"><span id="union-progress"></span></div><span class="remaining" id="union-remaining">3회 남음</span></div>
       </div>
+      <div class="usage-card" id="unionDonki500-card">
+        <div class="usage-main"><div class="brand kb" aria-hidden="true">UP</div>
+          <div class="usage-info"><p class="usage-name">돈키호테 500엔 할인</p><p class="usage-limit">유니온페이 전용 행사 · 최대 3회 · 하루 1회</p></div>
+          <div class="controls"><button type="button" class="count-button" data-provider="unionDonki500" data-delta="-1" aria-label="돈키호테 500엔 할인 사용 횟수 줄이기" disabled>−</button><output class="count" id="unionDonki500-count" aria-label="돈키호테 500엔 할인 사용 횟수">0</output><button type="button" class="count-button" data-provider="unionDonki500" data-delta="1" aria-label="돈키호테 500엔 할인 사용 횟수 늘리기">+</button></div>
+        </div>
+        <div class="usage-bottom"><div class="progress" aria-hidden="true"><span id="unionDonki500-progress"></span></div><span class="remaining" id="unionDonki500-remaining">3회 남음</span></div>
+      </div>
+      <div class="usage-card" id="unionDonki4000-card">
+        <div class="usage-main"><div class="brand kb" aria-hidden="true">UP</div>
+          <div class="usage-info"><p class="usage-name">돈키호테 4,000엔 할인</p><p class="usage-limit">유니온페이 전용 행사 · 최대 3회 · 하루 1회</p></div>
+          <div class="controls"><button type="button" class="count-button" data-provider="unionDonki4000" data-delta="-1" aria-label="돈키호테 4,000엔 할인 사용 횟수 줄이기" disabled>−</button><output class="count" id="unionDonki4000-count" aria-label="돈키호테 4,000엔 할인 사용 횟수">0</output><button type="button" class="count-button" data-provider="unionDonki4000" data-delta="1" aria-label="돈키호테 4,000엔 할인 사용 횟수 늘리기">+</button></div>
+        </div>
+        <div class="usage-bottom"><div class="progress" aria-hidden="true"><span id="unionDonki4000-progress"></span></div><span class="remaining" id="unionDonki4000-remaining">3회 남음</span></div>
+      </div>
       <div class="usage-card" id="donkiCoupon-card">
         <div class="usage-main"><div class="brand kb" aria-hidden="true">쿠폰</div>
-          <div class="usage-info"><p class="usage-name">돈키호테 최대 7% 쿠폰</p><p class="usage-limit">거래당 1회 · 누적 사용 기록</p></div>
+          <div class="usage-info"><p class="usage-name">돈키호테 매장 쿠폰</p><p class="usage-limit">카카오페이·유니온페이 쿠폰 · 누적 기록</p></div>
           <div class="controls"><button type="button" class="count-button" data-provider="donkiCoupon" data-delta="-1" aria-label="돈키호테 매장 쿠폰 사용 횟수 줄이기" disabled>−</button><output class="count" id="donkiCoupon-count" aria-label="돈키호테 매장 쿠폰 사용 횟수">0</output><button type="button" class="count-button" data-provider="donkiCoupon" data-delta="1" aria-label="돈키호테 매장 쿠폰 사용 횟수 늘리기">+</button></div>
         </div>
         <div class="usage-bottom"><div class="progress" aria-hidden="true" hidden><span id="donkiCoupon-progress"></span></div><span class="remaining" id="donkiCoupon-remaining">누적 사용</span></div>
       </div>
-      <p class="usage-note">계산하면 추천 조합의 결제 할인·매장 쿠폰을 각각 1회 반영해요.<br>쿠폰만 사용하면 카카오페이·KB 횟수는 늘어나지 않아요.<br>실제 결제와 다르면 + / −로 수정해주세요.<br>매장 쿠폰은 거래당 1회이며 누적 횟수로 소진 처리하지 않아요.<br>매번 앱에서 유효한 쿠폰이 있는지 확인해주세요.<br>KB 행사 취소·환불은 사용 횟수가 복구되지 않아요.</p>
+      <p class="usage-note">계산하면 추천 조합의 결제 할인·매장 쿠폰을 각각 1회 반영해요.<br>매장 쿠폰만 사용하면 결제 할인 횟수는 늘어나지 않아요.<br>돈키호테 전용 할인은 KB 10% 3회와 별도 기록해요.<br>당일 사용·잔여 혜택은 매번 확인해주세요.<br>실제 결제와 다르면 + / −로 수정해주세요.<br>매장 쿠폰은 거래당 1회이며 누적 횟수로 소진 처리하지 않아요.<br>매번 앱에서 유효한 쿠폰이 있는지 확인해주세요.<br>KB 행사 취소·환불은 사용 횟수가 복구되지 않아요.</p>
       <p class="error" id="storage-warning" role="status" hidden>자동 로그인 저장이 제한되어 있어요.<br>사용 횟수는 서버에 저장되며, 다시 접속하면 같은 전화번호를 입력해주세요.</p>
       <p class="input-note" id="count-feedback" role="status" aria-live="polite"></p>
       <div id="legacy-record" hidden><p id="legacy-description"></p><button id="import-record" class="small-button" type="button">이 번호로 가져오기</button><button id="discard-record" class="text-button" type="button">가져오지 않기</button></div>
@@ -260,8 +347,11 @@
       <ul class="rules">
         <li><b>돈키호테 최대 7% 할인 쿠폰</b>카카오페이 결제 화면에서 일본을 선택하고 ‘현지 쿠폰 받기’로 들어가 받아주세요. 결제 전에 매장 직원에게 보여주세요. 약관의 최소 금액은 세금 제외 10,000엔 또는 30,000엔이며 제외 상품은 합산하지 않아요.<br>쿠폰에서 확인한 실제 할인액을 입력해 계산해요.</li>
         <li><b>이번 결제에서 큰 예상 할인 추천</b>돈키호테 카카오페이: 결제 기준 15,000엔 이상 → 2,000엔 할인.<br>간사이공항 카카오페이: 10,000엔 이상 → 1,200엔 할인.<br>KB: 50달러 이상 → 10% 할인, 건당 최대 20달러.<br>매장 쿠폰을 적용한 뒤 금액으로 결제 혜택의 최소 금액을 판단해요. 동률이면 카카오페이 1회를 아끼도록 KB를 우선해요.</li>
-        <li><b>중복 적용</b>제공된 A+ REWARDS 약관은 알리페이 프로모션과 중복 가능하다고 명시해요. 매장 쿠폰과 카카오페이 결제 할인을 함께 비교해요.<br>KB와의 중복은 별도 확인한 경우에만 합산해요.<br>돈키호테 자체 할인·프로모션과 중복 불가, 캡처 사용 불가, 결제 후 제시 불가예요.</li>
-        <li><b>횟수·적용 범위</b>카카오페이 결제 할인 1회, KB 3회는 남은 횟수로 추천해요. 최대 7% 매장 쿠폰은 ‘거래당 1회’로, 누적 횟수가 늘어도 전체 소진으로 처리하지 않아요. 실제 사용 가능한 쿠폰인지 매번 확인해주세요.<br>매장 쿠폰만 사용하면 카카오페이·KB 횟수는 늘어나지 않아요.<br>간사이공항 10,000엔 미만은 기존 기준대로 트래블카드예요.</li>
+        <li><b>돈키호테 전용 유니온페이</b>지정 점포에서 10,000엔 이상 → 500엔, 별도 등록 후 40,000엔 이상 → 4,000엔이에요. 각 조건은 최대 3회·하루 1회이며, 오늘 사용 가능한 혜택을 확인해 체크한 경우만 비교해요.<br>KB 10%와 합산하지 않고 가장 큰 즉시 할인 하나만 적용해요. 유니온페이 전용 매장 쿠폰은 함께 비교해요.<br>카카오페이에서 받은 쿠폰과는 합산하지 않아요.<br><a href="prepare/#union-donki">대상 점포·별도 등록·행사 약관 보기 ↗</a></li>
+        <li><b>중복 적용은 확인한 조합만</b>최대 7% 쿠폰 약관은 알리페이 프로모션과 중복 가능하다고 명시해요. 현재 2,000엔 쿠폰의 전체 약관은 확인되지 않았어요.<br>카카오페이는 2,000엔 쿠폰의 중복 조건을 확인한 경우에만 합산해요. KB 공식 안내의 유니온페이 전용 매장 쿠폰은 KB 결제 할인과 함께 비교해요. 카카오페이에서 받은 매장 쿠폰은 KB와 합산하지 않아요.<br>돈키호테 자체 할인·프로모션과 중복 불가, 캡처 사용 불가, 결제 후 제시 불가예요.<br><a href="prepare/#stack-evidence">확인 근거와 남은 확인 사항 보기 ↗</a></li>
+        <li><b>쿠폰이 있으면 20,000엔 기준도 달라져요</b>‘쿠폰 할인액 + 카카오페이 2,000엔’과 ‘KB 10% (최대 20달러)’, 조건이 맞는 ‘돈키호테 전용 500엔·4,000엔’ 중 가장 큰 할인을 비교해요.<br>유니온페이 전용 쿠폰의 실제 할인액도 입력하면, 각 결제수단의 쿠폰 할인 후 금액으로 비교해요.<br>카카오페이는 쿠폰 할인 후에도 15,000엔 이상이어야 해요. 할인율은 처음 입력한 금액 기준이며, 이번 결제의 총 할인액으로 추천해요.</li>
+        <li><b>보유한 카드·쿠폰 안에서 추천</b>상단 설정에서 결제수단, 보유 쿠폰과 행사 등록 여부를 저장해주세요. 설정은 전화번호별로 유지하고 체크를 해제해도 사용 횟수는 지우지 않아요. 계산할 때 최신 설정과 남은 횟수를 다시 확인해요.</li>
+        <li><b>횟수·적용 범위</b>카카오페이 결제 할인 1회, KB 3회는 남은 횟수로 추천해요. 최대 7% 매장 쿠폰은 ‘거래당 1회’로, 누적 횟수가 늘어도 전체 소진으로 처리하지 않아요. 실제 사용 가능한 쿠폰인지 매번 확인해주세요.<br>매장 쿠폰만 사용하면 결제 할인 횟수는 늘어나지 않아요.<br>간사이공항 10,000엔 미만은 보유한 트래블카드를 우선해요.</li>
         <li><b>예상액과 유효 기간</b>이번 한 건의 할인만 비교해요. 환전 차이·수수료·면세액·다른 행사는 제외해요.<br>KB 행사는 2026. 9. 14. ~ 12. 31.이며 사전 등록이 필요하고 예산 소진 시 종료될 수 있어요.<br>최대 7% 쿠폰은 상단 기간과 본문 약관이 달라 더 이른 2027. 8. 31.까지를 기준으로 안내해요.<br><a href="prepare/#donki-store-coupon">실제 쿠폰 화면·약관과 사용법 보기 ↗</a></li>
       </ul>
     </details>
@@ -282,10 +372,14 @@
     const KAKAO_PAYMENT_URL = 'https://link.kakaopay.com/p/payment';
     const SESSION_KEY = 'japan-payment:session:v1';
     const LEGACY_KEY = 'japan-payment:counts:v1';
-    const LIMITS = { kakao: 1, union: 3, donkiCoupon: 1000000 };
-    const PROVIDERS = { kakao: '카카오페이 결제 할인', union: 'KB 유니온페이', donkiCoupon: '돈키호테 최대 7% 쿠폰' };
-    const emptyCounts = () => ({ kakao: 0, union: 0, donkiCoupon: 0 });
+    const LIMITS = { kakao: 1, union: 3, unionDonki500: 3, unionDonki4000: 3, donkiCoupon: 1000000 };
+    const PROVIDERS = { kakao: '카카오페이 결제 할인', union: 'KB 유니온페이 10%', unionDonki500: '돈키호테 유니온페이 500엔 할인', unionDonki4000: '돈키호테 유니온페이 4,000엔 할인', donkiCoupon: '돈키호테 매장 쿠폰' };
+    const emptyCounts = () => ({ kakao: 0, union: 0, unionDonki500: 0, unionDonki4000: 0, donkiCoupon: 0 });
     const normalizeCounts = value => ({ ...emptyCounts(), ...value });
+    const DEFAULT_SETTINGS = { kakaoReady: false, kakaoDonki: false, kakaoAirport: false, kakaoStoreCoupon: false, kakaoStackConfirmed: false, unionCard: false, unionRegistered: false, unionStoreCoupon: false, unionDonki4000Registered: false, travelCard: false };
+    const normalizeSettings = value => Object.fromEntries(Object.keys(DEFAULT_SETTINGS).map(key => [key, value?.[key] === true]));
+    const hasPaymentMethod = value => value.kakaoReady || value.unionCard || value.travelCard;
+    const validSettings = value => value && Object.keys(value).length === Object.keys(DEFAULT_SETTINGS).length && Object.keys(DEFAULT_SETTINGS).every(key => typeof value[key] === 'boolean');
     const PLACES = { donki: '돈키호테', airport: '간사이공항', other: '그 외' };
     const RATE_TTL = 30 * 60 * 1000;
     const CACHE_TTL = 24 * 60 * 60 * 1000;
@@ -296,6 +390,9 @@
     let sessionGeneration = 0;
     let counts = emptyCounts();
     let countsVersion = -1;
+    let settings = { ...DEFAULT_SETTINGS };
+    let settingsRevision = 0;
+    let settingsDraftRevision = 0;
     let busy = false;
     let loginBusy = false;
     let exchangeRate = null;
@@ -324,7 +421,7 @@
     }
 
     function validCounts(value) {
-      return value && ['kakao', 'union'].every(key => Number.isSafeInteger(value[key]) && value[key] >= 0) && ['donkiCoupon'].every(key => value[key] === undefined || (Number.isSafeInteger(value[key]) && value[key] >= 0));
+      return value && ['kakao', 'union'].every(key => Number.isSafeInteger(value[key]) && value[key] >= 0) && ['donkiCoupon', 'unionDonki500', 'unionDonki4000'].every(key => value[key] === undefined || (Number.isSafeInteger(value[key]) && value[key] >= 0));
     }
 
     const legacyCounts = readSaved(LEGACY_KEY);
@@ -350,11 +447,19 @@
         document.querySelector('[data-provider="' + provider + '"][data-delta="-1"]').disabled = busy || !session || used === 0;
         document.querySelector('[data-provider="' + provider + '"][data-delta="1"]').disabled = busy || !session || used >= LIMITS[provider];
       }
+      for (const [id, key] of [['donki-union-500', 'unionDonki500'], ['donki-union-4000', 'unionDonki4000']]) {
+        $(id).disabled = busy || counts[key] >= LIMITS[key];
+        if (counts[key] >= LIMITS[key]) $(id).checked = false;
+      }
       $('sync-status').textContent = busy ? '저장 중…' : '번호별 자동 저장';
       $('import-record').disabled = busy;
       $('discard-record').disabled = busy;
       $('confirm-change').disabled = busy;
       $('cancel-change').disabled = busy;
+      $('open-settings').disabled = busy;
+      $('edit-settings').disabled = busy;
+      $('save-settings').disabled = busy;
+      $('cancel-settings').disabled = busy;
       renderStorage();
     }
 
@@ -369,11 +474,98 @@
         $('account-label').textContent = data.maskedPhone + ' · 이 번호의 사용 기록';
         renderCounts();
       }
+      if (Number.isSafeInteger(data.settingsRevision) && data.settingsRevision >= settingsRevision) {
+        settings = normalizeSettings(data.settings);
+        settingsRevision = data.settingsRevision;
+        renderOwnership();
+      }
       return true;
     }
 
+    function renderOwnership() {
+      const owned = [settings.kakaoReady && '일본 페이머니', settings.unionCard && 'KB 유니온페이', settings.travelCard && '트래블카드'].filter(Boolean);
+      const coupons = [settings.kakaoReady && settings.kakaoDonki && '2,000엔', settings.kakaoReady && settings.kakaoAirport && '공항 1,200엔', settings.kakaoReady && settings.kakaoStoreCoupon && '최대 7%', settings.unionCard && settings.unionStoreCoupon && '유니온페이 매장 쿠폰'].filter(Boolean);
+      $('ownership-summary').textContent = settingsRevision ? '내 결제수단: ' + owned.join(' · ') + (coupons.length ? ' / 보유 쿠폰: ' + coupons.join(' · ') : ' / 보유 쿠폰 없음') : '보유 카드와 쿠폰을 먼저 설정해주세요. 설정한 항목 안에서 추천해요.';
+      $('edit-settings').textContent = settingsRevision ? '카드·쿠폰 설정 변경 →' : '카드·쿠폰 설정하기 →';
+      $('kakao-coupon-options').hidden = !(settings.kakaoReady && settings.kakaoStoreCoupon);
+      $('union-store-options').hidden = !(settings.unionCard && settings.unionStoreCoupon);
+      $('union-instant-options').hidden = !settings.unionCard;
+      $('donki-union-4000-option').hidden = !(settings.unionCard && settings.unionDonki4000Registered);
+      $('kakao-stack-status').textContent = settings.kakaoStackConfirmed ? '설정에서 2,000엔 쿠폰 중복 적용을 확인했어요.' : '설정에서 중복 적용을 확인하기 전에는 2,000엔 쿠폰과 합산하지 않아요.';
+      updatePlace();
+    }
+
+    function updateSettingsForm() {
+      $('kakao-settings').disabled = !$('ownership-form').querySelector('[data-setting="kakaoReady"]').checked;
+      $('union-settings').disabled = !$('ownership-form').querySelector('[data-setting="unionCard"]').checked;
+    }
+
+    function openSettings() {
+      if (!session || busy) return;
+      settingsDraftRevision = settingsRevision;
+      for (const input of document.querySelectorAll('[data-setting]')) input.checked = settings[input.dataset.setting];
+      updateSettingsForm();
+      $('settings-account').textContent = session.maskedPhone + ' · 이 번호의 카드·쿠폰 설정';
+      $('settings-error').hidden = true;
+      $('settings-view').hidden = false;
+      $('calculator-view').hidden = true;
+      document.querySelector('h1').textContent = '카드와 쿠폰 설정';
+      document.querySelector('.intro').innerHTML = '보유한 항목과 준비 상태를 선택해주세요.<br>선택한 항목 안에서 가장 유리한 결제를 찾아요.';
+      window.scrollTo(0, 0);
+    }
+
+    function closeSettings() {
+      $('settings-view').hidden = true;
+      $('calculator-view').hidden = false;
+      document.querySelector('h1').textContent = '이번엔, 뭘로 결제할까요?';
+      document.querySelector('.intro').innerHTML = '결제할 곳과 금액을 입력하면<br>보유 카드·쿠폰과 남은 혜택으로 비교해요.';
+      updateCalculate();
+      window.scrollTo(0, 0);
+    }
+
+    $('open-settings').addEventListener('click', openSettings);
+    $('edit-settings').addEventListener('click', openSettings);
+    $('cancel-settings').addEventListener('click', closeSettings);
+    $('ownership-form').addEventListener('change', updateSettingsForm);
+    $('ownership-form').addEventListener('submit', async event => {
+      event.preventDefault();
+      if (!session || busy) return;
+      const selected = Object.fromEntries([...document.querySelectorAll('[data-setting]')].map(input => [input.dataset.setting, input.checked]));
+      if (!hasPaymentMethod(selected)) {
+        $('settings-error').textContent = '사용할 결제수단을 하나 이상 선택해주세요.';
+        $('settings-error').hidden = false;
+        return;
+      }
+      const generation = sessionGeneration;
+      setBusy(true);
+      $('settings-error').hidden = true;
+      try {
+        const data = await api('/v1/settings', { body: { settings: selected, revision: settingsDraftRevision } });
+        if (!applyState(data, generation)) return;
+        paymentRetry = null;
+        $('payment-form').reset();
+        $('result').hidden = true;
+        $('calculation-error').hidden = true;
+        updatePlace();
+        closeSettings();
+        $('count-feedback').textContent = '카드·쿠폰 설정을 저장했어요. 사용 횟수는 그대로예요.';
+      } catch (error) {
+        if (generation !== sessionGeneration) return;
+        if (error.status === 409) {
+          applyState(error.data, generation);
+          settingsDraftRevision = settingsRevision;
+          for (const input of document.querySelectorAll('[data-setting]')) input.checked = settings[input.dataset.setting];
+          updateSettingsForm();
+        }
+        $('settings-error').textContent = error.message;
+        $('settings-error').hidden = false;
+      } finally { if (generation === sessionGeneration) setBusy(false); }
+    });
+
     function showLogin(message = '') {
       $('calculator-view').hidden = true;
+      $('settings-view').hidden = true;
+      $('open-settings').hidden = true;
       $('logout').hidden = true;
       $('session-loading').hidden = true;
       $('login-view').hidden = false;
@@ -389,11 +581,15 @@
       session = null;
       counts = emptyCounts();
       countsVersion = -1;
+      settings = { ...DEFAULT_SETTINGS };
+      settingsRevision = 0;
+      settingsDraftRevision = 0;
       busy = false;
       pendingChange = null;
       paymentRetry = null;
       if ($('count-dialog').open) $('count-dialog').close();
       $('payment-form').reset();
+      $('ownership-form').reset();
       updatePlace();
       $('login-form').reset();
       $('result').hidden = true;
@@ -463,29 +659,40 @@
       }
       if (!/^[a-f0-9]{64}$/.test(accountKey || '')) throw accountError('다시 로그인해주세요.', 401);
       const reference = dbSDK.doc(db, 'paymentAccounts', accountKey);
-      const decorate = state => ({ counts: state.counts, version: state.version, maskedPhone, accountKey });
+      const preferences = dbSDK.doc(reference, 'preferences', 'current');
+      const preferenceData = snapshot => ({ settings: normalizeSettings(snapshot.exists() ? snapshot.data().settings : null), settingsRevision: snapshot.exists() ? snapshot.data().revision : 0 });
+      const decorate = (state, preference) => ({ counts: state.counts, version: state.version, maskedPhone, accountKey, ...preference });
       if (path === '/v1/session') {
-        const snapshot = await dbSDK.getDoc(reference);
+        const [snapshot, savedPreferences] = await Promise.all([dbSDK.getDoc(reference), dbSDK.getDoc(preferences)]);
         if (!snapshot.exists()) throw accountError('기록을 찾을 수 없어요. 같은 번호로 다시 로그인해주세요.', 401);
-        return decorate(snapshot.data());
+        return decorate(snapshot.data(), preferenceData(savedPreferences));
       }
       let observedVersion = null;
       const performTransaction = () => dbSDK.runTransaction(db, async transaction => {
         const snapshot = await transaction.get(reference);
+        const savedPreferences = await transaction.get(preferences);
+        const preference = preferenceData(savedPreferences);
         observedVersion = snapshot.exists() ? snapshot.data().version : -1;
         if (path === '/v1/login') {
           const state = snapshot.exists() ? snapshot.data() : { counts: emptyCounts(), version: 0, lastOperation: '' };
           if (!snapshot.exists()) transaction.set(reference, state);
-          return decorate(state);
+          return decorate(state, preference);
         }
         if (!snapshot.exists()) throw accountError('다시 로그인해주세요.', 401);
         const state = snapshot.data();
         if (!validCounts(state.counts) || !Number.isSafeInteger(state.version)) throw accountError('저장된 기록을 확인하지 못했어요.', 500);
+        if (path === '/v1/settings') {
+          if (!validSettings(body.settings) || !hasPaymentMethod(body.settings)) throw accountError('사용할 결제수단을 하나 이상 선택해주세요.', 400);
+          if (body.revision !== preference.settingsRevision) throw accountError('다른 화면에서 설정이 바뀌었어요. 최신 설정을 확인하고 다시 저장해주세요.', 409, decorate(state, preference));
+          const nextPreferences = { settings: normalizeSettings(body.settings), revision: preference.settingsRevision + 1 };
+          transaction.set(preferences, nextPreferences);
+          return decorate(state, { settings: nextPreferences.settings, settingsRevision: nextPreferences.revision });
+        }
         const operationId = body.operationId;
         if (!/^[a-zA-Z0-9-]{16,80}$/.test(operationId || '')) throw accountError('요청을 확인해주세요.', 400);
         const operation = dbSDK.doc(reference, 'operations', operationId);
         const previous = await transaction.get(operation);
-        if (previous.exists()) return { ...previous.data().result, maskedPhone, accountKey };
+        if (previous.exists()) return { ...previous.data().result, maskedPhone, accountKey, ...preference };
         const counts = normalizeCounts(state.counts);
         let result = {};
         let kind;
@@ -493,22 +700,23 @@
           kind = 'calculate';
           if (!Object.hasOwn(PLACES, body.place) || !Number.isSafeInteger(body.amount) || body.amount <= 0 || body.amount > 999999999) throw accountError('장소와 금액을 확인해주세요.', 400);
           const rate = validRate(body.rate) ? body.rate : null;
-          const options = { eligible: body.options?.eligible === true, discount: body.options?.discount, stackUnion: body.options?.stackUnion === true };
-          if (options.eligible && !validCouponDiscount(body.amount, options.discount)) throw accountError('매장 쿠폰에서 확인한 할인액을 입력해주세요.', 400);
-          const choice = selectPayment(body.place, body.amount, counts, rate, options);
-          if (!choice.method) throw accountError('50달러 기준 환율이 필요해요. 환율을 확인하고 다시 계산해주세요.', 422);
-          if (choice.method === 'kakao' || choice.method === 'union') counts[choice.method]++;
+          const options = { eligible: body.options?.eligible === true, discount: Number.isSafeInteger(body.options?.discount) ? body.options.discount : 0, stackKakao: body.options?.stackKakao === true, unionDonki500: body.options?.unionDonki500 === true, unionDonki4000: body.options?.unionDonki4000 === true, unionCoupon: body.options?.unionCoupon === true, unionDiscount: Number.isSafeInteger(body.options?.unionDiscount) ? body.options.unionDiscount : 0 };
+          if ((options.eligible && !validCouponDiscount(body.amount, options.discount)) || (options.unionCoupon && !validCouponDiscount(body.amount, options.unionDiscount))) throw accountError('매장 쿠폰에서 확인한 할인액을 입력해주세요.', 400);
+          if (!preference.settingsRevision) throw accountError('설정에서 보유 카드와 쿠폰을 먼저 저장해주세요.', 400);
+          const choice = selectPayment(body.place, body.amount, counts, rate, options, preference.settings);
+          if (!choice.method) throw accountError(choice.reason === 'rate-required' ? '50달러 기준 환율이 필요해요. 환율을 확인하고 다시 계산해주세요.' : '현재 조건에 사용할 결제수단이 없어요. 설정에서 준비 상태를 확인해주세요.', choice.reason === 'rate-required' ? 422 : 400);
+          if (choice.benefit) counts[choice.benefit]++;
           if (choice.coupon) counts[choice.coupon]++;
           result = { choice, place: body.place, amount: body.amount, rate, options };
         } else if (path === '/v1/adjust') {
           kind = 'adjust';
           const { provider, from, to, version } = body;
           if (!Object.hasOwn(LIMITS, provider) || !Number.isSafeInteger(from) || !Number.isSafeInteger(to) || to < 0 || Math.abs(to - from) !== 1 || (to > from && to > LIMITS[provider])) throw accountError('변경할 횟수를 확인해주세요.', 400);
-          if (version !== state.version || from !== counts[provider]) throw accountError('다른 화면에서 횟수가 바뀌었어요. 현재 횟수를 확인하고 다시 수정해주세요.', 409, decorate(state));
+          if (version !== state.version || from !== counts[provider]) throw accountError('다른 화면에서 횟수가 바뀌었어요. 현재 횟수를 확인하고 다시 수정해주세요.', 409, decorate(state, preference));
           counts[provider] = to;
         } else if (path === '/v1/import') {
           kind = 'import';
-          if (state.version !== 0 || Object.values(counts).some(value => value !== 0)) throw accountError('이미 사용 기록이 있어요. 이전 기록은 + / −로 반영해주세요.', 409, decorate(state));
+          if (state.version !== 0 || Object.values(counts).some(value => value !== 0)) throw accountError('이미 사용 기록이 있어요. 이전 기록은 + / −로 반영해주세요.', 409, decorate(state, preference));
           if (!validCounts(body.counts) || body.counts.kakao > 1000000 || body.counts.union > 1000000) throw accountError('가져올 기록을 확인해주세요.', 400);
           counts.kakao = body.counts.kakao;
           counts.union = body.counts.union;
@@ -517,7 +725,7 @@
         result = { ...result, counts, version: next.version };
         transaction.set(reference, next);
         transaction.set(operation, { kind, result, createdAt: dbSDK.serverTimestamp() });
-        return { ...result, maskedPhone, accountKey };
+        return { ...result, maskedPhone, accountKey, ...preference };
       });
       for (let attempt = 0; ; attempt++) {
         observedVersion = null;
@@ -569,8 +777,10 @@
       $('retry-session').hidden = true;
       $('calculator-view').hidden = false;
       $('logout').hidden = false;
+      $('open-settings').hidden = false;
+      $('settings-view').hidden = true;
       document.querySelector('h1').textContent = '이번엔, 뭘로 결제할까요?';
-      document.querySelector('.intro').innerHTML = '결제할 곳과 금액을 입력하면<br>남은 혜택에 맞춰 알려드려요.';
+      document.querySelector('.intro').innerHTML = '결제할 곳과 금액을 입력하면<br>보유 카드·쿠폰과 남은 혜택으로 비교해요.';
       $('legacy-record').hidden = !legacyPending;
       if (legacyPending) $('legacy-description').textContent = '이 브라우저의 이전 기록(카카오페이 ' + legacyCounts.kakao + '회 · KB ' + legacyCounts.union + '회)을 이 번호로 가져올 수 있어요.';
       renderStorage();
@@ -582,10 +792,14 @@
       const saved = readSaved(SESSION_KEY);
       session = null;
       countsVersion = -1;
+      settings = { ...DEFAULT_SETTINGS };
+      settingsRevision = 0;
       counts = emptyCounts();
       busy = false;
       $('calculator-view').hidden = true;
       $('logout').hidden = true;
+      $('open-settings').hidden = true;
+      $('settings-view').hidden = true;
       $('login-view').hidden = true;
       $('session-loading').hidden = false;
       if (!saved || !/^[a-f0-9]{64}$/.test(saved.accountKey || '') || typeof saved.maskedPhone !== 'string') { clearSession(); return; }
@@ -685,26 +899,42 @@
       }
     }
 
-    // 확인한 매장 할인액을 적용하고, 알리페이 중복 약관과 KB 별도 확인을 반영한다.
-    function selectPayment(place, amount, used, rate, options = {}) {
+    // 확인한 매장 할인액과 결제수단별 중복 확인을 반영한다.
+    function selectPayment(place, amount, used, rate, options = {}, owned = DEFAULT_SETTINGS) {
       used = normalizeCounts(used);
-      if (place === 'airport' && amount < 10000) return { method: 'travel', reason: 'airport-minimum', coupon: null, totalDiscount: 0, payable: amount, plans: [] };
-      if (used.union < LIMITS.union && !rate) return { method: null, reason: 'rate-required' };
-      const couponOptions = [{ coupon: null, storeDiscount: 0 }];
-      if (place === 'donki' && options.eligible && validCouponDiscount(amount, options.discount)) {
-        couponOptions.push({ coupon: 'donkiCoupon', storeDiscount: options.discount });
+      owned = normalizeSettings(owned);
+      if (!hasPaymentMethod(owned)) return { method: null, reason: 'settings-required' };
+      if (place === 'airport' && amount < 10000) {
+        const method = owned.travelCard ? 'travel' : owned.unionCard ? 'union' : 'kakao';
+        return { method, benefit: null, reason: 'airport-minimum', coupon: null, totalDiscount: 0, payable: amount, plans: [] };
+      }
+      if (owned.unionCard && owned.unionRegistered && used.union < LIMITS.union && !rate) return { method: null, reason: 'rate-required' };
+      const couponOptions = [{ coupon: null, couponSource: null, storeDiscount: 0 }];
+      if (place === 'donki' && owned.kakaoReady && owned.kakaoStoreCoupon && options.eligible && validCouponDiscount(amount, options.discount)) {
+        couponOptions.push({ coupon: 'donkiCoupon', couponSource: 'kakao', storeDiscount: options.discount });
+      }
+      if (place === 'donki' && owned.unionCard && owned.unionStoreCoupon && options.unionCoupon && validCouponDiscount(amount, options.unionDiscount)) {
+        couponOptions.push({ coupon: 'donkiCoupon', couponSource: 'union', storeDiscount: options.unionDiscount });
       }
       const plans = [];
-      for (const { coupon, storeDiscount } of couponOptions) {
+      for (const { coupon, couponSource, storeDiscount } of couponOptions) {
         const charge = amount - storeDiscount;
-        const add = (method, paymentDiscount) => plans.push({ method, coupon, storeDiscount, paymentDiscount, charge, totalDiscount: storeDiscount + paymentDiscount, payable: charge - paymentDiscount });
-        add('travel', 0);
+        const add = (method, paymentDiscount, benefit = method === 'travel' ? null : method) => plans.push({ method, benefit, coupon, couponSource, storeDiscount, paymentDiscount, charge, totalDiscount: storeDiscount + paymentDiscount, payable: charge - paymentDiscount });
+        if (owned.travelCard && couponSource !== 'union') add('travel', 0);
+        if (owned.kakaoReady && couponSource !== 'union') add('kakao', 0, null);
+        if (owned.unionCard && couponSource !== 'kakao') add('union', 0, null);
         const kakaoMinimum = place === 'donki' ? 15000 : place === 'airport' ? 10000 : Infinity;
-        if (used.kakao < LIMITS.kakao && charge >= kakaoMinimum) add('kakao', place === 'donki' ? 2000 : 1200);
-        if ((!coupon || options.stackUnion) && used.union < LIMITS.union && rate && charge >= yenThreshold(rate)) add('union', Math.floor(Math.min(charge * .1, rate.jpy * 20) + 1e-8));
+        const kakaoCouponOwned = place === 'donki' ? owned.kakaoDonki : place === 'airport' ? owned.kakaoAirport : false;
+        if (owned.kakaoReady && kakaoCouponOwned && (!coupon || (couponSource === 'kakao' && owned.kakaoStackConfirmed)) && used.kakao < LIMITS.kakao && charge >= kakaoMinimum) add('kakao', place === 'donki' ? 2000 : 1200);
+        if (owned.unionCard && owned.unionRegistered && (!coupon || couponSource === 'union') && used.union < LIMITS.union && rate && charge >= yenThreshold(rate)) add('union', Math.floor(Math.min(charge * .1, rate.jpy * 20) + 1e-8));
+        if (owned.unionCard && place === 'donki' && (!coupon || couponSource === 'union')) {
+          if (options.unionDonki500 && used.unionDonki500 < LIMITS.unionDonki500 && charge >= 10000) add('union', 500, 'unionDonki500');
+          if (owned.unionDonki4000Registered && options.unionDonki4000 && used.unionDonki4000 < LIMITS.unionDonki4000 && charge >= 40000) add('union', 4000, 'unionDonki4000');
+        }
       }
       // 동률이면 매장 쿠폰을 아끼고, 결제 혜택끼리는 카카오페이 1회를 보존한다.
-      plans.sort((a, b) => b.totalDiscount - a.totalDiscount || Number(Boolean(a.coupon)) - Number(Boolean(b.coupon)) || ({ union: 0, kakao: 1, travel: 2 }[a.method] - { union: 0, kakao: 1, travel: 2 }[b.method]));
+      const priority = plan => plan.benefit ? (plan.method === 'union' ? 0 : 1) : ({ travel: 2, union: 3, kakao: 4 }[plan.method]);
+      plans.sort((a, b) => b.totalDiscount - a.totalDiscount || Number(Boolean(a.coupon)) - Number(Boolean(b.coupon)) || priority(a) - priority(b));
       return { ...plans[0], reason: 'best-discount', plans };
     }
 
@@ -713,26 +943,39 @@
     }
 
     function donkiOptions() {
-      const eligible = !$('donki-options').hidden && $('donki-eligible').checked;
-      return { eligible, discount: Number($('coupon-discount').value), stackUnion: eligible && $('donki-stack-union').checked };
+      const donki = !$('donki-options').hidden;
+      return {
+        eligible: donki && settings.kakaoReady && settings.kakaoStoreCoupon && $('donki-eligible').checked,
+        discount: Number($('coupon-discount').value),
+        stackKakao: settings.kakaoStackConfirmed,
+        unionDonki500: donki && settings.unionCard && $('donki-union-500').checked,
+        unionDonki4000: donki && settings.unionCard && settings.unionDonki4000Registered && $('donki-union-4000').checked,
+        unionCoupon: donki && settings.unionCard && settings.unionStoreCoupon && $('union-coupon-eligible').checked,
+        unionDiscount: Number($('union-coupon-discount').value)
+      };
     }
 
     function updatePlace() {
       const donki = document.querySelector('input[name="place"]:checked')?.value === 'donki';
-      $('donki-options').hidden = !donki;
+      $('donki-options').hidden = !donki || !(settings.unionCard || (settings.kakaoReady && settings.kakaoStoreCoupon));
       $('coupon-discount-field').hidden = !$('donki-eligible').checked;
+      $('union-coupon-field').hidden = !$('union-coupon-eligible').checked;
       $('amount-note').textContent = donki ? '돈키호테: 세금 제외 · 매장 쿠폰 할인 전 금액을 입력해주세요.' : '엔화 결제 금액을 숫자로 입력해주세요.';
       updateCalculate();
     }
 
     function planLabel(plan) {
-      return (plan.coupon ? '매장 쿠폰 + ' : '') + ({ kakao: '카카오페이', union: 'KB 유니온페이', travel: '트래블카드' }[plan.method]);
+      return (plan.coupon ? (plan.couponSource === 'union' ? '유니온페이 쿠폰 + ' : '카카오페이 쿠폰 + ') : '') + (plan.benefit === 'unionDonki500' ? '유니온페이 500엔' : plan.benefit === 'unionDonki4000' ? '유니온페이 4,000엔' : plan.method === 'union' ? (plan.benefit ? 'KB 10%' : 'KB 카드 결제') : { kakao: '카카오페이', travel: '트래블카드' }[plan.method]);
+    }
+
+    function discountPercentage(discount, amount) {
+      return new Intl.NumberFormat('ko-KR', { maximumFractionDigits: 2 }).format(amount > 0 ? discount / amount * 100 : 0);
     }
 
     function updateCalculate() {
       const place = document.querySelector('input[name="place"]:checked');
       const amount = $('amount').value;
-      $('calculate').disabled = busy || !session || !place || !/^\d+$/.test(amount) || Number(amount) <= 0 || (donkiOptions().eligible && !validCouponDiscount(Number(amount), donkiOptions().discount));
+      $('calculate').disabled = busy || !session || !settingsRevision || !place || !/^\d+$/.test(amount) || Number(amount) <= 0 || (donkiOptions().eligible && !validCouponDiscount(Number(amount), donkiOptions().discount)) || (donkiOptions().unionCoupon && !validCouponDiscount(Number(amount), donkiOptions().unionDiscount));
     }
 
     function showResult(choice, place, amount, rate, options = {}) {
@@ -742,20 +985,36 @@
       $('result-meta').textContent = PLACES[place] + ' · ' + format(amount) + '엔' + (place === 'donki' ? ' (세금 제외·쿠폰 전)' : '');
       $('kakao-link').hidden = choice.method !== 'kakao';
       $('donki-coupon-link').hidden = !choice.coupon;
-      $('donki-coupon-link').firstChild.textContent = '카카오페이 열고 현지 쿠폰 찾기 ';
+      $('result-coupon-reminder').hidden = !choice.coupon;
+      $('donki-coupon-link').href = choice.couponSource === 'union' ? 'https://japanportal.donki-global.com/coupon/cp001_ko.html' : KAKAO_PAYMENT_URL;
+      $('donki-coupon-link').firstChild.textContent = choice.couponSource === 'union' ? '유니온페이 전용 돈키호테 쿠폰 열기 ' : '카카오페이 열고 현지 쿠폰 찾기 ';
+      $('result-coupon-reminder').innerHTML = (choice.couponSource === 'union' ? '유니온페이 전용 매장 쿠폰' : '최대 7% 할인 쿠폰') + '을 먼저 점원에게 보여주세요.<br>쿠폰 할인 적용 후, 아래 결제수단으로 결제해주세요.';
       const titles = { kakao: '카카오페이 머니(일본)로 결제해주세요', union: 'KB 유니온페이 카드를 사용해주세요', travel: '트래블카드를 사용해주세요' };
-      $('result-title').textContent = (choice.coupon ? '매장 쿠폰을 제시하고 ' : '') + titles[choice.method];
-      const consumed = [choice.coupon, ['kakao', 'union'].includes(choice.method) ? choice.method : null].filter(Boolean);
-      $('result-detail').textContent = (consumed.length ? consumed.map(key => PROVIDERS[key]).join(' · ') + '에 각각 1회를 반영했어요. ' : '혜택 사용 횟수는 늘어나지 않아요. ') + (choice.method === 'kakao' ? '앱에서 일본 · 페이머니 · Alipay+와 받은 결제 쿠폰을 확인해주세요.' : choice.method === 'union' ? '사전 등록한 실물 카드로 결제해주세요. 50달러 기준은 결제 할인 전 청구 금액으로 확인해요.' : choice.reason === 'airport-minimum' ? '간사이공항 10,000엔 미만은 기존 기준대로 트래블카드예요.' : '현재 조건에서 쓸 수 있는 추가 결제 할인보다 유리하거나 결제 할인이 소진됐어요.');
-      $('result-savings').textContent = '총 예상 할인 ' + format(choice.totalDiscount || 0) + '엔 · 예상 결제 ' + format(choice.payable ?? amount) + '엔';
+      $('result-title').textContent = titles[choice.method];
+      const consumed = [choice.coupon, choice.benefit].filter(Boolean);
+      let instruction;
+      if (choice.method === 'kakao') instruction = '앱에서 일본 · 페이머니 · Alipay+' + (choice.benefit ? '와 받은 결제 쿠폰' : '') + '을 확인해주세요.' + (!choice.benefit ? ' 추가 결제 할인 없이 보유한 결제수단으로 안내해요.' : '');
+      else if (choice.method === 'union') instruction = choice.benefit === 'union' ? '사전 등록한 실물 카드로 결제해주세요. 50달러 기준은 결제 할인 전 청구 금액으로 확인해요.' : !choice.benefit ? (choice.coupon ? '유니온페이 전용 매장 쿠폰만 적용하며, 결제 할인 횟수는 늘어나지 않아요.' : '추가 결제 할인 없이 보유한 KB 유니온페이 카드로 안내해요.') : '유니온페이 실물 카드로 결제해주세요. 오늘 사용 가능하다고 체크한 돈키호테 전용 행사이며, KB 10%는 합산하거나 횟수를 차감하지 않았어요.';
+      else instruction = choice.reason === 'airport-minimum' ? '간사이공항 10,000엔 미만은 기존 기준대로 트래블카드예요.' : '보유 카드·쿠폰과 남은 혜택으로 비교한 결과예요.';
+      $('result-detail').textContent = (consumed.length ? consumed.map(key => PROVIDERS[key]).join(' · ') + '에 각각 1회를 반영했어요. ' : '혜택 사용 횟수는 늘어나지 않아요. ') + instruction;
+      const totalDiscount = choice.totalDiscount || 0;
+      $('result-savings').textContent = '예상 ' + format(totalDiscount) + '엔 할인 (' + discountPercentage(totalDiscount, amount) + '% 할인) · 예상 결제 ' + format(choice.payable ?? amount) + '엔';
       $('comparison-body').replaceChildren();
       for (const plan of choice.plans || []) {
         const row = document.createElement('tr');
-        for (const text of [planLabel(plan), format(plan.totalDiscount) + '엔']) { const cell = document.createElement('td'); cell.textContent = text; row.append(cell); }
+        const label = document.createElement('td');
+        label.textContent = planLabel(plan);
+        const saving = document.createElement('td');
+        saving.textContent = format(plan.totalDiscount) + '엔';
+        const percentage = document.createElement('span');
+        percentage.className = 'comparison-rate';
+        percentage.textContent = discountPercentage(plan.totalDiscount, amount) + '% 할인';
+        saving.append(percentage);
+        row.append(label, saving);
         $('comparison-body').append(row);
       }
       $('comparison').hidden = !(choice.plans?.length);
-      $('result-assumptions').textContent = (choice.coupon ? '쿠폰은 앱에서 해외 · 일본 → 현지 쿠폰 받기로 찾아주세요. 매장 쿠폰 ' + format(choice.storeDiscount) + '엔 → 결제 기준 ' + format(choice.charge) + '엔 → 결제 할인 ' + format(choice.paymentDiscount) + '엔. ' : '') + (place === 'donki' ? (choice.coupon && choice.paymentDiscount > 0 ? '선택한 결제수단의 중복 적용을 확인한 예상액이에요. ' : '이 추천 조합은 중복 할인을 합산하지 않았어요. ') : '') + '수수료·환전 차이·면세액은 제외한 이번 한 건의 비교예요. 실제 쿠폰 조건과 할인 여부를 결제 전에 확인해주세요.';
+      $('result-assumptions').textContent = (choice.coupon ? '매장 쿠폰 ' + format(choice.storeDiscount) + '엔 → 결제 기준 ' + format(choice.charge) + '엔 → 결제 할인 ' + format(choice.paymentDiscount) + '엔. ' : (options.eligible || options.unionCoupon) ? '이번 추천은 매장 쿠폰을 쓰지 않는 조합이에요. ' : '') + (place === 'donki' ? (choice.coupon && choice.paymentDiscount > 0 ? (choice.couponSource === 'union' ? 'KB 공식 안내의 유니온페이 전용 쿠폰과 가장 큰 즉시 할인 하나를 합산했어요. ' : '중복 적용을 확인했다고 체크한 조건의 예상액이에요. ') : '이 추천 조합은 중복 할인을 합산하지 않았어요. ') : '') + (options.eligible && !options.stackKakao ? '중복을 확인하지 않은 조합은 비교에서 제외했어요. ' : '') + '할인율은 처음 입력한 금액 기준이에요. 수수료·환전 차이·면세액은 제외한 이번 한 건의 비교예요. 실제 쿠폰 조건과 할인 여부를 결제 전에 확인해주세요.';
     }
 
 
@@ -773,7 +1032,7 @@
       const operationId = paymentRetry.id;
       let paymentWindow = null;
       // 서버 응답 뒤에도 앱을 열 수 있도록 사용자 탭 시점에 창을 준비한다.
-      if (selectPayment(place, amount, counts, rate, options).method === 'kakao') {
+      if (selectPayment(place, amount, counts, rate, options, settings).method === 'kakao') {
         paymentWindow = window.open('about:blank', '_blank');
         if (paymentWindow) paymentWindow.opener = null;
       }
@@ -811,7 +1070,13 @@
     document.querySelectorAll('input[name="place"]').forEach(input => input.addEventListener('change', updatePlace));
 
     $('donki-eligible').addEventListener('change', updatePlace);
-    $('donki-stack-union').addEventListener('change', updateCalculate);
+    $('union-coupon-eligible').addEventListener('change', updatePlace);
+    $('union-coupon-discount').addEventListener('input', () => {
+      $('union-coupon-discount').value = $('union-coupon-discount').value.normalize('NFKC').replace(/[^0-9]/g, '').slice(0, 9);
+      updateCalculate();
+    });
+    $('donki-union-500').addEventListener('change', updateCalculate);
+    $('donki-union-4000').addEventListener('change', updateCalculate);
     $('coupon-discount').addEventListener('input', () => {
       $('coupon-discount').value = $('coupon-discount').value.normalize('NFKC').replace(/[^0-9]/g, '').slice(0, 9);
       updateCalculate();
