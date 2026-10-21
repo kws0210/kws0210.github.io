@@ -23,6 +23,16 @@
     .japan { display:flex; align-items:center; gap:7px; font-size:11px; color:var(--muted); letter-spacing:1px; }
     .flag { display:grid; place-items:center; background:white; width:25px; height:18px; border:1px solid var(--line); border-radius:3px; }
     .flag::after { content:""; width:8px; height:8px; background:#ce594d; border-radius:50%; }
+    .top-actions { display:flex; align-items:center; gap:13px; }
+    #logout { padding:7px 9px; border:1px solid #d1d9cb; border-radius:8px; background:transparent; color:var(--muted); font-size:11px; }
+    .login-label { display:block; margin-bottom:12px; font-size:13px; font-weight:700; }
+    #phone { width:100%; min-height:53px; padding:12px 14px; border:1.5px solid var(--line); border-radius:12px; background:#fcfdfb; color:var(--ink); font-size:19px; }
+    #login-button { width:100%; min-height:49px; margin-top:15px; border:0; border-radius:12px; background:var(--green); color:white; font-size:14px; font-weight:700; }
+    #login-button:disabled { background:#e9ede5; color:#a6afa2; }
+    .account-label { margin:0 0 14px; color:var(--muted); font-size:12px; }
+    .connection-message { color:var(--muted); font-size:13px; line-height:1.8; }
+    #legacy-record { margin-top:15px; padding:14px; border:1px solid #e1d7ac; border-radius:12px; background:#fffbed; }
+    #legacy-record p { margin:0 0 8px; font-size:12px; line-height:1.8; }
     h1 { margin:0; font-size:31px; line-height:1.25; letter-spacing:-1.5px; font-weight:760; }
     .intro { margin:11px 0 25px; color:var(--muted); font-size:14px; line-height:1.6; }
     .panel { background:white; border:1px solid var(--line); border-radius:22px; padding:21px; box-shadow:0 5px 20px #20382e03; }
@@ -113,11 +123,26 @@
 <body>
   <main>
     <header>
-      <div class="topline"><span class="eyebrow">TRIP / PAYMENT</span><span class="japan"><span class="flag" aria-hidden="true"></span>JAPAN</span></div>
+      <div class="topline"><span class="eyebrow">TRIP / PAYMENT</span><div class="top-actions"><span class="japan"><span class="flag" aria-hidden="true"></span>JAPAN</span><button id="logout" type="button" hidden>로그아웃</button></div></div>
       <h1>이번엔, 뭘로 결제할까요?</h1>
       <p class="intro">결제할 곳과 금액을 입력하면<br>남은 혜택에 맞춰 알려드려요.</p>
     </header>
 
+    <p id="session-loading" class="connection-message" role="status">로그인 정보를 확인하고 있어요…</p>
+    <section id="login-view" class="panel" aria-label="전화번호 로그인" hidden>
+      <form id="login-form">
+        <label for="phone" class="login-label">전화번호</label>
+        <input id="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="010-1234-5678" maxlength="25" required aria-describedby="login-note">
+        <p id="login-note" class="input-note">전화번호만 입력하면 기존 사용 횟수를 불러와요.<br>처음 사용하는 번호라면 0회부터 시작해요.</p>
+        <button id="login-button" type="submit" disabled>시작하기</button>
+        <p id="login-error" class="error" role="alert" hidden></p>
+        <button id="retry-session" type="button" class="text-button" hidden>저장된 로그인으로 다시 연결 ↻</button>
+      </form>
+      <p id="login-storage-warning" class="input-note" hidden>자동 로그인 저장이 제한되어 있어요.<br>다시 접속하면 전화번호를 입력해주세요.</p>
+    </section>
+
+    <div id="calculator-view" hidden>
+    <p id="account-label" class="account-label"></p>
     <section class="panel" aria-label="결제수단 계산">
       <form id="payment-form" autocomplete="off">
         <fieldset>
@@ -146,7 +171,7 @@
     </section>
 
     <section class="usage" aria-labelledby="usage-heading">
-      <div class="section-heading"><h2 id="usage-heading">내 혜택 사용 현황</h2><span class="section-caption">이 브라우저에 자동 저장</span></div>
+      <div class="section-heading"><h2 id="usage-heading">내 혜택 사용 현황</h2><span class="section-caption" id="sync-status" role="status">번호별 자동 저장</span></div>
       <div class="usage-card" id="kakao-card">
         <div class="usage-main">
           <div class="brand" aria-hidden="true">pay</div>
@@ -164,8 +189,9 @@
         <div class="usage-bottom"><div class="progress" aria-hidden="true"><span id="union-progress"></span></div><span class="remaining" id="union-remaining">3회 남음</span></div>
       </div>
       <p class="usage-note">계산하면 추천된 결제수단의 사용 횟수가 1회 늘어나요.<br>실제 결제와 다르면 + / −로 수정해주세요.</p>
-      <p class="error" id="storage-warning" role="status" hidden>브라우저 저장이 제한되어 있어요.<br>이 페이지를 닫으면 사용 횟수가 사라질 수 있어요.</p>
+      <p class="error" id="storage-warning" role="status" hidden>자동 로그인 저장이 제한되어 있어요.<br>사용 횟수는 서버에 저장되며, 다시 접속하면 같은 전화번호를 입력해주세요.</p>
       <p class="input-note" id="count-feedback" role="status" aria-live="polite"></p>
+      <div id="legacy-record" hidden><p id="legacy-description"></p><button id="import-record" class="small-button" type="button">이 번호로 가져오기</button><button id="discard-record" class="text-button" type="button">가져오지 않기</button></div>
     </section>
 
     <div class="rate-pill"><span class="status-dot" aria-hidden="true"></span><span id="rate-summary">50달러 기준 환율을 불러오는 중…</span></div>
@@ -192,6 +218,7 @@
         <li>카카오페이 1회 사용 후에는 KB 유니온페이로 안내해요.<br>KB도 3회를 채우면 트래블카드로 안내해요.<br>KB는 항상 50달러 이상일 때만 안내해요.<br>횟수를 줄이면 해당 혜택을 다시 추천해요.</li>
       </ul>
     </details>
+    </div>
     <footer>LESS WORRY, MORE JAPAN.</footer>
   </main>
 
@@ -202,13 +229,12 @@
   </dialog>
   <noscript><p style="padding:20px;text-align:center">계산하려면 브라우저의 JavaScript를 켜주세요.</p></noscript>
 
+  <script id="firebase-config" type="application/json">{"projectId":"kws0210-japan-payment","appId":"1:438046477426:web:f1d56b62cdead3dfcd46eb","storageBucket":"kws0210-japan-payment.firebasestorage.app","apiKey":"AIzaSyCreVLkzj2GilynssFC56Ebr2zVuenr0y0","authDomain":"kws0210-japan-payment.firebaseapp.com","messagingSenderId":"438046477426","projectNumber":"438046477426","version":"2"}</script>
   <script>
     'use strict';
-    // 공식 링크는 카카오페이 앱의 kakaopay://payment 화면으로 연결한다.
-    // 일본 국가 고정 파라미터는 확인되지 않아 결제 화면에서 직접 확인한다.
     const KAKAO_PAYMENT_URL = 'https://link.kakaopay.com/p/payment';
-    const COUNTS_KEY = 'japan-payment:counts:v1';
-    const RATE_KEY = 'japan-payment:rate:v1';
+    const SESSION_KEY = 'japan-payment:session:v1';
+    const LEGACY_KEY = 'japan-payment:counts:v1';
     const LIMITS = { kakao: 1, union: 3 };
     const PROVIDERS = { kakao: '카카오페이', union: 'KB 유니온페이' };
     const PLACES = { donki: '돈키호테', airport: '간사이공항', other: '그 외' };
@@ -217,32 +243,51 @@
     const $ = id => document.getElementById(id);
     const format = number => new Intl.NumberFormat('ko-KR', { maximumFractionDigits: 4 }).format(number);
     let storageAvailable = true;
+    let session = null;
+    let sessionGeneration = 0;
     let counts = { kakao: 0, union: 0 };
+    let countsVersion = -1;
+    let busy = false;
+    let loginBusy = false;
     let exchangeRate = null;
     let rateLoading = false;
     let rateRequestId = 0;
     let rateNotice = '';
     let pendingChange = null;
+    let paymentRetry = null;
 
     function readSaved(key) {
       try { return JSON.parse(localStorage.getItem(key)); }
       catch { storageAvailable = false; return null; }
     }
 
-    function writeSaved(key, value) {
-      try { localStorage.setItem(key, JSON.stringify(value)); }
-      catch { storageAvailable = false; }
+    function saveSession(value) {
+      try {
+        if (value) localStorage.setItem(SESSION_KEY, JSON.stringify({ accountKey: value.accountKey, maskedPhone: value.maskedPhone }));
+        else localStorage.removeItem(SESSION_KEY);
+      } catch { storageAvailable = false; }
+      renderStorage();
+    }
+
+    function renderStorage() {
       $('storage-warning').hidden = storageAvailable;
+      $('login-storage-warning').hidden = storageAvailable;
     }
 
     function validCounts(value) {
       return value && ['kakao', 'union'].every(key => Number.isSafeInteger(value[key]) && value[key] >= 0);
     }
 
-    function syncCounts() {
-      if (!storageAvailable) return;
-      const saved = readSaved(COUNTS_KEY);
-      if (validCounts(saved)) counts = { kakao: saved.kakao, union: saved.union };
+    const legacyCounts = readSaved(LEGACY_KEY);
+    let legacyPending = validCounts(legacyCounts) && (legacyCounts.kakao > 0 || legacyCounts.union > 0);
+    // 새 버전에서는 로그인 정보만 저장하며 환율은 매 접속 시 조회한다.
+    try { localStorage.removeItem('japan-payment:rate:v1'); if (!legacyPending) localStorage.removeItem(LEGACY_KEY); } catch { storageAvailable = false; }
+
+    function normalizePhone(value) {
+      let phone = value.normalize('NFKC').trim().replace(/[\s().-]/g, '');
+      if (/^0\d{8,10}$/.test(phone)) phone = '+82' + phone.slice(1);
+      else if (/^82\d{8,10}$/.test(phone)) phone = '+' + phone;
+      return /^\+[1-9]\d{7,14}$/.test(phone) ? phone : null;
     }
 
     function renderCounts() {
@@ -253,11 +298,285 @@
         $(provider + '-remaining').textContent = remaining ? remaining + '회 남음' : '혜택 소진';
         $(provider + '-progress').style.width = Math.min(100, used / LIMITS[provider] * 100) + '%';
         $(provider + '-card').classList.toggle('exhausted', remaining === 0);
-        document.querySelector('[data-provider="' + provider + '"][data-delta="-1"]').disabled = used === 0;
-        document.querySelector('[data-provider="' + provider + '"][data-delta="1"]').disabled = used >= LIMITS[provider];
+        document.querySelector('[data-provider="' + provider + '"][data-delta="-1"]').disabled = busy || !session || used === 0;
+        document.querySelector('[data-provider="' + provider + '"][data-delta="1"]').disabled = busy || !session || used >= LIMITS[provider];
       }
-      $('storage-warning').hidden = storageAvailable;
+      $('sync-status').textContent = busy ? '저장 중…' : '번호별 자동 저장';
+      $('import-record').disabled = busy;
+      $('discard-record').disabled = busy;
+      $('confirm-change').disabled = busy;
+      $('cancel-change').disabled = busy;
+      renderStorage();
     }
+
+    function setBusy(value) { busy = value; renderCounts(); updateCalculate(); }
+
+    function applyState(data, generation) {
+      if (generation !== sessionGeneration || !session) return false;
+      if (!validCounts(data.counts) || !Number.isSafeInteger(data.version) || data.version < 0) throw new Error('서버 응답을 확인하지 못했어요. 다시 시도해주세요.');
+      if (data.version >= countsVersion) {
+        counts = { kakao: data.counts.kakao, union: data.counts.union };
+        countsVersion = data.version;
+        $('account-label').textContent = data.maskedPhone + ' · 이 번호의 사용 기록';
+        renderCounts();
+      }
+      return true;
+    }
+
+    function showLogin(message = '') {
+      $('calculator-view').hidden = true;
+      $('logout').hidden = true;
+      $('session-loading').hidden = true;
+      $('login-view').hidden = false;
+      $('login-error').textContent = message;
+      $('login-error').hidden = !message;
+      document.querySelector('h1').textContent = '전화번호로 시작하세요';
+      document.querySelector('.intro').innerHTML = '사용 횟수를 번호별로 기억해요.<br>다시 로그인해도 기록은 그대로예요.';
+      updateLogin();
+    }
+
+    function clearSession(message = '') {
+      sessionGeneration++;
+      session = null;
+      counts = { kakao: 0, union: 0 };
+      countsVersion = -1;
+      busy = false;
+      pendingChange = null;
+      paymentRetry = null;
+      if ($('count-dialog').open) $('count-dialog').close();
+      $('payment-form').reset();
+      $('login-form').reset();
+      $('result').hidden = true;
+      $('result-title').textContent = '';
+      $('result-detail').textContent = '';
+      $('result-meta').textContent = '';
+      $('account-label').textContent = '';
+      $('count-feedback').textContent = '';
+      $('calculation-error').hidden = true;
+      $('legacy-record').hidden = true;
+      $('retry-session').hidden = true;
+      saveSession(null);
+      renderCounts();
+      updateCalculate();
+      showLogin(message);
+    }
+
+    let firebaseReady = null;
+    let authLogout = Promise.resolve();
+
+    async function firebaseServices() {
+      if (!firebaseReady) firebaseReady = (async () => {
+        const config = JSON.parse($('firebase-config').textContent);
+        if (!config.projectId || !config.apiKey || !config.appId) throw new Error('연결을 준비하고 있어요. 잠시 후 다시 접속해주세요.');
+        const [appSDK, authSDK, dbSDK] = await Promise.all([
+          import('https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js'),
+          import('https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js'),
+          import('https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore-lite.js')
+        ]);
+        const app = appSDK.initializeApp(config);
+        const auth = authSDK.getAuth(app);
+        // Firestore Lite는 카운트를 디스크에 캐시하지 않는다.
+        const db = dbSDK.getFirestore(app);
+        if (['localhost', '127.0.0.1'].includes(location.hostname) && document.querySelector('meta[name="firebase-emulator"]')?.content === 'true') {
+          authSDK.connectAuthEmulator(auth, 'http://127.0.0.1:9099', { disableWarnings: true });
+          dbSDK.connectFirestoreEmulator(db, '127.0.0.1', 8080);
+        }
+        await authSDK.setPersistence(auth, authSDK.browserLocalPersistence);
+        await auth.authStateReady();
+        return { auth, db, authSDK, dbSDK };
+      })().catch(error => { firebaseReady = null; throw error; });
+      return firebaseReady;
+    }
+
+    function accountError(message, status, data) {
+      const error = new Error(message);
+      error.status = status;
+      error.data = data;
+      return error;
+    }
+
+    function maskPhone(phone) {
+      return phone.startsWith('+82') ? '0' + phone.slice(3, 5) + '-****-' + phone.slice(-4) : phone.slice(0, 3) + ' •••• ' + phone.slice(-4);
+    }
+
+    async function firebaseAction(path, body, accountKey) {
+      await authLogout;
+      const { auth, db, authSDK, dbSDK } = await firebaseServices();
+      if (!auth.currentUser) await authSDK.signInAnonymously(auth);
+      let maskedPhone = session && session.maskedPhone;
+      if (path === '/v1/login') {
+        const phone = normalizePhone(body.phone);
+        if (!phone) throw accountError('전화번호를 확인해주세요.', 400);
+        const bytes = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(phone));
+        accountKey = [...new Uint8Array(bytes)].map(byte => byte.toString(16).padStart(2, '0')).join('');
+        maskedPhone = maskPhone(phone);
+      }
+      if (!/^[a-f0-9]{64}$/.test(accountKey || '')) throw accountError('다시 로그인해주세요.', 401);
+      const reference = dbSDK.doc(db, 'paymentAccounts', accountKey);
+      const decorate = state => ({ counts: state.counts, version: state.version, maskedPhone, accountKey });
+      if (path === '/v1/session') {
+        const snapshot = await dbSDK.getDoc(reference);
+        if (!snapshot.exists()) throw accountError('기록을 찾을 수 없어요. 같은 번호로 다시 로그인해주세요.', 401);
+        return decorate(snapshot.data());
+      }
+      let observedVersion = null;
+      const performTransaction = () => dbSDK.runTransaction(db, async transaction => {
+        const snapshot = await transaction.get(reference);
+        observedVersion = snapshot.exists() ? snapshot.data().version : -1;
+        if (path === '/v1/login') {
+          const state = snapshot.exists() ? snapshot.data() : { counts: { kakao: 0, union: 0 }, version: 0, lastOperation: '' };
+          if (!snapshot.exists()) transaction.set(reference, state);
+          return decorate(state);
+        }
+        if (!snapshot.exists()) throw accountError('다시 로그인해주세요.', 401);
+        const state = snapshot.data();
+        if (!validCounts(state.counts) || !Number.isSafeInteger(state.version)) throw accountError('저장된 기록을 확인하지 못했어요.', 500);
+        const operationId = body.operationId;
+        if (!/^[a-zA-Z0-9-]{16,80}$/.test(operationId || '')) throw accountError('요청을 확인해주세요.', 400);
+        const operation = dbSDK.doc(reference, 'operations', operationId);
+        const previous = await transaction.get(operation);
+        if (previous.exists()) return { ...previous.data().result, maskedPhone, accountKey };
+        const counts = { ...state.counts };
+        let result = {};
+        let kind;
+        if (path === '/v1/calculate') {
+          kind = 'calculate';
+          if (!Object.hasOwn(PLACES, body.place) || !Number.isSafeInteger(body.amount) || body.amount <= 0 || body.amount > 999999999) throw accountError('장소와 금액을 확인해주세요.', 400);
+          const rate = validRate(body.rate) ? body.rate : null;
+          const choice = selectPayment(body.place, body.amount, counts, rate);
+          if (!choice.method) throw accountError('50달러 기준 환율이 필요해요. 환율을 확인하고 다시 계산해주세요.', 422);
+          if (choice.method === 'kakao' || choice.method === 'union') counts[choice.method]++;
+          result = { choice, place: body.place, amount: body.amount, rate };
+        } else if (path === '/v1/adjust') {
+          kind = 'adjust';
+          const { provider, from, to, version } = body;
+          if (!Object.hasOwn(LIMITS, provider) || !Number.isSafeInteger(from) || !Number.isSafeInteger(to) || to < 0 || Math.abs(to - from) !== 1 || (to > from && to > LIMITS[provider])) throw accountError('변경할 횟수를 확인해주세요.', 400);
+          if (version !== state.version || from !== counts[provider]) throw accountError('다른 화면에서 횟수가 바뀌었어요. 현재 횟수를 확인하고 다시 수정해주세요.', 409, decorate(state));
+          counts[provider] = to;
+        } else if (path === '/v1/import') {
+          kind = 'import';
+          if (state.version !== 0 || counts.kakao !== 0 || counts.union !== 0) throw accountError('이미 사용 기록이 있어요. 이전 기록은 + / −로 반영해주세요.', 409, decorate(state));
+          if (!validCounts(body.counts) || body.counts.kakao > 1000000 || body.counts.union > 1000000) throw accountError('가져올 기록을 확인해주세요.', 400);
+          counts.kakao = body.counts.kakao;
+          counts.union = body.counts.union;
+        } else throw accountError('지원하지 않는 요청이에요.', 400);
+        const next = { counts, version: state.version + 1, lastOperation: operationId };
+        result = { ...result, counts, version: next.version };
+        transaction.set(reference, next);
+        transaction.set(operation, { kind, result, createdAt: dbSDK.serverTimestamp() });
+        return { ...result, maskedPhone, accountKey };
+      });
+      for (let attempt = 0; ; attempt++) {
+        observedVersion = null;
+        try { return await performTransaction(); }
+        catch (error) {
+          // 동시 쓰기가 규칙 평가에서 충돌한 경우에도 최신 기록으로 다시 계산한다.
+          if (attempt >= 3 || error.code !== 'permission-denied' || observedVersion === null) throw error;
+          const latest = await dbSDK.getDoc(reference);
+          if (!latest.exists() || latest.data().version <= observedVersion) throw error;
+        }
+      }
+    }
+
+    async function api(path, { body = {}, accountKey = session && session.accountKey } = {}) {
+      if (path === '/v1/logout') {
+        const logout = authLogout.then(async () => {
+          const { auth, authSDK } = await firebaseServices();
+          await authSDK.signOut(auth);
+          return { ok: true };
+        });
+        authLogout = logout.catch(() => {});
+        return logout;
+      }
+      let timer;
+      try {
+        return await Promise.race([
+          firebaseAction(path, body, accountKey),
+          new Promise((_, reject) => { timer = setTimeout(() => reject(new Error('서버 연결을 확인하지 못했어요. 같은 입력으로 다시 시도하면 중복 없이 확인해요.')), 15000); })
+        ]);
+      } catch (error) {
+        if (error.status) throw error;
+        const messages = {
+          'auth/operation-not-allowed': '로그인 서비스를 준비하고 있어요. 잠시 후 다시 시도해주세요.',
+          'permission-denied': '기록 저장 권한을 확인하지 못했어요. 잠시 후 다시 시도해주세요.',
+          'unavailable': '인터넷 연결을 확인하고 다시 시도해주세요.',
+          'auth/network-request-failed': '인터넷 연결을 확인하고 다시 시도해주세요.',
+          'auth/invalid-api-key': '로그인에 연결하지 못했어요. 잠시 후 다시 시도해주세요.',
+          'auth/too-many-requests': '로그인 요청이 많아요. 잠시 후 다시 시도해주세요.'
+        };
+        throw new Error(messages[error.code] || (!error.code && error.message) || '기록을 불러오지 못했어요. 다시 시도해주세요.');
+      } finally { clearTimeout(timer); }
+    }
+
+    function enterCalculator(data, generation) {
+      if (!applyState(data, generation)) return;
+      $('phone').value = '';
+      $('login-view').hidden = true;
+      $('session-loading').hidden = true;
+      $('retry-session').hidden = true;
+      $('calculator-view').hidden = false;
+      $('logout').hidden = false;
+      document.querySelector('h1').textContent = '이번엔, 뭘로 결제할까요?';
+      document.querySelector('.intro').innerHTML = '결제할 곳과 금액을 입력하면<br>남은 혜택에 맞춰 알려드려요.';
+      $('legacy-record').hidden = !legacyPending;
+      if (legacyPending) $('legacy-description').textContent = '이 브라우저의 이전 기록(카카오페이 ' + legacyCounts.kakao + '회 · KB ' + legacyCounts.union + '회)을 이 번호로 가져올 수 있어요.';
+      renderStorage();
+      updateCalculate();
+    }
+
+    async function restoreSession() {
+      const generation = ++sessionGeneration;
+      const saved = readSaved(SESSION_KEY);
+      session = null;
+      countsVersion = -1;
+      counts = { kakao: 0, union: 0 };
+      busy = false;
+      $('calculator-view').hidden = true;
+      $('logout').hidden = true;
+      $('login-view').hidden = true;
+      $('session-loading').hidden = false;
+      if (!saved || !/^[a-f0-9]{64}$/.test(saved.accountKey || '') || typeof saved.maskedPhone !== 'string') { clearSession(); return; }
+      session = { accountKey: saved.accountKey, maskedPhone: saved.maskedPhone };
+      try {
+        const data = await api('/v1/session');
+        enterCalculator(data, generation);
+      } catch (error) {
+        if (generation !== sessionGeneration) return;
+        session = null;
+        showLogin(error.message);
+        $('retry-session').hidden = false;
+      }
+    }
+
+    function updateLogin() { $('login-button').disabled = loginBusy || !normalizePhone($('phone').value); }
+    $('phone').addEventListener('input', updateLogin);
+    $('login-form').addEventListener('submit', async event => {
+      event.preventDefault();
+      updateLogin();
+      if ($('login-button').disabled) return;
+      const generation = ++sessionGeneration;
+      loginBusy = true;
+      updateLogin();
+      $('login-button').textContent = '기록을 불러오는 중…';
+      $('login-error').hidden = true;
+      try {
+        const data = await api('/v1/login', { body: { phone: normalizePhone($('phone').value) }, accountKey: null });
+        if (generation !== sessionGeneration) return;
+        session = { accountKey: data.accountKey, maskedPhone: data.maskedPhone };
+        countsVersion = -1;
+        saveSession(session);
+        enterCalculator(data, generation);
+      } catch (error) {
+        if (generation === sessionGeneration) showLogin(error.message);
+      } finally { loginBusy = false; $('login-button').textContent = '시작하기'; updateLogin(); }
+    });
+    $('retry-session').addEventListener('click', restoreSession);
+    $('logout').addEventListener('click', () => {
+      const accountKey = session && session.accountKey;
+      clearSession();
+      $('phone').focus();
+      if (accountKey) api('/v1/logout', { body: {}, accountKey }).catch(() => {});
+    });
 
     function validRate(rate) {
       if (!rate || !Number.isFinite(rate.jpy) || rate.jpy <= 0 || rate.jpy > 1000000 || !Number.isFinite(rate.fetchedAt)) return false;
@@ -302,9 +621,8 @@
         if (requestId !== rateRequestId) return;
         exchangeRate = candidate;
         rateNotice = '';
-        writeSaved(RATE_KEY, exchangeRate);
       } catch {
-        if (requestId === rateRequestId) rateNotice = '최신 조회 실패 · 저장된 환율 사용 중';
+        if (requestId === rateRequestId) rateNotice = '최신 조회 실패 · 현재 환율 유지 중';
       } finally {
         clearTimeout(timeout);
         if (requestId === rateRequestId) {
@@ -324,10 +642,11 @@
       return { method: 'union', reason: kakaoBand ? 'kakao-exhausted' : 'usd50' };
     }
 
+
     function updateCalculate() {
       const place = document.querySelector('input[name="place"]:checked');
       const amount = $('amount').value;
-      $('calculate').disabled = !place || !/^\d+$/.test(amount) || Number(amount) <= 0;
+      $('calculate').disabled = busy || !session || !place || !/^\d+$/.test(amount) || Number(amount) <= 0;
     }
 
     function showResult(choice, place, amount, rate) {
@@ -349,41 +668,46 @@
       }
     }
 
-    $('payment-form').addEventListener('submit', event => {
+
+    $('payment-form').addEventListener('submit', async event => {
       event.preventDefault();
       updateCalculate();
       if ($('calculate').disabled) return;
-      syncCounts();
+      const generation = sessionGeneration;
       const place = document.querySelector('input[name="place"]:checked').value;
       const amount = Number($('amount').value);
       const rate = validRate(exchangeRate) ? exchangeRate : null;
-      const choice = selectPayment(place, amount, counts, rate);
-      if (!choice.method) {
-        $('calculation-error').textContent = '50달러 이상인지 확인할 환율이 필요해요. 아래에서 환율을 조회하거나 직접 입력한 뒤 다시 계산해주세요.';
-        $('calculation-error').hidden = false;
-        $('rate-settings').open = true;
-        renderCounts();
-        refreshRate();
-        return;
+      const key = place + ':' + amount;
+      if (!paymentRetry || paymentRetry.key !== key) paymentRetry = { key, id: crypto.randomUUID() };
+      const operationId = paymentRetry.id;
+      let paymentWindow = null;
+      // 서버 응답 뒤에도 앱을 열 수 있도록 사용자 탭 시점에 창을 준비한다.
+      if (selectPayment(place, amount, counts, rate).method === 'kakao') {
+        paymentWindow = window.open('about:blank', '_blank');
+        if (paymentWindow) paymentWindow.opener = null;
       }
+      setBusy(true);
       $('calculation-error').hidden = true;
       $('count-feedback').textContent = '';
-      if (choice.method === 'kakao' || choice.method === 'union') {
-        counts[choice.method] += 1;
-        writeSaved(COUNTS_KEY, counts);
-      }
-      showResult(choice, place, amount, rate);
-      renderCounts();
-      $('payment-form').reset();
-      $('amount').blur();
-      updateCalculate();
-      if (choice.method === 'kakao') openKakaoPayment();
+      try {
+        const data = await api('/v1/calculate', { body: { place, amount, rate, operationId } });
+        if (!applyState(data, generation)) { if (paymentWindow) paymentWindow.close(); return; }
+        paymentRetry = null;
+        showResult(data.choice, data.place, data.amount, data.rate);
+        $('payment-form').reset();
+        $('amount').blur();
+        if (data.choice.method === 'kakao') {
+          if (paymentWindow) paymentWindow.location.replace(KAKAO_PAYMENT_URL);
+          else window.open(KAKAO_PAYMENT_URL, '_blank', 'noopener,noreferrer');
+        } else if (paymentWindow) paymentWindow.close();
+      } catch (error) {
+        if (paymentWindow) paymentWindow.close();
+        if (generation !== sessionGeneration) return;
+        $('calculation-error').textContent = error.message;
+        $('calculation-error').hidden = false;
+        if (error.status === 422) { $('rate-settings').open = true; refreshRate(); }
+      } finally { if (generation === sessionGeneration) setBusy(false); }
     });
-
-    function openKakaoPayment() {
-      // 사용자 탭과 같은 실행 흐름에서 새 창으로 열어 입력 화면과 사용 횟수를 유지한다.
-      window.open(KAKAO_PAYMENT_URL, '_blank', 'noopener,noreferrer');
-    }
 
     $('amount').addEventListener('input', () => {
       const input = $('amount');
@@ -395,34 +719,58 @@
     document.querySelectorAll('input[name="place"]').forEach(input => input.addEventListener('change', updateCalculate));
 
     document.querySelectorAll('.count-button').forEach(button => button.addEventListener('click', () => {
-      syncCounts();
-      renderCounts();
+      if (!session || busy || button.disabled) return;
       const provider = button.dataset.provider;
       const from = counts[provider];
       const to = from + Number(button.dataset.delta);
       if (to < 0 || !Number.isSafeInteger(to) || (to > from && to > LIMITS[provider])) return;
-      pendingChange = { provider, from, to };
+      pendingChange = { type: 'adjust', provider, from, to, version: countsVersion, operationId: crypto.randomUUID() };
+      $('dialog-heading').textContent = '사용 횟수 변경';
       $('confirm-message').textContent = PROVIDERS[provider] + ' 사용 ' + from + '회 → ' + to + '회로 변경하시겠습니까?';
       $('count-dialog').showModal();
     }));
 
     $('cancel-change').addEventListener('click', () => $('count-dialog').close());
+    $('count-dialog').addEventListener('cancel', event => { if (busy) event.preventDefault(); });
     $('count-dialog').addEventListener('close', () => { pendingChange = null; });
-    $('confirm-change').addEventListener('click', () => {
-      if (!pendingChange) return;
-      const { provider, from, to } = pendingChange;
-      syncCounts();
-      if (counts[provider] !== from) {
+    $('confirm-change').addEventListener('click', async () => {
+      if (!pendingChange || !session || busy) return;
+      const change = { ...pendingChange };
+      const generation = sessionGeneration;
+      setBusy(true);
+      try {
+        const data = await api(change.type === 'import' ? '/v1/import' : '/v1/adjust', { body: change });
+        if (!applyState(data, generation)) return;
+        if (change.type === 'import') { discardLegacy(); $('count-feedback').textContent = '이전 기록을 이 번호로 가져왔어요.'; }
+        else $('count-feedback').textContent = PROVIDERS[change.provider] + ' 사용 횟수를 ' + change.to + '회로 변경했어요. 다음 계산부터 반영돼요.';
         $('count-dialog').close();
-        $('count-feedback').textContent = '다른 창에서 사용 횟수가 바뀌었어요. 현재 횟수를 확인하고 다시 수정해주세요.';
-        renderCounts();
-        return;
+      } catch (error) {
+        if (generation !== sessionGeneration) return;
+        if (error.status === 409) {
+          applyState(error.data, generation);
+          $('count-dialog').close();
+          $('count-feedback').textContent = error.message;
+        } else $('confirm-message').textContent = error.message + ' 확인을 누르면 같은 요청으로 다시 시도해요.';
+      } finally {
+        if (generation === sessionGeneration) setBusy(false);
       }
-      counts[provider] = to;
-      writeSaved(COUNTS_KEY, counts);
-      renderCounts();
-      $('count-feedback').textContent = PROVIDERS[provider] + ' 사용 횟수를 ' + to + '회로 변경했어요. 다음 계산부터 반영돼요.';
-      $('count-dialog').close();
+    });
+
+    function discardLegacy() {
+      legacyPending = false;
+      try { localStorage.removeItem(LEGACY_KEY); } catch { storageAvailable = false; }
+      $('legacy-record').hidden = true;
+      renderStorage();
+    }
+    $('import-record').addEventListener('click', () => {
+      if (!legacyPending || !session || busy) return;
+      pendingChange = { type: 'import', counts: legacyCounts, operationId: crypto.randomUUID() };
+      $('dialog-heading').textContent = '이전 기록 가져오기';
+      $('confirm-message').textContent = '카카오페이 ' + legacyCounts.kakao + '회 · KB 유니온페이 ' + legacyCounts.union + '회를 현재 번호로 가져오시겠습니까? 서버에 기록이 없는 번호에만 가져올 수 있어요.';
+      $('count-dialog').showModal();
+    });
+    $('discard-record').addEventListener('click', () => {
+      if (confirm('이 브라우저의 이전 기록을 지울까요? 서버에 저장된 전화번호별 기록은 유지됩니다.')) discardLegacy();
     });
 
     $('rate-form').addEventListener('submit', event => {
@@ -439,42 +787,42 @@
       rateLoading = false;
       exchangeRate = candidate;
       rateNotice = '';
-      writeSaved(RATE_KEY, exchangeRate);
       $('rate-error').hidden = true;
       $('calculation-error').hidden = true;
       renderRate();
     });
     $('refresh-rate').addEventListener('click', () => { $('rate-error').hidden = true; refreshRate(); });
 
+
+    async function syncCounts() {
+      if (!session || busy) return;
+      const generation = sessionGeneration;
+      try { applyState(await api('/v1/session'), generation); }
+      catch (error) { if (generation === sessionGeneration) $('count-feedback').textContent = error.message; }
+    }
     window.addEventListener('storage', event => {
-      if (event.key === COUNTS_KEY || event.key === null) {
-        const saved = readSaved(COUNTS_KEY);
-        counts = validCounts(saved) ? { kakao: saved.kakao, union: saved.union } : { kakao: 0, union: 0 };
-        renderCounts();
-      }
-      if (event.key === RATE_KEY || event.key === null) {
-        const saved = readSaved(RATE_KEY);
-        exchangeRate = validRate(saved) ? saved : null;
-        renderRate();
+      if (event.key === SESSION_KEY || event.key === null) {
+        if ($('count-dialog').open) $('count-dialog').close();
+        $('payment-form').reset();
+        $('result').hidden = true;
+        $('count-feedback').textContent = '';
+        paymentRetry = null;
+        restoreSession();
       }
     });
     document.addEventListener('visibilitychange', () => {
       if (document.visibilityState !== 'visible') return;
       syncCounts();
-      renderCounts();
-      updateCalculate();
       if (!validRate(exchangeRate) || (exchangeRate.source === 'auto' && Date.now() - exchangeRate.fetchedAt > RATE_TTL)) refreshRate();
     });
-    window.addEventListener('pageshow', updateCalculate);
-
-    syncCounts();
-    const savedRate = readSaved(RATE_KEY);
-    if (validRate(savedRate)) exchangeRate = savedRate;
+    window.addEventListener('focus', syncCounts);
+    window.addEventListener('pageshow', syncCounts);
     $('kakao-link').href = KAKAO_PAYMENT_URL;
     renderCounts();
     renderRate();
     updateCalculate();
-    if (!exchangeRate || exchangeRate.source === 'auto') refreshRate();
+    restoreSession();
+    refreshRate();
   </script>
 </body>
 </html>

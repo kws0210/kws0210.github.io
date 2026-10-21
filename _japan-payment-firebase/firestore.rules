@@ -1,0 +1,50 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() { return request.auth != null; }
+    function validState(data) {
+      return data.keys().hasOnly(['counts', 'version', 'lastOperation'])
+        && data.counts.keys().hasOnly(['kakao', 'union'])
+        && data.counts.kakao is int && data.counts.union is int
+        && data.counts.kakao >= 0 && data.counts.union >= 0
+        && data.counts.kakao <= 1000000 && data.counts.union <= 1000000
+        && data.version is int && data.version >= 0
+        && data.lastOperation is string;
+    }
+    match /paymentAccounts/{account} {
+      // 전화번호 소유 인증 없이 입력한 번호의 기록을 여는 방식이다.
+      // 원본 번호는 저장하지 않으며 계정 ID는 정규화 번호의 SHA-256이다.
+      allow get: if signedIn() && account.matches('^[a-f0-9]{64}$');
+      allow list, delete: if false;
+      allow create: if signedIn() && account.matches('^[a-f0-9]{64}$')
+        && validState(request.resource.data)
+        && request.resource.data.counts.kakao == 0 && request.resource.data.counts.union == 0
+        && request.resource.data.version == 0 && request.resource.data.lastOperation == '';
+      allow update: if signedIn() && validState(request.resource.data)
+        && request.resource.data.version == resource.data.version + 1
+        && request.resource.data.lastOperation.matches('^[a-zA-Z0-9-]{16,80}$')
+        && existsAfter(/databases/$(database)/documents/paymentAccounts/$(account)/operations/$(request.resource.data.lastOperation))
+        && getAfter(/databases/$(database)/documents/paymentAccounts/$(account)/operations/$(request.resource.data.lastOperation)).data.result.version == request.resource.data.version
+        && getAfter(/databases/$(database)/documents/paymentAccounts/$(account)/operations/$(request.resource.data.lastOperation)).data.result.counts == request.resource.data.counts
+        && (
+          (request.resource.data.counts.kakao <= 1 || request.resource.data.counts.kakao <= resource.data.counts.kakao)
+          && (request.resource.data.counts.union <= 3 || request.resource.data.counts.union <= resource.data.counts.union)
+          || (
+            resource.data.version == 0 && resource.data.counts.kakao == 0 && resource.data.counts.union == 0
+            && getAfter(/databases/$(database)/documents/paymentAccounts/$(account)/operations/$(request.resource.data.lastOperation)).data.kind == 'import'
+          )
+        );
+      match /operations/{operation} {
+        allow get: if signedIn();
+        allow list, update, delete: if false;
+        allow create: if signedIn() && operation.matches('^[a-zA-Z0-9-]{16,80}$')
+          && request.resource.data.keys().hasOnly(['kind', 'result', 'createdAt'])
+          && request.resource.data.kind in ['calculate', 'adjust', 'import']
+          && request.resource.data.createdAt == request.time
+          && getAfter(/databases/$(database)/documents/paymentAccounts/$(account)).data.lastOperation == operation
+          && getAfter(/databases/$(database)/documents/paymentAccounts/$(account)).data.version == request.resource.data.result.version
+          && getAfter(/databases/$(database)/documents/paymentAccounts/$(account)).data.counts == request.resource.data.result.counts;
+      }
+    }
+  }
+}
