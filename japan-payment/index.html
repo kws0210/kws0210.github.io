@@ -254,7 +254,7 @@
         $(provider + '-progress').style.width = Math.min(100, used / LIMITS[provider] * 100) + '%';
         $(provider + '-card').classList.toggle('exhausted', remaining === 0);
         document.querySelector('[data-provider="' + provider + '"][data-delta="-1"]').disabled = used === 0;
-        document.querySelector('[data-provider="' + provider + '"][data-delta="1"]').disabled = used >= Number.MAX_SAFE_INTEGER;
+        document.querySelector('[data-provider="' + provider + '"][data-delta="1"]').disabled = used >= LIMITS[provider];
       }
       $('storage-warning').hidden = storageAvailable;
     }
@@ -400,7 +400,7 @@
       const provider = button.dataset.provider;
       const from = counts[provider];
       const to = from + Number(button.dataset.delta);
-      if (to < 0 || !Number.isSafeInteger(to)) return;
+      if (to < 0 || !Number.isSafeInteger(to) || (to > from && to > LIMITS[provider])) return;
       pendingChange = { provider, from, to };
       $('confirm-message').textContent = PROVIDERS[provider] + ' 사용 ' + from + '회 → ' + to + '회로 변경하시겠습니까?';
       $('count-dialog').showModal();
