@@ -1,0 +1,480 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f5f6f2">
+  <meta name="color-scheme" content="light">
+  <title>일본 결제 도우미</title>
+  <style>
+    :root { --ink:#20382e; --muted:#69766e; --line:#e1e6dd; --green:#285d43; --paper:#f5f6f2; }
+    * { box-sizing:border-box; }
+    body { margin:0; background:var(--paper); color:var(--ink); font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Noto Sans KR",sans-serif; -webkit-font-smoothing:antialiased; }
+    button,input { font:inherit; }
+    button,a,input,label,summary { -webkit-tap-highlight-color:transparent; }
+    button,a { touch-action:manipulation; }
+    button { cursor:pointer; }
+    button:disabled { cursor:default; }
+    :focus-visible { outline:3px solid #679c77; outline-offset:4px; }
+    [hidden] { display:none !important; }
+    main { max-width:480px; margin:auto; padding:calc(28px + env(safe-area-inset-top)) 22px calc(30px + env(safe-area-inset-bottom)); }
+    .topline { display:flex; align-items:center; justify-content:space-between; margin-bottom:27px; }
+    .eyebrow { font-size:11px; font-weight:750; letter-spacing:2px; }
+    .japan { display:flex; align-items:center; gap:7px; font-size:11px; color:var(--muted); letter-spacing:1px; }
+    .flag { display:grid; place-items:center; background:white; width:25px; height:18px; border:1px solid var(--line); border-radius:3px; }
+    .flag::after { content:""; width:8px; height:8px; background:#ce594d; border-radius:50%; }
+    h1 { margin:0; font-size:31px; line-height:1.25; letter-spacing:-1.5px; font-weight:760; }
+    .intro { margin:11px 0 25px; color:var(--muted); font-size:14px; line-height:1.6; }
+    .panel { background:white; border:1px solid var(--line); border-radius:22px; padding:21px; box-shadow:0 5px 20px #20382e03; }
+    fieldset { border:0; padding:0; margin:0; min-width:0; }
+    legend,.field-label { display:block; padding:0; margin-bottom:12px; font-size:13px; font-weight:700; }
+    .step { display:inline-grid; place-items:center; width:19px; height:19px; margin-right:6px; border-radius:50%; background:#edf2eb; color:var(--green); font-size:10px; }
+    .places { display:grid; grid-template-columns:1fr 1.13fr .78fr; gap:7px; }
+    .place { position:relative; cursor:pointer; }
+    .place input { position:absolute; opacity:0; width:1px; height:1px; }
+    .place-face { display:flex; justify-content:center; align-items:center; gap:6px; min-height:51px; padding:9px 4px; border:1.5px solid var(--line); border-radius:12px; font-size:13px; font-weight:650; white-space:nowrap; transition:background .15s,border-color .15s; }
+    .radio { width:13px; height:13px; border:1.5px solid #b9c2b8; border-radius:50%; display:grid; place-items:center; flex:none; }
+    .place input:checked + .place-face { background:#edf4eb; border-color:var(--green); color:var(--green); }
+    .place input:checked + .place-face .radio { border-color:var(--green); }
+    .place input:checked + .place-face .radio::after { content:""; width:5px; height:5px; border-radius:50%; background:var(--green); }
+    .place input:focus-visible + .place-face { outline:3px solid #679c77; outline-offset:3px; }
+    .amount-label { margin-top:25px; }
+    .amount-row { display:flex; gap:9px; }
+    .amount-box { display:flex; align-items:center; flex:1; min-width:0; border:1.5px solid var(--line); border-radius:12px; background:#fcfdfb; padding:0 13px; }
+    .amount-box:focus-within { border-color:var(--green); }
+    #amount { width:100%; min-width:0; height:54px; padding:0 5px 0 0; border:0; outline:0; background:transparent; color:var(--ink); font-size:24px; font-weight:680; font-variant-numeric:tabular-nums; letter-spacing:-.5px; }
+    #amount::placeholder { color:#bdc5bb; font-weight:450; }
+    .yen { color:var(--muted); font-size:15px; white-space:nowrap; }
+    #calculate { flex:none; border:0; border-radius:12px; padding:0 21px; background:var(--green); color:white; font-size:14px; font-weight:700; transition:background .15s; }
+    #calculate:disabled { background:#e9ede5; color:#a6afa2; }
+    .input-note { margin:10px 0 0; color:var(--muted); font-size:11px; line-height:1.6; }
+    .error { margin:12px 0 0; color:#aa442e; font-size:12px; line-height:1.7; }
+    .result { margin-top:18px; padding:18px; border:1px solid #c8ddc7; border-radius:15px; background:#eff6ed; animation:arrive .25s ease-out; }
+    .result[data-method="kakao"] { background:#fff9d8; border-color:#eee2a4; }
+    .result[data-method="travel"] { background:#f1f4f8; border-color:#dce3eb; }
+    .result-meta { margin:0 0 10px; color:var(--muted); font-size:11px; }
+    .result-title { display:block; font-size:19px; line-height:1.5; letter-spacing:-.7px; word-break:keep-all; }
+    .result-detail { margin:8px 0 0; color:#526657; font-size:12px; line-height:1.75; word-break:keep-all; }
+    .pay-link { display:flex; justify-content:center; gap:12px; align-items:center; margin-top:14px; min-height:45px; padding:10px; color:#332b13; background:#fee500; border-radius:10px; text-decoration:none; font-size:13px; font-weight:750; }
+    .usage { margin-top:27px; }
+    .section-heading { display:flex; justify-content:space-between; align-items:center; margin-bottom:13px; }
+    h2 { margin:0; font-size:15px; letter-spacing:-.4px; }
+    .section-caption { color:var(--muted); font-size:11px; }
+    .usage-card { padding:17px; border:1px solid var(--line); border-radius:17px; background:#fff; }
+    .usage-card + .usage-card { margin-top:10px; }
+    .usage-main { display:flex; align-items:center; gap:11px; }
+    .brand { display:grid; place-items:center; width:37px; height:37px; flex:none; border-radius:11px; background:#fee679; color:#3a311d; font-size:13px; font-weight:800; }
+    .brand.kb { background:#e9eedf; color:#3b583e; }
+    .usage-info { flex:1; min-width:0; }
+    .usage-name { margin:0 0 5px; font-size:13px; font-weight:750; }
+    .usage-limit { margin:0; color:var(--muted); font-size:11px; }
+    .controls { display:flex; align-items:center; gap:10px; }
+    .count-button { width:34px; height:36px; padding:0; border:1px solid var(--line); border-radius:9px; background:#fff; color:var(--ink); font-size:21px; line-height:1; }
+    .count-button:disabled { color:#c7cec3; background:#f9faf7; }
+    .count { min-width:17px; text-align:center; font-size:22px; font-weight:750; font-variant-numeric:tabular-nums; }
+    .usage-bottom { margin-top:15px; display:flex; align-items:center; gap:12px; }
+    .progress { flex:1; height:4px; border-radius:5px; background:#edf0e9; overflow:hidden; }
+    .progress span { display:block; width:0; height:100%; background:#477652; border-radius:5px; transition:width .2s; }
+    .remaining { color:#4d6d4e; font-size:11px; font-weight:650; white-space:nowrap; }
+    .exhausted .remaining { color:#92998f; }
+    .exhausted .progress span { background:#b3bbae; }
+    .usage-note { margin:12px 3px 0; color:var(--muted); font-size:11px; line-height:1.8; }
+    details { margin-top:20px; border-top:1px solid var(--line); padding-top:16px; }
+    summary { cursor:pointer; color:var(--muted); font-size:12px; padding:5px 0; }
+    .settings-content { padding-top:13px; }
+    .rate-heading { display:flex; justify-content:space-between; align-items:center; gap:8px; }
+    .rate-heading strong { font-size:12px; }
+    .text-button { min-height:35px; border:0; background:transparent; color:var(--green); padding:5px 0 5px 10px; font-size:11px; font-weight:650; }
+    #rate-status { margin:5px 0 10px; color:var(--muted); font-size:11px; line-height:1.8; overflow-wrap:anywhere; }
+    .manual-rate { display:flex; gap:8px; }
+    .manual-rate label { display:flex; align-items:center; gap:8px; flex:1; min-width:0; font-size:12px; }
+    #manual-rate { width:100%; min-width:0; min-height:42px; padding:10px; border:1px solid #d1d9cb; border-radius:9px; font-size:16px; background:white; }
+    .small-button { border:1px solid #d1d9cb; border-radius:9px; background:white; color:var(--ink); padding:8px 13px; font-size:12px; font-weight:650; }
+    .fine-print { color:var(--muted); font-size:11px; line-height:1.8; }
+    .rate-pill { display:flex; align-items:center; gap:7px; margin-top:19px; color:var(--muted); font-size:11px; line-height:1.6; }
+    .status-dot { width:5px; height:5px; flex:none; border-radius:50%; background:#90a787; }
+    .rules { padding:0; margin:12px 0 0; list-style:none; color:var(--muted); font-size:11px; line-height:1.9; }
+    .rules li + li { margin-top:9px; }
+    .rules b { display:block; color:var(--ink); font-size:12px; }
+    footer { margin-top:24px; text-align:center; color:#939e90; font-size:10px; letter-spacing:1.2px; }
+    dialog { width:calc(100% - 44px); max-width:350px; padding:25px; border:1px solid var(--line); border-radius:21px; box-shadow:0 15px 70px #14271d30; color:var(--ink); }
+    dialog::backdrop { background:#172c2355; backdrop-filter:blur(3px); }
+    dialog h2 { font-size:18px; }
+    #confirm-message { margin:15px 0 23px; font-size:15px; line-height:1.8; word-break:keep-all; }
+    .dialog-buttons { display:flex; gap:9px; }
+    .dialog-buttons button { flex:1; border:0; border-radius:11px; min-height:46px; font-size:14px; font-weight:700; }
+    #cancel-change { background:#eff1eb; color:var(--muted); }
+    #confirm-change { background:var(--green); color:white; }
+    @keyframes arrive { from { opacity:0; transform:translateY(5px); } to { opacity:1; transform:translateY(0); } }
+    @media (max-width:359px) { main { padding-left:15px; padding-right:15px; } .panel { padding:16px; } .place-face { font-size:12px; gap:4px; } .controls { gap:7px; } .usage-card { padding:14px; } }
+    @media (prefers-reduced-motion:reduce) { *,*::before,*::after { animation:none !important; transition:none !important; } }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <div class="topline"><span class="eyebrow">TRIP / PAYMENT</span><span class="japan"><span class="flag" aria-hidden="true"></span>JAPAN</span></div>
+      <h1>이번엔, 뭘로 결제할까요?</h1>
+      <p class="intro">결제할 곳과 금액을 입력하면<br>남은 혜택에 맞춰 알려드려요.</p>
+    </header>
+
+    <section class="panel" aria-label="결제수단 계산">
+      <form id="payment-form" autocomplete="off">
+        <fieldset>
+          <legend><span class="step" aria-hidden="true">1</span>어디에서 결제하나요?</legend>
+          <div class="places">
+            <label class="place"><input type="radio" name="place" value="donki" required><span class="place-face"><span class="radio" aria-hidden="true"></span>돈키호테</span></label>
+            <label class="place"><input type="radio" name="place" value="airport"><span class="place-face"><span class="radio" aria-hidden="true"></span>간사이공항</span></label>
+            <label class="place"><input type="radio" name="place" value="other"><span class="place-face"><span class="radio" aria-hidden="true"></span>그 외</span></label>
+          </div>
+        </fieldset>
+        <label for="amount" class="field-label amount-label"><span class="step" aria-hidden="true">2</span>얼마를 결제하나요?</label>
+        <div class="amount-row">
+          <div class="amount-box"><input id="amount" type="text" inputmode="numeric" pattern="[0-9]+" placeholder="0" maxlength="9" required aria-describedby="amount-note" aria-label="결제 금액, 엔"><span class="yen">엔</span></div>
+          <button id="calculate" type="submit" disabled>계산 <span aria-hidden="true">↗</span></button>
+        </div>
+        <p class="input-note" id="amount-note">엔화 금액을 숫자로 입력해주세요.</p>
+        <p class="error" id="calculation-error" role="alert" hidden></p>
+      </form>
+
+      <div id="result" class="result" role="status" aria-live="polite" aria-atomic="true" hidden>
+        <p class="result-meta" id="result-meta"></p>
+        <strong class="result-title" id="result-title"></strong>
+        <p class="result-detail" id="result-detail"></p>
+        <a class="pay-link" id="kakao-link" href="https://link.kakaopay.com/p/payment" target="_blank" rel="noopener noreferrer" hidden>카카오페이 결제 열기 <span aria-hidden="true">↗</span></a>
+      </div>
+    </section>
+
+    <section class="usage" aria-labelledby="usage-heading">
+      <div class="section-heading"><h2 id="usage-heading">내 혜택 사용 현황</h2><span class="section-caption">이 브라우저에 자동 저장</span></div>
+      <div class="usage-card" id="kakao-card">
+        <div class="usage-main">
+          <div class="brand" aria-hidden="true">pay</div>
+          <div class="usage-info"><p class="usage-name">카카오페이</p><p class="usage-limit">머니(일본) · 총 1회</p></div>
+          <div class="controls"><button type="button" class="count-button" data-provider="kakao" data-delta="-1" aria-label="카카오페이 사용 횟수 줄이기" disabled>−</button><output class="count" id="kakao-count" aria-label="카카오페이 사용 횟수">0</output><button type="button" class="count-button" data-provider="kakao" data-delta="1" aria-label="카카오페이 사용 횟수 늘리기">+</button></div>
+        </div>
+        <div class="usage-bottom"><div class="progress" aria-hidden="true"><span id="kakao-progress"></span></div><span class="remaining" id="kakao-remaining">1회 남음</span></div>
+      </div>
+      <div class="usage-card" id="union-card">
+        <div class="usage-main">
+          <div class="brand kb" aria-hidden="true">KB</div>
+          <div class="usage-info"><p class="usage-name">KB 유니온페이</p><p class="usage-limit">50달러 이상 · 총 3회</p></div>
+          <div class="controls"><button type="button" class="count-button" data-provider="union" data-delta="-1" aria-label="KB 유니온페이 사용 횟수 줄이기" disabled>−</button><output class="count" id="union-count" aria-label="KB 유니온페이 사용 횟수">0</output><button type="button" class="count-button" data-provider="union" data-delta="1" aria-label="KB 유니온페이 사용 횟수 늘리기">+</button></div>
+        </div>
+        <div class="usage-bottom"><div class="progress" aria-hidden="true"><span id="union-progress"></span></div><span class="remaining" id="union-remaining">3회 남음</span></div>
+      </div>
+      <p class="usage-note">계산하면 추천된 결제수단의 사용 횟수가 1회 늘어나요.<br>실제 결제와 다르면 + / −로 수정해주세요.</p>
+      <p class="error" id="storage-warning" role="status" hidden>브라우저 저장이 제한되어 있어요.<br>이 페이지를 닫으면 사용 횟수가 사라질 수 있어요.</p>
+      <p class="input-note" id="count-feedback" role="status" aria-live="polite"></p>
+    </section>
+
+    <div class="rate-pill"><span class="status-dot" aria-hidden="true"></span><span id="rate-summary">50달러 기준 환율을 불러오는 중…</span></div>
+    <details id="rate-settings">
+      <summary>환율 확인 · 직접 입력</summary>
+      <div class="settings-content">
+        <div class="rate-heading"><strong>50달러 기준 금액</strong><button type="button" id="refresh-rate" class="text-button">최신 환율 가져오기 ↻</button></div>
+        <p id="rate-status" role="status" aria-live="polite">최신 제공 환율을 조회하고 있어요.</p>
+        <form id="rate-form" class="manual-rate">
+          <label for="manual-rate"><span style="white-space:nowrap">1달러 =</span><input id="manual-rate" type="text" inputmode="decimal" placeholder="예: 158.13" maxlength="12" aria-label="1달러당 엔 환율"><span>엔</span></label>
+          <button class="small-button" type="submit">적용</button>
+        </form>
+        <p class="error" id="rate-error" role="alert" hidden></p>
+        <p class="fine-print">Frankfurter의 최신 영업일 참고 환율을 사용해요.<br>실제 카드사의 달러 환산 금액과 차이가 날 수 있어요.<br>조회가 안 되면 확인한 환율을 직접 입력해주세요.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>장소별 결제 기준 보기</summary>
+      <ul class="rules">
+        <li><b>돈키호테</b>15,000엔 이상 ~ 20,000엔 미만 → 카카오페이<br>그 외 50달러 이상 → KB 유니온페이<br>50달러 미만 → 트래블카드</li>
+        <li><b>간사이공항</b>10,000엔 이상 ~ 12,000엔 미만 → 카카오페이<br>12,000엔 이상 → KB 유니온페이<br>10,000엔 미만 → 트래블카드</li>
+        <li><b>그 외</b>50달러 이상 → KB 유니온페이<br>50달러 미만 → 트래블카드</li>
+        <li>카카오페이 1회 사용 후에는 KB 유니온페이로 안내해요.<br>KB도 3회를 채우면 트래블카드로 안내해요.<br>KB는 항상 50달러 이상일 때만 안내해요.<br>횟수를 줄이면 해당 혜택을 다시 추천해요.</li>
+      </ul>
+    </details>
+    <footer>LESS WORRY, MORE JAPAN.</footer>
+  </main>
+
+  <dialog id="count-dialog" aria-labelledby="dialog-heading" aria-describedby="confirm-message">
+    <h2 id="dialog-heading">사용 횟수 변경</h2>
+    <p id="confirm-message"></p>
+    <div class="dialog-buttons"><button type="button" id="cancel-change" autofocus>취소</button><button type="button" id="confirm-change">확인</button></div>
+  </dialog>
+  <noscript><p style="padding:20px;text-align:center">계산하려면 브라우저의 JavaScript를 켜주세요.</p></noscript>
+
+  <script>
+    'use strict';
+    // 공식 링크는 카카오페이 앱의 kakaopay://payment 화면으로 연결한다.
+    // 일본 국가 고정 파라미터는 확인되지 않아 결제 화면에서 직접 확인한다.
+    const KAKAO_PAYMENT_URL = 'https://link.kakaopay.com/p/payment';
+    const COUNTS_KEY = 'japan-payment:counts:v1';
+    const RATE_KEY = 'japan-payment:rate:v1';
+    const LIMITS = { kakao: 1, union: 3 };
+    const PROVIDERS = { kakao: '카카오페이', union: 'KB 유니온페이' };
+    const PLACES = { donki: '돈키호테', airport: '간사이공항', other: '그 외' };
+    const RATE_TTL = 30 * 60 * 1000;
+    const CACHE_TTL = 24 * 60 * 60 * 1000;
+    const $ = id => document.getElementById(id);
+    const format = number => new Intl.NumberFormat('ko-KR', { maximumFractionDigits: 4 }).format(number);
+    let storageAvailable = true;
+    let counts = { kakao: 0, union: 0 };
+    let exchangeRate = null;
+    let rateLoading = false;
+    let rateRequestId = 0;
+    let rateNotice = '';
+    let pendingChange = null;
+
+    function readSaved(key) {
+      try { return JSON.parse(localStorage.getItem(key)); }
+      catch { storageAvailable = false; return null; }
+    }
+
+    function writeSaved(key, value) {
+      try { localStorage.setItem(key, JSON.stringify(value)); }
+      catch { storageAvailable = false; }
+      $('storage-warning').hidden = storageAvailable;
+    }
+
+    function validCounts(value) {
+      return value && ['kakao', 'union'].every(key => Number.isSafeInteger(value[key]) && value[key] >= 0);
+    }
+
+    function syncCounts() {
+      if (!storageAvailable) return;
+      const saved = readSaved(COUNTS_KEY);
+      if (validCounts(saved)) counts = { kakao: saved.kakao, union: saved.union };
+    }
+
+    function renderCounts() {
+      for (const provider of Object.keys(LIMITS)) {
+        const used = counts[provider];
+        const remaining = Math.max(0, LIMITS[provider] - used);
+        $(provider + '-count').textContent = used;
+        $(provider + '-remaining').textContent = remaining ? remaining + '회 남음' : '혜택 소진';
+        $(provider + '-progress').style.width = Math.min(100, used / LIMITS[provider] * 100) + '%';
+        $(provider + '-card').classList.toggle('exhausted', remaining === 0);
+        document.querySelector('[data-provider="' + provider + '"][data-delta="-1"]').disabled = used === 0;
+        document.querySelector('[data-provider="' + provider + '"][data-delta="1"]').disabled = used >= Number.MAX_SAFE_INTEGER;
+      }
+      $('storage-warning').hidden = storageAvailable;
+    }
+
+    function validRate(rate) {
+      if (!rate || !Number.isFinite(rate.jpy) || rate.jpy <= 0 || rate.jpy > 1000000 || !Number.isFinite(rate.fetchedAt)) return false;
+      const age = Date.now() - rate.fetchedAt;
+      return age >= 0 && age < CACHE_TTL && ['auto', 'manual'].includes(rate.source);
+    }
+
+    function yenThreshold(rate) {
+      // 부동소수점 오차를 제외하고 50달러 이상이 되는 최소 정수 엔 금액을 구한다.
+      return Math.ceil(Number((rate.jpy * 50).toFixed(7)));
+    }
+
+    function renderRate() {
+      const usable = validRate(exchangeRate);
+      if (usable) {
+        const minimum = yenThreshold(exchangeRate);
+        $('rate-summary').textContent = '50달러 = ' + format(minimum) + '엔부터 · ' + (exchangeRate.source === 'manual' ? '직접 입력' : exchangeRate.date + ' 기준');
+        const source = exchangeRate.source === 'manual' ? '직접 입력한 환율' : 'Frankfurter · ' + exchangeRate.date + ' 기준';
+        $('rate-status').textContent = '1달러 = ' + format(exchangeRate.jpy) + '엔 / 50달러 이상: ' + format(minimum) + '엔부터\n' + source + (rateNotice ? '\n' + rateNotice : '');
+      } else {
+        $('rate-summary').textContent = rateLoading ? '50달러 기준 환율을 불러오는 중…' : '환율을 확인해주세요 · 아래에서 직접 입력 가능';
+        $('rate-status').textContent = rateLoading ? '최신 제공 환율을 조회하고 있어요.' : '환율을 불러오지 못했어요. 다시 조회하거나 직접 입력해주세요.';
+      }
+      $('rate-status').style.whiteSpace = 'pre-line';
+      $('refresh-rate').disabled = rateLoading;
+      $('refresh-rate').textContent = rateLoading ? '조회 중…' : '최신 환율 가져오기 ↻';
+    }
+
+    async function refreshRate() {
+      if (rateLoading) return;
+      const requestId = ++rateRequestId;
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 8000);
+      rateLoading = true;
+      renderRate();
+      try {
+        const response = await fetch('https://api.frankfurter.dev/v1/latest?base=USD&symbols=JPY', { signal: controller.signal, cache: 'no-store', credentials: 'omit' });
+        if (!response.ok) throw new Error('환율 조회 실패');
+        const data = await response.json();
+        const candidate = { jpy: data.rates && data.rates.JPY, date: data.date, source: 'auto', fetchedAt: Date.now() };
+        if (data.base !== 'USD' || !/^\d{4}-\d{2}-\d{2}$/.test(candidate.date) || !validRate(candidate)) throw new Error('유효하지 않은 환율');
+        if (requestId !== rateRequestId) return;
+        exchangeRate = candidate;
+        rateNotice = '';
+        writeSaved(RATE_KEY, exchangeRate);
+      } catch {
+        if (requestId === rateRequestId) rateNotice = '최신 조회 실패 · 저장된 환율 사용 중';
+      } finally {
+        clearTimeout(timeout);
+        if (requestId === rateRequestId) {
+          rateLoading = false;
+          renderRate();
+        }
+      }
+    }
+
+    function selectPayment(place, amount, used, rate) {
+      const kakaoBand = (place === 'donki' && amount >= 15000 && amount < 20000) || (place === 'airport' && amount >= 10000 && amount < 12000);
+      if (kakaoBand && used.kakao < LIMITS.kakao) return { method: 'kakao', reason: 'band' };
+      if (place === 'airport' && amount < 10000) return { method: 'travel', reason: 'airport-minimum' };
+      if (used.union >= LIMITS.union) return { method: 'travel', reason: 'exhausted' };
+      if (!rate) return { method: null, reason: 'rate-required' };
+      if (amount < yenThreshold(rate)) return { method: 'travel', reason: 'below-usd50' };
+      return { method: 'union', reason: kakaoBand ? 'kakao-exhausted' : 'usd50' };
+    }
+
+    function updateCalculate() {
+      const place = document.querySelector('input[name="place"]:checked');
+      const amount = $('amount').value;
+      $('calculate').disabled = !place || !/^\d+$/.test(amount) || Number(amount) <= 0;
+    }
+
+    function showResult(choice, place, amount, rate) {
+      const result = $('result');
+      result.hidden = false;
+      result.dataset.method = choice.method;
+      $('result-meta').textContent = PLACES[place] + ' · ' + format(amount) + '엔';
+      $('kakao-link').hidden = choice.method !== 'kakao';
+      if (choice.method === 'kakao') {
+        $('result-title').textContent = '카카오페이 머니(일본)로 결제해주세요';
+        $('result-detail').textContent = '사용 횟수에 1회를 반영했어요. 카카오페이 앱에서 ‘일본 · 페이머니 · Alipay+’를 확인해주세요. 앱이 열리지 않으면 아래 버튼을 눌러주세요.';
+      } else if (choice.method === 'union') {
+        $('result-title').textContent = 'KB 유니온페이 카드를 사용해주세요';
+        $('result-detail').textContent = (choice.reason === 'kakao-exhausted' ? '카카오페이 혜택을 이미 사용했어요. ' : '') + '50달러 이상(' + format(yenThreshold(rate)) + '엔부터)이므로 KB 사용 횟수에 1회를 반영했어요.';
+      } else {
+        $('result-title').textContent = '트래블카드를 사용해주세요';
+        const reasons = { 'airport-minimum': '간사이공항에서 10,000엔 미만은 트래블카드를 이용해주세요.', 'exhausted': '이 금액에 사용할 수 있는 결제 혜택을 모두 사용했어요.', 'below-usd50': '50달러 미만(' + (rate ? format(yenThreshold(rate)) : '') + '엔 미만)이에요.' };
+        $('result-detail').textContent = reasons[choice.reason] + ' 혜택 사용 횟수는 늘어나지 않아요.';
+      }
+    }
+
+    $('payment-form').addEventListener('submit', event => {
+      event.preventDefault();
+      updateCalculate();
+      if ($('calculate').disabled) return;
+      syncCounts();
+      const place = document.querySelector('input[name="place"]:checked').value;
+      const amount = Number($('amount').value);
+      const rate = validRate(exchangeRate) ? exchangeRate : null;
+      const choice = selectPayment(place, amount, counts, rate);
+      if (!choice.method) {
+        $('calculation-error').textContent = '50달러 이상인지 확인할 환율이 필요해요. 아래에서 환율을 조회하거나 직접 입력한 뒤 다시 계산해주세요.';
+        $('calculation-error').hidden = false;
+        $('rate-settings').open = true;
+        renderCounts();
+        refreshRate();
+        return;
+      }
+      $('calculation-error').hidden = true;
+      $('count-feedback').textContent = '';
+      if (choice.method === 'kakao' || choice.method === 'union') {
+        counts[choice.method] += 1;
+        writeSaved(COUNTS_KEY, counts);
+      }
+      showResult(choice, place, amount, rate);
+      renderCounts();
+      $('payment-form').reset();
+      $('amount').blur();
+      updateCalculate();
+      if (choice.method === 'kakao') openKakaoPayment();
+    });
+
+    function openKakaoPayment() {
+      // 사용자 탭과 같은 실행 흐름에서 새 창으로 열어 입력 화면과 사용 횟수를 유지한다.
+      window.open(KAKAO_PAYMENT_URL, '_blank', 'noopener,noreferrer');
+    }
+
+    $('amount').addEventListener('input', () => {
+      const input = $('amount');
+      const cleaned = input.value.normalize('NFKC').replace(/[^0-9]/g, '').slice(0, 9);
+      if (input.value !== cleaned) input.value = cleaned;
+      $('calculation-error').hidden = true;
+      updateCalculate();
+    });
+    document.querySelectorAll('input[name="place"]').forEach(input => input.addEventListener('change', updateCalculate));
+
+    document.querySelectorAll('.count-button').forEach(button => button.addEventListener('click', () => {
+      syncCounts();
+      renderCounts();
+      const provider = button.dataset.provider;
+      const from = counts[provider];
+      const to = from + Number(button.dataset.delta);
+      if (to < 0 || !Number.isSafeInteger(to)) return;
+      pendingChange = { provider, from, to };
+      $('confirm-message').textContent = PROVIDERS[provider] + ' 사용 ' + from + '회 → ' + to + '회로 변경하시겠습니까?';
+      $('count-dialog').showModal();
+    }));
+
+    $('cancel-change').addEventListener('click', () => $('count-dialog').close());
+    $('count-dialog').addEventListener('close', () => { pendingChange = null; });
+    $('confirm-change').addEventListener('click', () => {
+      if (!pendingChange) return;
+      const { provider, from, to } = pendingChange;
+      syncCounts();
+      if (counts[provider] !== from) {
+        $('count-dialog').close();
+        $('count-feedback').textContent = '다른 창에서 사용 횟수가 바뀌었어요. 현재 횟수를 확인하고 다시 수정해주세요.';
+        renderCounts();
+        return;
+      }
+      counts[provider] = to;
+      writeSaved(COUNTS_KEY, counts);
+      renderCounts();
+      $('count-feedback').textContent = PROVIDERS[provider] + ' 사용 횟수를 ' + to + '회로 변경했어요. 다음 계산부터 반영돼요.';
+      $('count-dialog').close();
+    });
+
+    $('rate-form').addEventListener('submit', event => {
+      event.preventDefault();
+      const input = $('manual-rate').value.trim().normalize('NFKC');
+      const candidate = { jpy: Number(input), source: 'manual', date: new Date().toISOString().slice(0, 10), fetchedAt: Date.now() };
+      if (!/^\d+(\.\d{1,6})?$/.test(input) || !validRate(candidate)) {
+        $('rate-error').textContent = '1달러당 엔 금액을 0보다 큰 숫자로 입력해주세요. (예: 158.13)';
+        $('rate-error').hidden = false;
+        return;
+      }
+      // 진행 중인 자동 조회가 나중에 끝나도 직접 입력한 값을 덮어쓰지 않는다.
+      rateRequestId += 1;
+      rateLoading = false;
+      exchangeRate = candidate;
+      rateNotice = '';
+      writeSaved(RATE_KEY, exchangeRate);
+      $('rate-error').hidden = true;
+      $('calculation-error').hidden = true;
+      renderRate();
+    });
+    $('refresh-rate').addEventListener('click', () => { $('rate-error').hidden = true; refreshRate(); });
+
+    window.addEventListener('storage', event => {
+      if (event.key === COUNTS_KEY || event.key === null) {
+        const saved = readSaved(COUNTS_KEY);
+        counts = validCounts(saved) ? { kakao: saved.kakao, union: saved.union } : { kakao: 0, union: 0 };
+        renderCounts();
+      }
+      if (event.key === RATE_KEY || event.key === null) {
+        const saved = readSaved(RATE_KEY);
+        exchangeRate = validRate(saved) ? saved : null;
+        renderRate();
+      }
+    });
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState !== 'visible') return;
+      syncCounts();
+      renderCounts();
+      updateCalculate();
+      if (!validRate(exchangeRate) || (exchangeRate.source === 'auto' && Date.now() - exchangeRate.fetchedAt > RATE_TTL)) refreshRate();
+    });
+    window.addEventListener('pageshow', updateCalculate);
+
+    syncCounts();
+    const savedRate = readSaved(RATE_KEY);
+    if (validRate(savedRate)) exchangeRate = savedRate;
+    $('kakao-link').href = KAKAO_PAYMENT_URL;
+    renderCounts();
+    renderRate();
+    updateCalculate();
+    if (!exchangeRate || exchangeRate.source === 'auto') refreshRate();
+  </script>
+</body>
+</html>
