@@ -50,6 +50,12 @@
     .screen-button { display:block; width:100%; max-width:286px; margin:2px auto 0; padding:0; border:1px solid #e5e9e2; border-radius:13px; background:#fff; overflow:hidden; cursor:zoom-in; }
     .screen-button img { display:block; width:100%; height:auto; }
     .payment-example { margin-top:18px; }
+    .walkthrough { padding:0; margin:20px 0 0; list-style:none; counter-reset:payment; }
+    .walkthrough > li { counter-increment:payment; margin-top:22px; padding-top:20px; border-top:1px solid var(--line); }
+    .walkthrough h4 { margin:0 0 10px; font-size:15px; line-height:1.7; letter-spacing:-.3px; }
+    .walkthrough h4::before { content:counter(payment, decimal-leading-zero) " / "; color:var(--green); }
+    .walkthrough p { margin:8px 0 0; font-size:14px; word-break:keep-all; }
+    .screen-button.country { max-width:none; }
     figcaption { margin:10px 0 2px; color:var(--muted); text-align:center; font-size:11px; line-height:1.7; }
     .coupons { display:grid; gap:14px; margin-top:18px; }
     .coupon { min-width:0; padding:15px; border:1px solid #e1e7dc; border-radius:14px; background:#fafbf8; }
@@ -62,6 +68,7 @@
     .reminder { margin-top:18px; padding:16px; border:1px solid #ebe1ae; border-radius:13px; background:#fffae2; font-size:14px; line-height:1.8; word-break:keep-all; }
     .reminder strong { display:block; margin-bottom:4px; }
     .reminder p { margin:0; }
+    .reminder + .path { margin-top:16px; }
     .checks { padding:0; margin:14px 0 0; list-style:none; }
     .checks li { position:relative; margin-top:10px; padding-left:23px; font-size:14px; line-height:1.85; word-break:keep-all; }
     .checks li::before { content:"✓"; position:absolute; left:0; color:var(--green); font-weight:750; }
@@ -167,18 +174,44 @@
         <li class="step-card">
           <h3>실제 결제는 일본 · 페이머니로</h3>
           <div class="reminder"><strong>쿠폰 받기와 결제 수단 확인, 둘 다 필요</strong><p>카카오페이 결제 화면에서 국가가 <b>일본</b>, 결제 수단이 <b>페이머니</b>로 선택되어 있는지 확인한다.</p></div>
-          <p><b>카카오페이 앱 → 하단 결제하기 → 국가 일본</b> 순서로 연다.</p>
-          <figure class="payment-example">
-            <a class="screen-button" id="kakao-payment-example" href="images/kakao-japan-payment.webp" data-screen data-title="일본 · Alipay+ 결제 화면 — 카카오페이 공식 예시"><img src="images/kakao-japan-payment.webp" alt="카카오페이 공식 해외결제 예시. Alipay+ 오른쪽 위에 일본이 표시되고, 바코드와 QR코드 아래에 엔화 보유 잔액이 표시된다." width="326" height="440" loading="lazy"></a>
-            <figcaption>카카오페이 공식 안내의 일본 결제 예시를 발췌했다.<br>앱 버전에 따라 화면 구성이 다를 수 있다.<br><a class="reference-link" href="https://story.kakaopay.com/338-kakaopay-global/" target="_blank" rel="noopener noreferrer">출처 · 카카오페이 해외결제 사용법 ↗</a></figcaption>
-          </figure>
-          <p>화면의 <b>일본</b> 표시와 <b>Alipay+</b>를 확인한다.<br>공식 안내에 따르면 해외결제는 <b>페이머니</b>로 이용한다.</p>
+          <div class="path" aria-label="일본 페이머니 결제 화면 진입 순서"><span>카카오페이</span><span class="arrow" aria-hidden="true">→</span><span>결제 · 결제하기</span><span class="arrow" aria-hidden="true">→</span><span>상단 태극기 버튼</span><span class="arrow" aria-hidden="true">→</span><span>일본 선택</span></div>
+          <ol class="walkthrough">
+            <li>
+              <h4>결제 화면 열기</h4>
+              <p>카카오페이 하단의 <b>결제</b>로 들어간 뒤, 노란색 <b>결제하기</b>를 누른다.</p>
+              <details>
+                <summary>결제하기 버튼 위치 보기</summary>
+                <figure>
+                  <a class="screen-button" href="images/kakao-payment-open.webp" data-screen data-title="카카오페이 결제 → 노란 결제하기 버튼"><img src="images/kakao-payment-open.webp" alt="카카오페이 해외 혜택 화면. 하단 결제 메뉴 바로 위에 노란색 결제하기 버튼이 있다." width="946" height="2048" loading="lazy"></a>
+                  <figcaption>화면 아래 노란색 ‘결제하기’ 버튼을 누른다.</figcaption>
+                </figure>
+              </details>
+            </li>
+            <li>
+              <h4>상단 태극기 버튼에서 일본 선택하기</h4>
+              <p>결제 화면 위쪽의 <b>태극기 모양 버튼</b>을 누르고, 국가를 <b>일본</b>으로 바꾼다.</p>
+              <figure class="payment-example">
+                <a class="screen-button country" href="images/kakao-payment-country.webp" data-screen data-title="주황색으로 표시한 태극기 버튼 → 일본 선택"><img src="images/kakao-payment-country.webp" alt="결제 화면 상단을 발췌했다. pay 로고 오른쪽의 태극기 모양 국가 선택 버튼을 주황색 원으로 표시했다." width="946" height="270" loading="lazy"></a>
+                <figcaption>주황색 원의 태극기 버튼을 눌러 일본으로 변경한다.</figcaption>
+              </figure>
+              <p class="note">이미 일본 국기로 표시되어 있으면, 아래의 일본 결제 화면인지 확인한다.</p>
+            </li>
+            <li>
+              <h4>일본 · Alipay+ · 페이머니 확인하기</h4>
+              <p>국가를 바꾸면 아래 화면처럼 나온다.<br>오른쪽 위 <b>일본</b>, 왼쪽 위 <b>Alipay+</b>, 아래쪽 <b>페이머니</b>를 확인한다.</p>
+              <figure class="payment-example">
+                <a class="screen-button" id="kakao-payment-example" href="images/kakao-japan-payment.webp" data-screen data-title="마지막 확인: 일본 · Alipay+ · 페이머니"><img src="images/kakao-japan-payment.webp" alt="일본으로 변경한 실제 카카오페이 결제 화면. 위쪽에 Alipay+와 일본, 아래쪽에 결제 가능한 잔액과 페이머니가 표시된다. 개인 충전계좌 정보는 가렸다." width="946" height="2048" loading="lazy"></a>
+                <figcaption>일본 + Alipay+ + 페이머니 표시를 확인한다.<br>개인 충전계좌 정보는 가린 화면이다.</figcaption>
+              </figure>
+            </li>
+          </ol>
           <ul class="checks">
             <li>이용할 매장의 쿠폰을 결제 전에 받았는지 확인한다.</li>
             <li>결제할 금액에 맞게 카카오페이머니 잔액을 준비한다.</li>
             <li>매장 직원에게 바코드·QR을 보여주거나, 매장의 QR을 스캔해 결제를 진행한다.</li>
           </ul>
           <p class="note">결제 도우미의 ‘카카오페이 결제 열기’로 이동해도 일본 · 페이머니 선택을 직접 확인한다.</p>
+          <p class="note"><a class="reference-link" href="https://story.kakaopay.com/338-kakaopay-global/" target="_blank" rel="noopener noreferrer">카카오페이 공식 해외결제 사용법 ↗</a></p>
         </li>
       </ol>
     </section>
