@@ -4,10 +4,12 @@ service cloud.firestore {
     function signedIn() { return request.auth != null; }
     function validState(data) {
       return data.keys().hasOnly(['counts', 'version', 'lastOperation'])
-        && data.counts.keys().hasOnly(['kakao', 'union'])
+        && data.counts.keys().hasOnly(['kakao', 'union', 'donkiCoupon'])
         && data.counts.kakao is int && data.counts.union is int
         && data.counts.kakao >= 0 && data.counts.union >= 0
         && data.counts.kakao <= 1000000 && data.counts.union <= 1000000
+        && data.counts.get('donkiCoupon', 0) is int
+        && data.counts.get('donkiCoupon', 0) >= 0 && data.counts.get('donkiCoupon', 0) <= 1000000
         && data.version is int && data.version >= 0
         && data.lastOperation is string;
     }
@@ -19,8 +21,11 @@ service cloud.firestore {
       allow create: if signedIn() && account.matches('^[a-f0-9]{64}$')
         && validState(request.resource.data)
         && request.resource.data.counts.kakao == 0 && request.resource.data.counts.union == 0
+        && request.resource.data.counts.get('donkiCoupon', 0) == 0
         && request.resource.data.version == 0 && request.resource.data.lastOperation == '';
       allow update: if signedIn() && validState(request.resource.data)
+        // 새 쿠폰 기록을 이전 버전의 화면이 누락해 지우는 것을 막는다.
+        && (!('donkiCoupon' in resource.data.counts) || 'donkiCoupon' in request.resource.data.counts)
         && request.resource.data.version == resource.data.version + 1
         && request.resource.data.lastOperation.matches('^[a-zA-Z0-9-]{16,80}$')
         && existsAfter(/databases/$(database)/documents/paymentAccounts/$(account)/operations/$(request.resource.data.lastOperation))

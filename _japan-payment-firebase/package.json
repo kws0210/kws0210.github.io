@@ -3,6 +3,7 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "test:recommendation": "node --test test/recommendation.test.mjs",
     "test:rules": "node --test test/rules.test.mjs"
   },
   "devDependencies": {

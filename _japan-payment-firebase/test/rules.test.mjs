@@ -1,4 +1,5 @@
 import { after, before, beforeEach, test } from 'node:test';
+import assert from 'node:assert/strict';
 import { randomUUID } from 'node:crypto';
 import { readFile } from 'node:fs/promises';
 import { initializeTestEnvironment, assertFails, assertSucceeds } from '@firebase/rules-unit-testing';
@@ -78,4 +79,24 @@ test('요청 기록은 덮어쓰거나 계정 없이 만들 수 없다', async (
   await assertFails(setDoc(existing, { kind: 'import', result: state, createdAt: serverTimestamp() }));
   await assertFails(getDocs(collection(reference(db), 'operations')));
   await assertFails(deleteDoc(existing));
+});
+
+test('기존 계정에 매장 쿠폰을 추가하고 결제·쿠폰 횟수를 원자적으로 반영한다', async () => {
+  const db = authenticated();
+  await setDoc(reference(db), initial);
+  const counts = { kakao: 1, union: 0, donkiCoupon: 1 };
+  await assertSucceeds(writeOperation(db, counts, 1, 'calculate'));
+  assert.deepEqual((await getDoc(reference(db))).data().counts, counts);
+  await assertFails(writeOperation(db, { ...counts, donkiCoupon: 1000001 }, 2));
+  await assertFails(writeOperation(db, { ...counts, donkiCoupon: -1 }, 2));
+  await assertFails(writeOperation(db, { kakao: 1, union: 1 }, 2));
+  await assertSucceeds(writeOperation(db, { ...counts, donkiCoupon: 2 }, 2));
+});
+
+test('새 쿠폰 횟수는 0으로만 생성하며 임의 쿠폰 필드와 초과 이관을 거절한다', async () => {
+  const db = authenticated();
+  await assertFails(setDoc(reference(db), { ...initial, counts: { ...initial.counts, donkiCoupon: 1 } }));
+  await assertFails(setDoc(reference(db), { ...initial, counts: { ...initial.counts, donki9: 0 } }));
+  await assertSucceeds(setDoc(reference(db), { ...initial, counts: { ...initial.counts, donkiCoupon: 0 } }));
+  await assertFails(writeOperation(db, { kakao: 3, union: 5, donkiCoupon: 1000001 }, 1, 'import'));
 });
