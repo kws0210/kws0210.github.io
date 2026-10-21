@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f5f6f2">
+  <meta name="color-scheme" content="light">
+  <meta name="description" content="일본 여행 전 카카오페이 할인 쿠폰과 KB 유니온페이 카드를 준비하는 방법을 화면으로 확인한다.">
+  <title>미리 할 작업 · 일본 결제 도우미</title>
+  <style>
+    :root { --ink:#20382e; --muted:#657267; --line:#e1e6dd; --green:#285d43; --paper:#f5f6f2; }
+    * { box-sizing:border-box; }
+    html { scroll-behavior:smooth; scroll-padding-top:24px; }
+    body { margin:0; background:var(--paper); color:var(--ink); font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Noto Sans KR",sans-serif; -webkit-font-smoothing:antialiased; }
+    a,button,summary { -webkit-tap-highlight-color:transparent; touch-action:manipulation; }
+    button { font:inherit; cursor:pointer; }
+    :focus-visible { outline:3px solid #679c77; outline-offset:4px; }
+    main { max-width:680px; margin:auto; padding:calc(23px + env(safe-area-inset-top)) 20px calc(30px + env(safe-area-inset-bottom)); }
+    .topline { display:flex; justify-content:space-between; align-items:center; gap:10px; margin-bottom:31px; }
+    .back { display:inline-flex; align-items:center; min-height:44px; color:var(--green); text-decoration:none; font-size:13px; font-weight:650; }
+    .eyebrow { color:var(--muted); font-size:10px; font-weight:700; letter-spacing:1.5px; }
+    h1 { margin:0; font-size:35px; font-weight:760; letter-spacing:-1.5px; line-height:1.2; }
+    .intro { margin:13px 0 24px; color:var(--muted); font-size:15px; line-height:1.8; word-break:keep-all; }
+    .overview { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+    .overview a { display:block; padding:18px 15px; border:1px solid var(--line); border-radius:17px; background:#fff; color:var(--ink); text-decoration:none; }
+    .overview .kakao { background:#fff9d9; border-color:#ebe1ae; }
+    .overview .union { background:#edf3e8; border-color:#d5e0cc; }
+    .overview span { display:block; margin-bottom:13px; font-size:11px; font-weight:700; }
+    .overview strong { display:block; font-size:16px; line-height:1.5; letter-spacing:-.5px; word-break:keep-all; }
+    .overview small { display:block; margin-top:7px; font-size:11px; line-height:1.5; color:var(--muted); }
+    .guide-section { margin-top:38px; }
+    .section-label { margin:0 0 10px; color:var(--green); font-size:11px; font-weight:750; letter-spacing:1px; }
+    h2 { margin:0; font-size:24px; line-height:1.5; letter-spacing:-.8px; }
+    .section-intro { margin:8px 0 20px; color:var(--muted); font-size:14px; line-height:1.85; word-break:keep-all; }
+    .steps { padding:0; margin:0; list-style:none; counter-reset:step; }
+    .step-card { counter-increment:step; margin-top:14px; padding:21px; background:white; border:1px solid var(--line); border-radius:20px; }
+    .step-card h3 { display:flex; align-items:flex-start; gap:10px; margin:0 0 13px; font-size:17px; line-height:1.65; letter-spacing:-.5px; word-break:keep-all; }
+    .step-card h3::before { content:counter(step); display:grid; place-items:center; flex:none; width:25px; height:25px; margin-top:1px; border-radius:50%; background:#edf3e8; color:var(--green); font-size:12px; }
+    p { line-height:1.85; }
+    .step-card > p { margin:10px 0 0; font-size:14px; word-break:keep-all; }
+    .path { display:flex; flex-wrap:wrap; align-items:center; gap:6px; padding:12px; background:#f6f8f3; border-radius:11px; font-size:12px; font-weight:650; line-height:1.8; }
+    .path .arrow { color:#8d9a88; }
+    .note { color:var(--muted); font-size:12px !important; }
+    details { margin-top:17px; border-top:1px solid var(--line); }
+    summary { display:flex; align-items:center; justify-content:space-between; gap:10px; min-height:48px; padding:10px 0; color:var(--green); cursor:pointer; list-style:none; font-size:13px; font-weight:650; }
+    summary::-webkit-details-marker { display:none; }
+    summary::after { content:"＋"; }
+    details[open] > summary::after { content:"−"; }
+    figure { margin:0; }
+    .screen-button { display:block; width:100%; max-width:286px; margin:2px auto 0; padding:0; border:1px solid #e5e9e2; border-radius:13px; background:#fff; overflow:hidden; cursor:zoom-in; }
+    .screen-button img { display:block; width:100%; height:auto; }
+    figcaption { margin:10px 0 2px; color:var(--muted); text-align:center; font-size:11px; line-height:1.7; }
+    .coupons { display:grid; gap:14px; margin-top:18px; }
+    .coupon { min-width:0; padding:15px; border:1px solid #e1e7dc; border-radius:14px; background:#fafbf8; }
+    .coupon h4 { margin:0 0 12px; font-size:15px; }
+    .offer { margin:0 0 9px; font-size:14px; }
+    .offer strong { display:block; margin-bottom:2px; }
+    .offer span { color:var(--muted); font-size:12px; }
+    .coupon p:last-of-type { margin-bottom:0; }
+    .coupon details { margin-top:12px; }
+    .reminder { margin-top:18px; padding:16px; border:1px solid #ebe1ae; border-radius:13px; background:#fffae2; font-size:14px; line-height:1.8; word-break:keep-all; }
+    .reminder strong { display:block; margin-bottom:4px; }
+    .reminder p { margin:0; }
+    .checks { padding:0; margin:14px 0 0; list-style:none; }
+    .checks li { position:relative; margin-top:10px; padding-left:23px; font-size:14px; line-height:1.85; word-break:keep-all; }
+    .checks li::before { content:"✓"; position:absolute; left:0; color:var(--green); font-weight:750; }
+    .pending { margin-top:17px; padding:14px; border:1px dashed #cdd8c5; border-radius:12px; background:#f6f8f2; }
+    .pending strong { font-size:12px; color:var(--green); }
+    .pending p { margin:6px 0 0; color:var(--muted); font-size:12px; word-break:keep-all; }
+    .next { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-top:32px; min-height:55px; padding:16px 20px; border-radius:14px; color:white; background:var(--green); text-decoration:none; font-size:14px; font-weight:700; }
+    footer { margin-top:23px; color:var(--muted); font-size:11px; line-height:1.8; text-align:center; }
+    dialog { width:calc(100% - 20px); max-width:720px; max-height:calc(100dvh - 20px); margin:auto; padding:0; border:0; border-radius:15px; color:var(--ink); background:var(--paper); }
+    dialog::backdrop { background:#10241cbb; }
+    .zoom-bar { position:sticky; z-index:1; top:0; display:flex; justify-content:space-between; align-items:center; gap:10px; padding:10px 14px; background:var(--paper); border-bottom:1px solid var(--line); }
+    .zoom-bar h2 { font-size:14px; }
+    #close-screen { flex:none; min-width:55px; min-height:44px; padding:6px 10px; border:1px solid #d1d9cb; border-radius:9px; color:var(--ink); background:white; font-size:13px; }
+    #zoom-image { display:block; width:100%; height:auto; }
+    @media (min-width:620px) { .coupons { grid-template-columns:1fr 1fr; } }
+    @media (max-width:359px) { main { padding-left:15px; padding-right:15px; } .step-card { padding:17px; } .overview a { padding:15px 12px; } .overview strong { font-size:15px; } }
+    @media (prefers-reduced-motion:reduce) { html { scroll-behavior:auto; } }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <div class="topline"><a class="back" href="../">← 결제 도우미</a><span class="eyebrow">BEFORE YOU PAY</span></div>
+      <h1>미리 할 작업</h1>
+      <p class="intro">현장에서 바로 결제할 수 있도록<br>쿠폰과 카드를 먼저 준비한다.</p>
+      <nav class="overview" aria-label="준비할 결제수단">
+        <a class="kakao" href="#kakaopay"><span>01 / 카카오페이</span><strong>일본 할인 쿠폰<br>미리 받기 ↓</strong><small>결제는 일본 · 페이머니로</small></a>
+        <a class="union" href="#unionpay"><span>02 / KB 유니온페이</span><strong>유니온페이 카드<br>미리 발급받기 ↓</strong><small>결제할 카드의 국제브랜드 확인</small></a>
+      </nav>
+    </header>
+
+    <section class="guide-section" id="kakaopay" aria-labelledby="kakao-heading">
+      <p class="section-label">01 / KAKAOPAY</p>
+      <h2 id="kakao-heading">쿠폰부터 받아두기</h2>
+      <p class="section-intro">결제 전에 매장에 맞는 쿠폰을 먼저 받는다.<br>쿠폰을 받은 뒤에는 일본 · 페이머니로 결제한다.</p>
+
+      <ol class="steps">
+        <li class="step-card">
+          <h3>카카오톡에서 카카오페이 열기</h3>
+          <div class="path" aria-label="카카오페이 진입 순서"><span>카카오톡</span><span class="arrow" aria-hidden="true">→</span><span>하단 ··· 더보기</span><span class="arrow" aria-hidden="true">→</span><span>노란색 pay 영역</span></div>
+          <p>카카오톡 오른쪽 아래의 <b>···</b>를 누른 다음, 상단 노란색 영역의 <b>pay 잔액</b>을 누른다.</p>
+          <details open>
+            <summary>카카오페이 여는 화면</summary>
+            <figure>
+              <a class="screen-button" href="images/kakao-entry.webp" data-screen data-title="카카오톡에서 카카오페이 열기"><img src="images/kakao-entry.webp" alt="카카오톡 더보기 화면. 주황색 1번은 하단 더보기 버튼, 2번은 상단 노란색 pay 잔액 영역을 가리킨다." width="946" height="2048" fetchpriority="high"></a>
+              <figcaption>1번 → 2번 순서로 누른다. 이미지를 누르면 크게 볼 수 있다.</figcaption>
+            </figure>
+          </details>
+        </li>
+
+        <li class="step-card">
+          <h3>해외 · 일본에서 현지 쿠폰 열기</h3>
+          <div class="path" aria-label="현지 쿠폰 진입 순서"><span>하단 결제</span><span class="arrow" aria-hidden="true">→</span><span>상단 해외</span><span class="arrow" aria-hidden="true">→</span><span>일본</span><span class="arrow" aria-hidden="true">→</span><span>현지 쿠폰 받기</span></div>
+          <p>카카오페이 하단의 <b>결제</b>를 누르고, 상단에서 <b>해외</b>를 선택한다.</p>
+          <p>국가가 <b>일본</b>인지 확인한 뒤, ‘미리 준비하는 해외결제’의 <b>현지 쿠폰 받기 Alipay+</b>를 누른다.</p>
+          <details>
+            <summary>현지 쿠폰 메뉴 화면 보기</summary>
+            <figure>
+              <a class="screen-button" href="images/kakao-overseas.webp" data-screen data-title="해외 · 일본에서 현지 쿠폰 열기"><img src="images/kakao-overseas.webp" alt="카카오페이 화면. 하단 결제, 상단 해외, 현지 쿠폰 받기 메뉴에 주황색 표시가 있으며 국가가 일본으로 표시된다." width="946" height="2048" loading="lazy"></a>
+              <figcaption>결제 → 해외 → 일본 확인 → 현지 쿠폰 받기</figcaption>
+            </figure>
+          </details>
+        </li>
+
+        <li class="step-card">
+          <h3>이용할 매장의 쿠폰 받기</h3>
+          <p>A+ REWARDS 화면에서 <b>Don Quijote</b> 또는 <b>Kansai International Airport</b>를 찾아 <b>지금 받기</b>를 누른다.</p>
+          <div class="coupons">
+            <section class="coupon" aria-labelledby="donki-coupon">
+              <h4 id="donki-coupon">돈키호테</h4>
+              <p class="offer"><strong>2,000엔 할인</strong><span>최소 거래 금액 15,000엔</span></p>
+              <p class="offer"><strong>최대 7% 할인</strong><span>최소 결제 금액 10,000엔</span></p>
+              <details>
+                <summary>돈키호테 쿠폰 화면 보기</summary>
+                <figure>
+                  <a class="screen-button" href="images/kakao-donki-coupons.webp" data-screen data-title="돈키호테 쿠폰 받기"><img src="images/kakao-donki-coupons.webp" alt="A+ REWARDS의 Don Quijote 쿠폰. 최대 7% 할인은 최소 10,000엔, 2,000엔 할인은 최소 15,000엔이며 각각 지금 받기 버튼이 있다." width="946" height="2048" loading="lazy"></a>
+                  <figcaption>Don Quijote의 ‘지금 받기’ 버튼</figcaption>
+                </figure>
+              </details>
+            </section>
+            <section class="coupon" aria-labelledby="airport-coupon">
+              <h4 id="airport-coupon">간사이공항</h4>
+              <p class="offer"><strong>1,200엔 할인</strong><span>최소 거래 금액 10,000엔</span></p>
+              <details>
+                <summary>간사이공항 쿠폰 화면 보기</summary>
+                <figure>
+                  <a class="screen-button" href="images/kakao-airport-coupon.webp" data-screen data-title="간사이공항 쿠폰 받기"><img src="images/kakao-airport-coupon.webp" alt="A+ REWARDS의 Kansai International Airport 쿠폰. KIX 1,200엔 할인, 최소 거래 금액 10,000엔이며 지금 받기 버튼이 있다." width="946" height="2048" loading="lazy"></a>
+                  <figcaption>Kansai International Airport의 ‘지금 받기’ 버튼</figcaption>
+                </figure>
+              </details>
+            </section>
+          </div>
+          <p class="note">금액과 할인 내용은 제공된 화면 기준이다.<br>사용 기간·대상 매장·중복 할인 여부는 쿠폰 상세에서 확인한다.</p>
+        </li>
+
+        <li class="step-card">
+          <h3>실제 결제는 일본 · 페이머니로</h3>
+          <div class="reminder"><strong>쿠폰 받기와 결제 수단 확인, 둘 다 필요</strong><p>카카오페이 결제 화면에서 국가가 <b>일본</b>, 결제 수단이 <b>페이머니</b>로 선택되어 있는지 확인한다.</p></div>
+          <ul class="checks">
+            <li>이용할 매장의 쿠폰을 결제 전에 받았는지 확인한다.</li>
+            <li>결제할 금액에 맞게 카카오페이머니 잔액을 준비한다.</li>
+            <li>결제 도우미에서 추천을 확인하고 결제를 진행한다.</li>
+          </ul>
+          <p class="note">결제 도우미의 ‘카카오페이 결제 열기’로 이동해도 일본 · 페이머니 선택을 직접 확인한다.</p>
+        </li>
+      </ol>
+    </section>
+
+    <section class="guide-section" id="unionpay" aria-labelledby="union-heading">
+      <p class="section-label">02 / KB UNIONPAY</p>
+      <h2 id="union-heading">카드는 미리 발급받기</h2>
+      <p class="section-intro">KB 유니온페이로 결제하려면<br>결제 전에 해당 카드를 발급받아야 한다.</p>
+      <div class="step-card">
+        <ul class="checks">
+          <li>발급받을 카드가 KB 유니온페이 혜택 대상인지 확인한다.</li>
+          <li>카드의 국제브랜드가 <b>UnionPay(유니온페이)</b>인지 확인한다.</li>
+          <li>현장에서 사용할 수 있도록 카드를 미리 준비한다.</li>
+        </ul>
+        <div class="pending"><strong>상세 발급 가이드 추가 예정</strong><p>정확한 카드명과 신청 화면을 확인한 뒤, 발급 순서를 화면과 함께 안내한다.</p></div>
+      </div>
+    </section>
+
+    <a class="next" href="../"><span>준비 후 결제수단 계산하기</span><span aria-hidden="true">→</span></a>
+    <footer>준비 가이드는 로그인 없이 확인할 수 있다.<br>쿠폰 화면 기준 · 2026. 10. 21.</footer>
+  </main>
+
+  <dialog id="screen-dialog" aria-labelledby="screen-title">
+    <div class="zoom-bar"><h2 id="screen-title">가이드 화면</h2><button id="close-screen" type="button" autofocus>닫기</button></div>
+    <img id="zoom-image" alt="">
+  </dialog>
+  <script>
+    'use strict';
+    const screenDialog = document.getElementById('screen-dialog');
+    const zoomImage = document.getElementById('zoom-image');
+    document.querySelectorAll('[data-screen]').forEach(link => {
+      link.addEventListener('click', event => {
+        if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || typeof screenDialog.showModal !== 'function') return;
+        event.preventDefault();
+        zoomImage.src = link.href;
+        zoomImage.alt = link.querySelector('img').alt;
+        document.getElementById('screen-title').textContent = link.dataset.title;
+        screenDialog.showModal();
+        screenDialog.scrollTop = 0;
+      });
+    });
+    document.getElementById('close-screen').addEventListener('click', () => screenDialog.close());
+    screenDialog.addEventListener('click', event => {
+      if (event.target !== screenDialog) return;
+      const bounds = screenDialog.getBoundingClientRect();
+      if (event.clientX < bounds.left || event.clientX > bounds.right || event.clientY < bounds.top || event.clientY > bounds.bottom) screenDialog.close();
+    });
+  </script>
+</body>
+</html>
