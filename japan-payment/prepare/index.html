@@ -49,6 +49,7 @@
     figure { margin:0; }
     .screen-button { display:block; width:100%; max-width:286px; margin:2px auto 0; padding:0; border:1px solid #e5e9e2; border-radius:13px; background:#fff; overflow:hidden; cursor:zoom-in; }
     .screen-button img { display:block; width:100%; height:auto; }
+    .payment-example { margin-top:18px; }
     figcaption { margin:10px 0 2px; color:var(--muted); text-align:center; font-size:11px; line-height:1.7; }
     .coupons { display:grid; gap:14px; margin-top:18px; }
     .coupon { min-width:0; padding:15px; border:1px solid #e1e7dc; border-radius:14px; background:#fafbf8; }
@@ -64,9 +65,16 @@
     .checks { padding:0; margin:14px 0 0; list-style:none; }
     .checks li { position:relative; margin-top:10px; padding-left:23px; font-size:14px; line-height:1.85; word-break:keep-all; }
     .checks li::before { content:"✓"; position:absolute; left:0; color:var(--green); font-weight:750; }
-    .pending { margin-top:17px; padding:14px; border:1px dashed #cdd8c5; border-radius:12px; background:#f6f8f2; }
-    .pending strong { font-size:12px; color:var(--green); }
-    .pending p { margin:6px 0 0; color:var(--muted); font-size:12px; word-break:keep-all; }
+    .action-link { display:flex; justify-content:space-between; align-items:center; gap:10px; min-height:50px; margin-top:16px; padding:13px 15px; border:1px solid var(--green); border-radius:11px; background:var(--green); color:white; text-decoration:none; font-size:14px; font-weight:700; line-height:1.6; word-break:keep-all; }
+    .action-link.secondary { border-color:#d3decb; background:#f3f7ef; color:var(--green); }
+    .reference-link { color:var(--green); text-underline-offset:3px; }
+    .numbered-list { margin:14px 0 0; padding-left:23px; }
+    .numbered-list li { margin-top:10px; padding-left:3px; font-size:14px; line-height:1.85; word-break:keep-all; }
+    .benefit-summary { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin:18px 0; }
+    .benefit-summary div { padding:13px; border:1px solid #dbe4d4; border-radius:12px; background:#edf3e8; }
+    .benefit-summary dt { color:var(--muted); font-size:11px; line-height:1.6; }
+    .benefit-summary dd { margin:4px 0 0; font-size:16px; font-weight:750; line-height:1.6; }
+    .event-period { margin:0; color:var(--muted); font-size:12px; line-height:1.8; }
     .next { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-top:32px; min-height:55px; padding:16px 20px; border-radius:14px; color:white; background:var(--green); text-decoration:none; font-size:14px; font-weight:700; }
     footer { margin-top:23px; color:var(--muted); font-size:11px; line-height:1.8; text-align:center; }
     dialog { width:calc(100% - 20px); max-width:720px; max-height:calc(100dvh - 20px); margin:auto; padding:0; border:0; border-radius:15px; color:var(--ink); background:var(--paper); }
@@ -88,7 +96,7 @@
       <p class="intro">현장에서 바로 결제할 수 있도록<br>쿠폰과 카드를 먼저 준비한다.</p>
       <nav class="overview" aria-label="준비할 결제수단">
         <a class="kakao" href="#kakaopay"><span>01 / 카카오페이</span><strong>일본 할인 쿠폰<br>미리 받기 ↓</strong><small>결제는 일본 · 페이머니로</small></a>
-        <a class="union" href="#unionpay"><span>02 / KB 유니온페이</span><strong>유니온페이 카드<br>미리 발급받기 ↓</strong><small>결제할 카드의 국제브랜드 확인</small></a>
+        <a class="union" href="#unionpay"><span>02 / KB 유니온페이</span><strong>카드 발급하고<br>사전 등록하기 ↓</strong><small>카드 선택확인까지 완료</small></a>
       </nav>
     </header>
 
@@ -159,10 +167,16 @@
         <li class="step-card">
           <h3>실제 결제는 일본 · 페이머니로</h3>
           <div class="reminder"><strong>쿠폰 받기와 결제 수단 확인, 둘 다 필요</strong><p>카카오페이 결제 화면에서 국가가 <b>일본</b>, 결제 수단이 <b>페이머니</b>로 선택되어 있는지 확인한다.</p></div>
+          <p><b>카카오페이 앱 → 하단 결제하기 → 국가 일본</b> 순서로 연다.</p>
+          <figure class="payment-example">
+            <a class="screen-button" id="kakao-payment-example" href="images/kakao-japan-payment.webp" data-screen data-title="일본 · Alipay+ 결제 화면 — 카카오페이 공식 예시"><img src="images/kakao-japan-payment.webp" alt="카카오페이 공식 해외결제 예시. Alipay+ 오른쪽 위에 일본이 표시되고, 바코드와 QR코드 아래에 엔화 보유 잔액이 표시된다." width="326" height="440" loading="lazy"></a>
+            <figcaption>카카오페이 공식 안내의 일본 결제 예시를 발췌했다.<br>앱 버전에 따라 화면 구성이 다를 수 있다.<br><a class="reference-link" href="https://story.kakaopay.com/338-kakaopay-global/" target="_blank" rel="noopener noreferrer">출처 · 카카오페이 해외결제 사용법 ↗</a></figcaption>
+          </figure>
+          <p>화면의 <b>일본</b> 표시와 <b>Alipay+</b>를 확인한다.<br>공식 안내에 따르면 해외결제는 <b>페이머니</b>로 이용한다.</p>
           <ul class="checks">
             <li>이용할 매장의 쿠폰을 결제 전에 받았는지 확인한다.</li>
             <li>결제할 금액에 맞게 카카오페이머니 잔액을 준비한다.</li>
-            <li>결제 도우미에서 추천을 확인하고 결제를 진행한다.</li>
+            <li>매장 직원에게 바코드·QR을 보여주거나, 매장의 QR을 스캔해 결제를 진행한다.</li>
           </ul>
           <p class="note">결제 도우미의 ‘카카오페이 결제 열기’로 이동해도 일본 · 페이머니 선택을 직접 확인한다.</p>
         </li>
@@ -171,20 +185,56 @@
 
     <section class="guide-section" id="unionpay" aria-labelledby="union-heading">
       <p class="section-label">02 / KB UNIONPAY</p>
-      <h2 id="union-heading">카드는 미리 발급받기</h2>
-      <p class="section-intro">KB 유니온페이로 결제하려면<br>결제 전에 해당 카드를 발급받아야 한다.</p>
-      <div class="step-card">
-        <ul class="checks">
-          <li>발급받을 카드가 KB 유니온페이 혜택 대상인지 확인한다.</li>
-          <li>카드의 국제브랜드가 <b>UnionPay(유니온페이)</b>인지 확인한다.</li>
-          <li>현장에서 사용할 수 있도록 카드를 미리 준비한다.</li>
-        </ul>
-        <div class="pending"><strong>상세 발급 가이드 추가 예정</strong><p>정확한 카드명과 신청 화면을 확인한 뒤, 발급 순서를 화면과 함께 안내한다.</p></div>
-      </div>
+      <h2 id="union-heading">카드 발급 후 사전 등록까지</h2>
+      <p class="section-intro">카드를 발급받은 다음, 유니온페이 행사에 사전 등록해야 할인받을 수 있다.</p>
+      <dl class="benefit-summary" aria-label="KB 유니온페이 행사 혜택">
+        <div><dt>건당 이용 조건</dt><dd>미화 50달러 이상</dd></div>
+        <div><dt>현지 오프라인 결제</dt><dd>10% 즉시 할인</dd></div>
+        <div><dt>건당 할인 한도</dt><dd>최대 20달러</dd></div>
+        <div><dt>카드 한 장당</dt><dd>최대 3회</dd></div>
+      </dl>
+      <p class="event-period">행사 기간: 2026. 9. 14. ~ 12. 31.<br>예산이 소진되면 조기 종료될 수 있다.</p>
+      <ol class="steps">
+        <li class="step-card">
+          <h3>KB 유니온페이 카드 발급받기</h3>
+          <p>대상은 <b>KB국민 유니온페이 개인 신용·체크카드</b>다.<br>KB국민 기업카드와 비씨카드는 제외된다.</p>
+          <p>이미 대상 카드가 있으면 새로 발급받지 않고 <b>다음 단계의 사전 등록</b>을 진행한다.</p>
+          <p>새로 발급받는 경우, 상품과 신청 화면에서 국제브랜드가 <b>UnionPay(유니온페이·은련)</b>인지 확인한다.</p>
+          <a class="action-link" id="kb-card-apply" href="https://card.kbcard.com/CRD/DVIEW/HCAMCXPRICAC0076?cooperationcode=01664" target="_blank" rel="noopener noreferrer"><span>노리 체크카드 발급·신청</span><span aria-hidden="true">↗</span></a>
+          <p class="note">유니온페이 발급이 가능한 카드의 예시다.<br>KB 공식 상품 페이지의 카드신청 메뉴에서 진행하고, 브랜드를 UnionPay로 선택한다.<br>모바일에서는 ‘KB Pay에서 카드신청’ 또는 ‘웹에서 카드신청’을 선택한다.</p>
+          <a class="action-link secondary" href="https://card.kbcard.com/CRD/DVIEW/HCAM0101" target="_blank" rel="noopener noreferrer"><span>다른 KB 카드 찾아보기</span><span aria-hidden="true">↗</span></a>
+        </li>
+        <li class="step-card">
+          <h3>결제 전에 행사 사전 등록하기</h3>
+          <div class="reminder"><strong>카드 발급 후, 사전 등록도 필수</strong><p><b>카드번호 등록 + 혜택받을 카드 ‘선택확인’</b>까지 완료해야 한다.</p></div>
+          <a class="action-link" id="union-registration" href="https://marketing.unionpayintl.com/offer-promote/?language=kr&amp;insCode=299990156#/offer?offerNo=260819112751" target="_blank" rel="noopener noreferrer"><span>유니온페이 행사 사전 등록하기</span><span aria-hidden="true">↗</span></a>
+          <ol class="numbered-list">
+            <li>위 링크로 열린 행사 등록 페이지에서 <b>등록하기</b>를 누른다.</li>
+            <li><b>SMS 인증 코드로 로그인</b>을 선택한다.</li>
+            <li>국가번호를 <b>+82</b>로 바꾸고 전화번호·자동입력 방지문자를 입력한 뒤, 약관 동의와 문자 인증을 진행한다.</li>
+            <li>로그인 후 <b>유효한 카드번호</b>를 입력해 카드를 추가한다.</li>
+            <li>혜택을 적용받을 카드를 선택하고 하단의 <b>선택확인</b>을 누른다.</li>
+            <li><b>이벤트 수령 기록</b>에서 카드번호와 등록 시각을 확인한다.</li>
+          </ol>
+          <p class="note">공식 안내상 등록 성공 후 혜택 적용까지 약 2분이 걸린다.<br>등록과 선택확인이 완료된 뒤 결제한다.</p>
+        </li>
+        <li class="step-card">
+          <h3>현지에서 등록한 카드로 결제하기</h3>
+          <ul class="checks">
+            <li>일본의 대상 오프라인 가맹점에서 사전 등록한 카드로 건당 미화 환산 <b>50달러 이상</b> 결제한다.</li>
+            <li>네이버페이·카카오페이·토스페이 등을 통한 간편결제와 온라인 결제는 이 행사 대상에서 제외된다.</li>
+            <li>할인 금액은 가맹점 영수증에 표시되지 않으므로 <b>카드사 승인 문자</b>로 확인한다.</li>
+            <li>취소·환불해도 행사 할인 횟수는 사용한 것으로 간주된다.</li>
+          </ul>
+          <p class="note">아래 공식 페이지에서 행사 적용 여부와 최신 조건을 확인한다.</p>
+          <a class="action-link secondary" id="union-official-event" href="https://m.unionpayintl.com/cardholderServ/serviceCenter/merchant/1210618403647?type=1" target="_blank" rel="noopener noreferrer"><span>유니온페이 공식 행사 안내</span><span aria-hidden="true">↗</span></a>
+          <a class="action-link secondary" href="https://card.kbcard.com/BON/DVIEW/HBBMCXCRVNEC0001?eventNum=1001987&amp;mainCC=a" target="_blank" rel="noopener noreferrer"><span>KB국민카드 공식 행사 안내</span><span aria-hidden="true">↗</span></a>
+        </li>
+      </ol>
     </section>
 
     <a class="next" href="../"><span>준비 후 결제수단 계산하기</span><span aria-hidden="true">→</span></a>
-    <footer>준비 가이드는 로그인 없이 확인할 수 있다.<br>쿠폰 화면 기준 · 2026. 10. 21.</footer>
+    <footer>준비 가이드는 로그인 없이 확인할 수 있다.<br>쿠폰 화면·공식 행사 확인 기준 · 2026. 10. 21.</footer>
   </main>
 
   <dialog id="screen-dialog" aria-labelledby="screen-title">
