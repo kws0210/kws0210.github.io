@@ -182,16 +182,17 @@
         </div>
         <p class="input-note" id="amount-note">엔화 금액을 숫자로 입력해주세요.</p>
         <div id="donki-options" class="coupon-options" hidden>
-          <label class="coupon-check"><input id="donki-eligible" type="checkbox"><span>A+ REWARDS 매장 쿠폰을 사용할 수 있어요</span></label>
+          <label class="coupon-check"><input id="donki-eligible" type="checkbox" aria-describedby="donki-coupon-help"><span>돈키호테 최대 7% 할인 쿠폰이 있어요</span></label>
+          <p class="input-note" id="donki-coupon-help">카카오페이의 ‘현지 쿠폰 받기’에서 받은 쿠폰이에요.<br>결제 전에 매장 직원에게 보여주세요.<br>2,000엔 결제 할인 쿠폰과는 별도로 계산해요.</p>
           <p class="input-note">면세·할인 대상 상품의 세금 제외 금액을 입력해주세요.<br>주류·담배 등 제외 상품이 섞이면 따로 계산해주세요.</p>
           <div id="coupon-discount-field" hidden>
-            <label class="field-label" for="coupon-discount">이번 매장 쿠폰의 실제 할인액</label>
+            <label class="field-label" for="coupon-discount">최대 7% 쿠폰으로 할인받는 금액</label>
             <div class="amount-box"><input id="coupon-discount" type="text" inputmode="numeric" pattern="[0-9]+" placeholder="쿠폰 화면에서 확인한 금액" maxlength="9" aria-describedby="coupon-discount-note"><span class="yen">엔</span></div>
             <p class="input-note" id="coupon-discount-note">최소 10,000엔 이상이며 할인율은 쿠폰 상세 조건에 따라 달라요.<br>쿠폰이나 계산대에서 확인한 할인액을 입력하면 결제 혜택까지 비교해요.</p>
             <p class="input-note">이 쿠폰은 알리페이 프로모션과 중복 가능해요.<br>카카오페이 결제 할인과 함께 계산해요.</p>
             <label class="coupon-check"><input id="donki-stack-union" type="checkbox"><span>KB 결제 할인과도 중복 적용을 확인했어요</span></label>
           </div>
-          <a href="prepare/#donki-store-coupon">최대 7% 쿠폰 사용 화면·약관 보기 ↗</a>
+          <a href="prepare/#donki-store-coupon">이 쿠폰은 어디서 받나요? 사용법 보기 ↗</a>
         </div>
         <p class="error" id="calculation-error" role="alert" hidden></p>
       </form>
@@ -257,7 +258,7 @@
     <details>
       <summary>장소별 결제 기준 보기</summary>
       <ul class="rules">
-        <li><b>돈키호테 최대 7% 매장 쿠폰</b>앱의 A+ REWARDS에서 수령하고 결제 전에 제시해요. 약관의 최소 금액은 세금 제외 10,000엔 또는 30,000엔이며 제외 상품은 합산하지 않아요.<br>현재 제공된 화면에는 구간별 실제 할인율이 없어, 쿠폰에서 확인한 할인액을 입력해 계산해요.</li>
+        <li><b>돈키호테 최대 7% 할인 쿠폰</b>카카오페이 결제 화면에서 일본을 선택하고 ‘현지 쿠폰 받기’로 들어가 받아주세요. 결제 전에 매장 직원에게 보여주세요. 약관의 최소 금액은 세금 제외 10,000엔 또는 30,000엔이며 제외 상품은 합산하지 않아요.<br>쿠폰에서 확인한 실제 할인액을 입력해 계산해요.</li>
         <li><b>이번 결제에서 큰 예상 할인 추천</b>돈키호테 카카오페이: 결제 기준 15,000엔 이상 → 2,000엔 할인.<br>간사이공항 카카오페이: 10,000엔 이상 → 1,200엔 할인.<br>KB: 50달러 이상 → 10% 할인, 건당 최대 20달러.<br>매장 쿠폰을 적용한 뒤 금액으로 결제 혜택의 최소 금액을 판단해요. 동률이면 카카오페이 1회를 아끼도록 KB를 우선해요.</li>
         <li><b>중복 적용</b>제공된 A+ REWARDS 약관은 알리페이 프로모션과 중복 가능하다고 명시해요. 매장 쿠폰과 카카오페이 결제 할인을 함께 비교해요.<br>KB와의 중복은 별도 확인한 경우에만 합산해요.<br>돈키호테 자체 할인·프로모션과 중복 불가, 캡처 사용 불가, 결제 후 제시 불가예요.</li>
         <li><b>횟수·적용 범위</b>카카오페이 결제 할인 1회, KB 3회는 남은 횟수로 추천해요. 최대 7% 매장 쿠폰은 ‘거래당 1회’로, 누적 횟수가 늘어도 전체 소진으로 처리하지 않아요. 실제 사용 가능한 쿠폰인지 매번 확인해주세요.<br>매장 쿠폰만 사용하면 카카오페이·KB 횟수는 늘어나지 않아요.<br>간사이공항 10,000엔 미만은 기존 기준대로 트래블카드예요.</li>
