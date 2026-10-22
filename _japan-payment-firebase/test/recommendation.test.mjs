@@ -6,13 +6,13 @@ import vm from 'node:vm';
 const html = await readFile(new URL('../../japan-payment/index.html', import.meta.url), 'utf8');
 const source = html.slice(html.indexOf('    function selectPayment('), html.indexOf('    function paymentOptions('));
 const settingsSource = html.slice(html.indexOf('    const DEFAULT_SETTINGS ='), html.indexOf('    const PLACES ='));
-const { selectPayment, DEFAULT_SETTINGS, DONKI_STORES, japanDate, normalizeSettings, validSettings } = vm.runInNewContext(`
+const { selectPayment, DEFAULT_SETTINGS, DONKI_STORES, donkiStoreOptions, japanDate, normalizeSettings, validSettings } = vm.runInNewContext(`
   const LIMITS = { kakao: 1, union: 3, unionDonki500: 3, unionDonki4000: 3, donkiCoupon: 1000000 };
   const normalizeCounts = value => ({ kakao: 0, union: 0, unionDonki500: 0, unionDonki4000: 0, donkiCoupon: 0, ...value });
   ${settingsSource}
   const yenThreshold = rate => Math.ceil(Number((rate.jpy * 50).toFixed(7)));
   ${source}
-  ({ selectPayment, DEFAULT_SETTINGS, DONKI_STORES, japanDate, normalizeSettings, validSettings });
+  ({ selectPayment, DEFAULT_SETTINGS, DONKI_STORES, donkiStoreOptions, japanDate, normalizeSettings, validSettings });
 `);
 const noSettings = { ...DEFAULT_SETTINGS };
 const allSettings = { ...Object.fromEntries(Object.entries(noSettings).map(([key, value]) => [key, typeof value === 'boolean'])), kakaoRateLow: 5, kakaoRateHigh: 7, unionDonkiEligible: false };
@@ -115,14 +115,35 @@ test('전용 행사는 당일 기록·전체 3회 한도·수동 복원에 따�
   assert.equal(atListedStore(12000, owned, { ...spent, unionDonki500: 2 }, {}).benefit, 'unionDonki500');
 });
 
-test('전체 참여 목록과 대조한 오사카 15곳을 점포 팝업에 사용한다', () => {
-  assert.equal(Object.keys(DONKI_STORES).length, 15);
-  assert.equal(DONKI_STORES['38923398742572'], '도톤보리점');
-  assert.equal(DONKI_STORES['38923401142452'], '난바 센니치마에점');
-  assert.equal(DONKI_STORES['38925870283070'], '교바시점');
-  assert.equal(Object.values(DONKI_STORES).some(name => /벤텐초|후카에바시|데라다초/.test(name)), false);
+test('공식 오사카 46개 지점과 전용 행사 대상 15곳을 조사 대조표와 일치시킨다', async () => {
+  const evidence = await readFile(new URL('../OSAKA_STORES.md', import.meta.url), 'utf8');
+  const rows = [...evidence.matchAll(/^\| \[([^\]]+)\]\(https:\/\/www\.donki\.com\/store\/shop_detail\.php\?shop_id=(\d+)\).*\| (참여 확인|미등재) \|$/gm)];
+  assert.equal(rows.length, 46);
+  assert.equal(DONKI_STORES.length, 46);
+  assert.equal(new Set(DONKI_STORES.map(store => store.id)).size, 46);
+  assert.equal(DONKI_STORES.filter(store => store.eligible).length, 15);
+  for (const [, japanese, id, status] of rows) {
+    const store = DONKI_STORES.find(value => value.id === id);
+    assert.ok(store, id);
+    assert.equal(store.japanese.replace(/\s/g, ''), japanese.replace(/\s/g, ''));
+    assert.equal(store.eligible, status === '참여 확인', store.name);
+  }
   assert.equal(html.includes('data-setting="kakaoStackConfirmed"'), false);
   assert.equal(html.includes('data-setting="unionDonkiEligible"'), false);
+});
+
+test('선택한 지점 ID로 전용 혜택을 판정하고 틀린 그룹 옵션보다 우선한다', () => {
+  for (const store of DONKI_STORES) {
+    const choice = choose(45000, allSettings, available, {}, { donkiStoreId: store.id, donkiStoreGroup: store.eligible ? 'other' : 'osaka-listed' });
+    assert.equal(choice.benefit, store.eligible ? 'unionDonki4000' : 'union', store.name);
+    assert.equal(choice.totalDiscount, store.eligible ? 7150 : 6150, store.name);
+  }
+  for (const id of ['other', 'unknown', 'toString', '__proto__', null, 110]) {
+    assert.equal(donkiStoreOptions(id).donkiStoreGroup, 'other');
+    const choice = choose(45000, allSettings, available, {}, { donkiStoreId: id, donkiStoreGroup: 'osaka-listed' });
+    assert.equal(choice.benefit, 'union');
+    assert.equal(choice.totalDiscount, 6150);
+  }
 });
 
 test('일본 자정에 날짜가 바뀌어도 다른 시간대에서 같은 일일 키를 사용한다', () => {
