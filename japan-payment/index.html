@@ -250,7 +250,7 @@
         <label for="amount" class="field-label amount-label"><span class="step" aria-hidden="true">2</span>얼마를 결제하나요?</label>
         <div class="amount-row">
           <div class="amount-box"><input id="amount" type="text" inputmode="numeric" pattern="[0-9]+" placeholder="0" maxlength="9" required aria-describedby="amount-note" aria-label="결제 금액, 엔"><span class="yen">엔</span></div>
-          <button id="calculate" type="submit" disabled>계산 <span aria-hidden="true">↗</span></button>
+          <button id="calculate" type="submit" disabled><span id="calculate-label">계산</span> <span aria-hidden="true">↗</span></button>
         </div>
         <p class="input-note" id="amount-note">엔화 금액을 숫자로 입력해주세요.</p>
         <div id="other-options" class="coupon-options" hidden>
@@ -332,7 +332,7 @@
           <button class="small-button" type="submit">적용</button>
         </form>
         <p class="error" id="rate-error" role="alert" hidden></p>
-        <p class="fine-print">Frankfurter의 최신 영업일 참고 환율을 사용해요.<br>실제 카드사의 달러 환산 금액과 차이가 날 수 있어요.<br>조회가 안 되면 확인한 환율을 직접 입력해주세요.</p>
+        <p class="fine-print">Frankfurter의 최신 영업일 참고 환율을 사용하고, 조회 실패 시 <a href="https://www.exchangerate-api.com" target="_blank" rel="noopener noreferrer">ExchangeRate-API</a>로 자동 재시도해요.<br>실제 카드사의 달러 환산 금액과 차이가 날 수 있어요.<br>두 곳 모두 조회가 안 되면 확인한 환율을 직접 입력할 수 있어요.</p>
       </div>
     </details>
 
@@ -470,6 +470,8 @@
     let loginBusy = false;
     let exchangeRate = null;
     let rateLoading = false;
+    let ratePromise = null;
+    let rateController = null;
     let rateRequestId = 0;
     let rateNotice = '';
     let pendingChange = null;
@@ -964,7 +966,7 @@
       if (usable) {
         const minimum = yenThreshold(exchangeRate);
         $('rate-summary').textContent = '50달러 = ' + format(minimum) + '엔부터 · ' + (exchangeRate.source === 'manual' ? '직접 입력' : exchangeRate.date + ' 기준');
-        const source = exchangeRate.source === 'manual' ? '직접 입력한 환율' : 'Frankfurter · ' + exchangeRate.date + ' 기준';
+        const source = exchangeRate.source === 'manual' ? '직접 입력한 환율' : (exchangeRate.provider || 'Frankfurter') + ' · ' + exchangeRate.date + ' 기준';
         $('rate-status').textContent = '1달러 = ' + format(exchangeRate.jpy) + '엔 / 50달러 이상: ' + format(minimum) + '엔부터\n' + source + (rateNotice ? '\n' + rateNotice : '');
       } else {
         $('rate-summary').textContent = rateLoading ? '50달러 기준 환율을 불러오는 중…' : '환율을 확인해주세요 · 아래에서 직접 입력 가능';
@@ -973,34 +975,60 @@
       $('rate-status').style.whiteSpace = 'pre-line';
       $('refresh-rate').disabled = rateLoading;
       $('refresh-rate').textContent = rateLoading ? '조회 중…' : '최신 환율 가져오기 ↻';
+      updateCalculate();
     }
 
-    async function refreshRate() {
-      if (rateLoading) return;
+    function rateFromResponse(data, provider) {
+      const backup = provider === 'ExchangeRate-API';
+      const publishedAt = backup ? data.time_last_update_unix * 1000 : Date.parse(data.date + 'T00:00:00Z');
+      if ((backup ? data.result !== 'success' || data.base_code !== 'USD' : data.base !== 'USD') || !Number.isFinite(publishedAt) || publishedAt > Date.now() + CACHE_TTL || Date.now() - publishedAt > 7 * CACHE_TTL) throw new Error('유효하지 않은 환율');
+      const date = new Date(publishedAt).toISOString().slice(0, 10);
+      if (!backup && date !== data.date) throw new Error('유효하지 않은 기준일');
+      const candidate = { jpy: data.rates?.JPY, date, source: 'auto', provider, fetchedAt: Date.now() };
+      if (Number.isFinite(data.rates?.KRW) && data.rates.KRW > 0 && data.rates.KRW < 10000000) candidate.krw = data.rates.KRW;
+      if (!validRate(candidate)) throw new Error('유효하지 않은 환율');
+      return candidate;
+    }
+
+    function refreshRate() {
+      // 계산·화면 복귀가 겹쳐도 진행 중인 한 조회의 완료를 함께 기다린다.
+      if (ratePromise) return ratePromise;
       const requestId = ++rateRequestId;
-      const controller = new AbortController();
-      const timeout = setTimeout(() => controller.abort(), 8000);
       rateLoading = true;
       renderRate();
-      try {
-        const response = await fetch('https://api.frankfurter.dev/v1/latest?base=USD&symbols=JPY,KRW', { signal: controller.signal, cache: 'no-store', credentials: 'omit' });
-        if (!response.ok) throw new Error('환율 조회 실패');
-        const data = await response.json();
-        const candidate = { jpy: data.rates && data.rates.JPY, date: data.date, source: 'auto', fetchedAt: Date.now() };
-        if (Number.isFinite(data.rates?.KRW) && data.rates.KRW > 0 && data.rates.KRW < 10000000) candidate.krw = data.rates.KRW;
-        if (data.base !== 'USD' || !/^\d{4}-\d{2}-\d{2}$/.test(candidate.date) || !validRate(candidate)) throw new Error('유효하지 않은 환율');
-        if (requestId !== rateRequestId) return;
-        exchangeRate = candidate;
-        rateNotice = '';
-      } catch {
-        if (requestId === rateRequestId) rateNotice = '최신 조회 실패 · 현재 환율 유지 중';
-      } finally {
-        clearTimeout(timeout);
-        if (requestId === rateRequestId) {
-          rateLoading = false;
-          renderRate();
+      ratePromise = (async () => {
+        try {
+          for (const [provider, url] of [
+            ['Frankfurter', 'https://api.frankfurter.dev/v1/latest?base=USD&symbols=JPY,KRW'],
+            ['ExchangeRate-API', 'https://open.er-api.com/v6/latest/USD']
+          ]) {
+            if (requestId !== rateRequestId) return;
+            const controller = new AbortController();
+            rateController = controller;
+            const timeout = setTimeout(() => controller.abort(), 6000);
+            try {
+              const response = await fetch(url, { signal: controller.signal, cache: 'no-store', credentials: 'omit' });
+              if (!response.ok) throw new Error('환율 조회 실패');
+              const candidate = rateFromResponse(await response.json(), provider);
+              if (requestId !== rateRequestId) return;
+              exchangeRate = candidate;
+              rateNotice = '';
+              return;
+            } catch {
+              // 응답 지연·통신 오류·잘못된 데이터는 다음 제공처에서 재조회한다.
+            } finally { clearTimeout(timeout); }
+          }
+          if (requestId === rateRequestId) rateNotice = '최신 조회 실패 · 현재 환율 유지 중';
+        } finally {
+          if (requestId === rateRequestId) {
+            rateLoading = false;
+            ratePromise = null;
+            rateController = null;
+            renderRate();
+          }
         }
-      }
+      })();
+      return ratePromise;
     }
 
     // 보유 설정·금액·일본 날짜 기준 사용 기록으로 알려진 매장의 혜택을 자동 비교한다.
@@ -1132,6 +1160,7 @@
       const place = document.querySelector('input[name="place"]:checked');
       const amount = $('amount').value;
       $('calculate').disabled = busy || !session || !settingsRevision || !place || (place.value === 'donki' && (donkiStoreGroup === null || $('donki-store-dialog').open)) || !/^\d+$/.test(amount) || Number(amount) <= 0;
+      $('calculate-label').textContent = busy ? (rateLoading ? '환율 확인 중…' : '계산 중…') : '계산';
     }
 
     function showResult(choice, place, amount, rate, options = {}) {
@@ -1202,14 +1231,17 @@
       const generation = sessionGeneration;
       const place = document.querySelector('input[name="place"]:checked').value;
       const amount = Number($('amount').value);
-      const rate = validRate(exchangeRate) ? exchangeRate : null;
+      let rate = validRate(exchangeRate) ? exchangeRate : null;
       const options = paymentOptions();
       const key = place + ':' + amount + ':' + JSON.stringify(options);
       if (!paymentRetry || paymentRetry.key !== key) paymentRetry = { key, id: crypto.randomUUID() };
       const operationId = paymentRetry.id;
       let paymentWindow = null;
+      const preview = selectPayment(place, amount, counts, rate, options, settings, dailyDate === japanDate() ? dailyUsage : emptyDailyUsage());
+      // 환율 확인 전에도 카카오 후보가 있으면 탭 시점에 앱 이동용 창을 준비한다.
+      const windowChoice = preview.reason === 'rate-required' ? selectPayment(place, amount, counts, null, options, { ...settings, unionRegistered: false }, dailyDate === japanDate() ? dailyUsage : emptyDailyUsage()) : preview;
       // 서버 응답 뒤에도 앱을 열 수 있도록 사용자 탭 시점에 창을 준비한다.
-      if (selectPayment(place, amount, counts, rate, options, settings, dailyDate === japanDate() ? dailyUsage : emptyDailyUsage()).method === 'kakao') {
+      if (windowChoice.method === 'kakao') {
         paymentWindow = window.open('about:blank', '_blank');
         if (paymentWindow) paymentWindow.opener = null;
       }
@@ -1217,6 +1249,12 @@
       $('calculation-error').hidden = true;
       $('count-feedback').textContent = '';
       try {
+        if (preview.reason === 'rate-required' || (rate?.source === 'auto' && Date.now() - rate.fetchedAt >= RATE_TTL)) {
+          await refreshRate();
+          if (generation !== sessionGeneration) { if (paymentWindow) paymentWindow.close(); return; }
+          rate = validRate(exchangeRate) ? exchangeRate : null;
+        }
+        if (selectPayment(place, amount, counts, rate, options, settings, dailyDate === japanDate() ? dailyUsage : emptyDailyUsage()).reason === 'rate-required') throw accountError('자동 환율 조회에 실패했어요. 인터넷 연결을 확인한 뒤 다시 계산해주세요. 아래에서 확인한 환율을 직접 입력해도 돼요.', 422);
         const data = await api('/v1/calculate', { body: { place, amount, rate, options, operationId } });
         if (!applyState(data, generation)) { if (paymentWindow) paymentWindow.close(); return; }
         paymentRetry = null;
@@ -1233,7 +1271,7 @@
         if (generation !== sessionGeneration) return;
         $('calculation-error').textContent = error.message;
         $('calculation-error').hidden = false;
-        if (error.status === 422) { $('rate-settings').open = true; refreshRate(); }
+        if (error.status === 422) $('rate-settings').open = true;
       } finally { if (generation === sessionGeneration) setBusy(false); }
     });
 
@@ -1383,6 +1421,9 @@
       }
       // 진행 중인 자동 조회가 나중에 끝나도 직접 입력한 값을 덮어쓰지 않는다.
       rateRequestId += 1;
+      if (rateController) rateController.abort();
+      rateController = null;
+      ratePromise = null;
       rateLoading = false;
       exchangeRate = candidate;
       rateNotice = '';
