@@ -149,10 +149,14 @@
     #donki-store-dialog .dialog-buttons { padding-top:12px; }
     #donki-store-search { width:100%; min-height:44px; margin-top:14px; padding:10px 12px; border:1px solid #d1d9cb; border-radius:10px; color:var(--ink); background:white; font-size:16px; }
     #donki-store-list { margin:12px 0 0; padding:3px; list-style:none; display:grid; gap:7px; min-height:0; overflow-y:auto; overscroll-behavior:contain; }
-    .store-choice { width:100%; min-height:52px; padding:10px 12px; border:1px solid var(--line); background:#f7f9f4; color:var(--ink); border-radius:9px; text-align:left; font-size:13px; line-height:1.6; }
-    .store-choice[aria-pressed="true"] { background:#edf4eb; border-color:var(--green); }
-    .store-choice span { display:block; color:var(--muted); font-size:11px; }
+    .store-choice { display:flex; align-items:center; gap:10px; width:100%; min-height:52px; padding:10px 12px; border:1px solid var(--line); background:#f7f9f4; color:var(--ink); border-radius:9px; text-align:left; font-size:13px; line-height:1.6; cursor:pointer; }
+    .store-choice:has(input:checked) { background:#edf4eb; border-color:var(--green); }
+    .store-choice:has(input:focus-visible) { outline:3px solid #679c77; outline-offset:1px; }
+    .store-choice input { flex:none; width:17px; height:17px; margin:0; accent-color:var(--green); }
+    .store-choice small { display:block; color:var(--muted); font-size:11px; }
     #donki-store-no { background:#eff1eb; color:var(--ink); }
+    #donki-store-confirm { background:var(--green); color:white; }
+    #donki-store-confirm:disabled { background:#e9ede5; color:#a6afa2; }
     @keyframes arrive { from { opacity:0; transform:translateY(5px); } to { opacity:1; transform:translateY(0); } }
     @media (max-width:359px) { main { padding-left:15px; padding-right:15px; } .panel { padding:16px; } .place-face { font-size:12px; gap:4px; } .controls { gap:7px; } .usage-card { padding:14px; } .top-actions { gap:6px; } .japan { display:none; } }
     @media (prefers-reduced-motion:reduce) { *,*::before,*::after { animation:none !important; transition:none !important; } }
@@ -369,11 +373,12 @@
   </dialog>
   <dialog id="donki-store-dialog" aria-labelledby="donki-store-heading" aria-describedby="donki-store-help">
     <h2 id="donki-store-heading" tabindex="-1" autofocus>어느 돈키호테에서 결제하나요?</h2>
-    <p id="donki-store-help" class="input-note">오사카 지점 이름을 누르면 선택돼요.<br>선택한 지점에 맞는 혜택을 비교해드려요.</p>
+    <p id="donki-store-help" class="input-note">지점을 선택한 뒤 ‘확인’을 눌러주세요.<br>지점을 모르면 ‘모름’을 눌러주세요.</p>
     <input id="donki-store-search" type="search" placeholder="지점 검색 · 도톤보리, 난바…" aria-label="돈키호테 지점 검색" autocomplete="off" enterkeyhint="search">
     <p id="donki-store-search-status" class="input-note" role="status"></p>
     <ul id="donki-store-list" aria-label="오사카 돈키호테 지점"></ul>
-    <div class="dialog-buttons"><button type="button" id="donki-store-no">그 외 지점 · 잘 모르겠어요</button></div>
+    <p id="donki-store-selection" class="input-note" role="status">지점을 선택해주세요.</p>
+    <div class="dialog-buttons"><button type="button" id="donki-store-no">모름</button><button type="button" id="donki-store-confirm" disabled>확인</button></div>
   </dialog>
   <noscript><p style="padding:20px;text-align:center">계산하려면 브라우저의 JavaScript를 켜주세요.</p></noscript>
 
@@ -471,6 +476,7 @@
     let paymentRetry = null;
     let donkiStoreGroup = null;
     let donkiStoreId = null;
+    let donkiStoreDraftId = null;
     const costQuotes = {};
 
     function readSaved(key) {
@@ -1247,6 +1253,7 @@
     });
     function askDonkiStore() {
       if (busy || !session) return;
+      donkiStoreDraftId = findDonkiStore(donkiStoreId)?.id || null;
       $('donki-store-search').value = '';
       renderDonkiStores();
       $('donki-store-dialog').showModal();
@@ -1260,23 +1267,35 @@
       $('donki-store-list').replaceChildren();
       for (const store of matches) {
         const item = document.createElement('li');
-        const button = document.createElement('button');
-        button.type = 'button';
-        button.className = 'store-choice';
-        button.dataset.donkiStore = store.id;
-        button.setAttribute('aria-pressed', String(store.id === donkiStoreId));
-        button.textContent = store.name;
-        const japanese = document.createElement('span');
+        const label = document.createElement('label');
+        label.className = 'store-choice';
+        label.dataset.donkiStore = store.id;
+        const radio = document.createElement('input');
+        radio.type = 'radio';
+        radio.name = 'donki-store-choice';
+        radio.value = store.id;
+        radio.checked = store.id === donkiStoreDraftId;
+        radio.addEventListener('change', () => { donkiStoreDraftId = store.id; updateDonkiStoreSelection(); });
+        const name = document.createElement('span');
+        name.textContent = store.name;
+        const japanese = document.createElement('small');
         japanese.textContent = store.japanese;
-        button.append(japanese);
-        button.addEventListener('click', () => answerDonkiStore(store.id));
-        item.append(button);
+        name.append(japanese);
+        label.append(radio, name);
+        item.append(label);
         $('donki-store-list').append(item);
       }
-      $('donki-store-search-status').textContent = matches.length ? matches.length + '개 지점' : '검색 결과가 없어요. 아래에서 그 외 지점을 선택해주세요.';
+      $('donki-store-search-status').textContent = matches.length ? matches.length + '개 지점' : '검색 결과가 없어요. 지점을 모르면 ‘모름’을 눌러주세요.';
+      updateDonkiStoreSelection();
+    }
+    function updateDonkiStoreSelection() {
+      const store = findDonkiStore(donkiStoreDraftId);
+      $('donki-store-confirm').disabled = !store;
+      $('donki-store-selection').textContent = store ? store.name + ' 선택됨' : '지점을 선택해주세요.';
     }
     function answerDonkiStore(id) {
       ({ donkiStoreId, donkiStoreGroup } = donkiStoreOptions(id));
+      donkiStoreDraftId = null;
       paymentRetry = null;
       if (!$('result').hidden) { $('result').hidden = true; $('result-stale').hidden = false; }
       $('donki-store-dialog').close();
@@ -1291,8 +1310,9 @@
     $('change-donki-store').addEventListener('click', askDonkiStore);
     $('donki-store-search').addEventListener('input', renderDonkiStores);
     $('donki-store-no').addEventListener('click', () => answerDonkiStore('other'));
+    $('donki-store-confirm').addEventListener('click', () => { if (findDonkiStore(donkiStoreDraftId)) answerDonkiStore(donkiStoreDraftId); });
     $('donki-store-dialog').addEventListener('cancel', event => { event.preventDefault(); answerDonkiStore('other'); });
-    $('payment-form').addEventListener('reset', () => { donkiStoreGroup = null; donkiStoreId = null; });
+    $('payment-form').addEventListener('reset', () => { donkiStoreGroup = null; donkiStoreId = null; donkiStoreDraftId = null; });
 
     $('other-union-accepted').addEventListener('change', updateCalculate);
 
