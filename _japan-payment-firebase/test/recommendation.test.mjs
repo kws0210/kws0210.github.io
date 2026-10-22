@@ -187,7 +187,7 @@ test('요청 옵션으로 미보유 혜택·미등록 행사나 미확인 중복
   assert.equal(selectPayment('donki', 17000, available, null, {}, allSettings).reason, 'rate-required');
 });
 
-test('노리 UPI 비용 범위·트래블로그 면제를 반영하고 카카오 미확인 수수료는 null로 유지한다', () => {
+test('노리 UPI 비용 범위·트래블월렛 면제를 반영하고 카카오 미확인 수수료는 null로 유지한다', () => {
   const choice = choose(17000);
   const union = choice.plans.find(plan => plan.benefit === 'union' && plan.couponSource === 'union');
   assert.equal(union.feeMinYen, union.payable * .0025);
@@ -200,7 +200,7 @@ test('노리 UPI 비용 범위·트래블로그 면제를 반영하고 카카오
   assert.equal(choice.plans.find(plan => plan.method === 'travel').feeMaxYen, 0);
   const noKakao = { ...noSettings, unionCard: true, unionRegistered: true, travelCard: true };
   const huge = selectPayment('other', 999999999, available, rate, { unionAccepted: true }, noKakao);
-  assert.equal(huge.method, 'travel', '할인 한도보다 이용료가 크면 같은 환율 가정에서 트래블로그를 추천한다');
+  assert.equal(huge.method, 'travel', '할인 한도보다 이용료가 크면 같은 환율 가정에서 트래블월렛을 추천한다');
   assert.equal(huge.costMode, 'same-fx');
 });
 
@@ -211,7 +211,7 @@ test('후보 전부의 수수료 포함 환율이 있으면 할인보다 적은 
   assert.equal(choice.costMode, 'quoted');
   assert.equal(choice.method, 'travel');
   assert.equal(choice.benefit, null);
-  assert.equal(choice.totalWon, 129200, '매장 쿠폰 850엔 적용 후 트래블로그 충전 환율로 비교한다');
+  assert.equal(choice.totalWon, 129200, '매장 쿠폰 850엔 적용 후 트래블월렛 충전 환율로 비교한다');
   const kb = choice.plans.find(plan => plan.benefit === 'union' && plan.couponSource === 'union');
   assert.equal(kb.totalWon, 145350, '입력 환율에 포함된 KB 수수료를 또 더하지 않는다');
   const onlyKb = { ...noSettings, unionCard: true, unionRegistered: true };

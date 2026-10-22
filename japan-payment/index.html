@@ -224,8 +224,8 @@
           <a href="prepare/#union-donki">돈키호테 전용 쿠폰 · 4,000엔 행사 등록 ↗</a>
         </fieldset>
         <fieldset class="settings-group">
-          <legend>트래블카드</legend>
-          <label class="coupon-check"><input type="checkbox" data-setting="travelCard"><span>엔화 결제가 가능한 트래블카드가 있어요</span></label>
+          <legend>트래블월렛 카드</legend>
+          <label class="coupon-check"><input type="checkbox" data-setting="travelCard"><span>엔화 결제가 가능한 트래블월렛 카드가 있어요</span></label>
         </fieldset>
         <p class="input-note">사용할 결제수단을 하나 이상 선택해주세요.<br>설정은 이 전화번호에 저장돼요. 쿠폰을 새로 받거나 준비 상태가 바뀌면 수정해주세요.<br>체크를 해제해도 사용 횟수는 유지돼요.</p>
         <p id="settings-error" class="error" role="alert" hidden></p>
@@ -339,11 +339,11 @@
     <details id="cost-settings">
       <summary>수수료 · 실제 원화 지출 비교 (선택)</summary>
       <div class="settings-content">
-        <p class="input-note">노리 체크(유니온페이)·트래블로그 체크를 기준으로 계산해요.<br>KB 이용 수수료는 안내가 달라 0.25~1.05% 범위로 표시하고, 트래블로그의 엔화 충전·결제 수수료는 면제를 반영해요.</p>
+        <p class="input-note">노리 체크(유니온페이)와 트래블월렛 엔화 잔액 결제를 기준으로 계산해요.<br>KB 이용 수수료는 안내가 달라 0.25~1.05% 범위로 표시하고, 트래블월렛은 엔화 환전·해외 결제 수수료 0%를 반영해요.</p>
         <p class="input-note">카카오페이 수수료는 앱 환율에 포함돼요. 결제수단별 <b>100엔에 실제로 드는 원화</b>를 알고 있다면 아래에 입력해주세요. 별도 수수료까지 포함한 값이에요.<br>모든 후보의 값이 있으면 원화 총지출이 가장 적은 조합을 추천해요. 빈칸은 0원으로 계산하지 않아요.</p>
         <label class="field-label" for="cost-kakao">카카오페이 · 100엔당 원</label><input id="cost-kakao" type="number" inputmode="decimal" min="1" max="100000" step="0.01" placeholder="앱의 수수료 포함 환율" data-cost="kakao">
         <label class="field-label" for="cost-union">KB 노리 유니온페이 · 100엔당 원</label><input id="cost-union" type="number" inputmode="decimal" min="1" max="100000" step="0.01" placeholder="별도 이용료까지 포함한 값" data-cost="union">
-        <label class="field-label" for="cost-travel">트래블로그 · 100엔당 원</label><input id="cost-travel" type="number" inputmode="decimal" min="1" max="100000" step="0.01" placeholder="엔화 충전 당시 실제 환율" data-cost="travel">
+        <label class="field-label" for="cost-travel">트래블월렛 · 100엔당 원</label><input id="cost-travel" type="number" inputmode="decimal" min="1" max="100000" step="0.01" placeholder="엔화 충전 당시 실제 환율" data-cost="travel">
         <p class="input-note">입력값은 이 화면에서 30분간만 사용하며 브라우저에 저장하지 않아요.<br>실제 환율이 없으면 확인된 수수료를 따로 보여드리고 할인액 기준으로 잠정 안내해요. <a href="basis/#payment-costs">공식 근거와 계산 범위 ↗</a></p>
       </div>
     </details>
@@ -357,8 +357,8 @@
         <li><b>중복 적용은 확인한 조합만</b>최대 7%와 2,000엔 쿠폰은 각각의 할인액을 비교하고 함께 더하지 않아요. 최대 7% 쪽 약관은 알리페이 중복을 허용하지만 현행 2,000엔 쿠폰까지 포함한 정확한 조합은 확정하지 못했어요.<br>KB 공식 안내의 유니온페이 전용 매장 쿠폰은 KB 결제 할인과 함께 비교해요. 카카오페이에서 받은 매장 쿠폰은 KB와 합산하지 않아요.<br>캡처 사용 불가, 결제 후 쿠폰 제시 불가예요.<br><a href="basis/#stack-evidence">계산에 반영한 근거 보기 ↗</a></li>
         <li><b>쿠폰도 함께 비교해요</b>카카오페이는 ‘최대 7% 매장 쿠폰’과 ‘2,000엔 결제 할인’을 별도 조합으로 비교해요. KB는 ‘전용 매장 쿠폰 + 가장 큰 즉시 할인 하나’로 비교해요.<br>유니온페이 전용 쿠폰은 공식 구간(10,000엔 이상 30,000엔 미만 5%, 30,000엔 이상 50,000엔 미만 7%)으로 자동 계산해요.<br>결제 할인은 매장 쿠폰 후 금액으로 최소 조건을 판단해요. 할인율은 처음 입력한 금액 기준이에요. ‘그 외’에서는 매장의 유니온페이 결제 가능 여부만 체크해주세요.</li>
         <li><b>보유한 카드·쿠폰 안에서 추천</b>상단 설정에서 결제수단, 보유 쿠폰과 행사 등록 여부를 저장해주세요. 설정은 전화번호별로 유지하고 체크를 해제해도 사용 횟수는 지우지 않아요. 계산할 때 최신 설정과 남은 횟수를 다시 확인해요.</li>
-        <li><b>횟수·적용 범위</b>카카오페이 결제 할인 1회, KB 3회는 남은 횟수로 추천해요. 최대 7% 매장 쿠폰은 ‘거래당 1회’로, 누적 횟수가 늘어도 전체 소진으로 처리하지 않아요. 실제 사용 가능한 쿠폰인지 매번 확인해주세요.<br>매장 쿠폰만 사용하면 결제 할인 횟수는 늘어나지 않아요.<br>간사이공항 10,000엔 미만은 보유한 트래블카드를 우선해요.</li>
-        <li><b>수수료·환전 비용 비교</b>노리 유니온페이의 이용료는 안내가 달라 할인 후 금액의 0.25~1.05% 범위로 표시해요. 트래블로그 체크는 엔화 충전·결제 수수료 면제를 반영해요.<br>카카오페이는 앱 환율에 제휴사 수수료가 포함돼요. 모든 후보의 수수료 포함 환율을 입력하면 원화 총지출로 비교해요. 미확인이 있으면 잠정 추천이며 빈칸을 0원으로 채우지 않아요. 50달러 판정용 참고 환율은 실제 청구 환율이 아니에요.<br><a href="basis/#payment-costs">공식 수수료 안내와 확인 범위 보기 ↗</a></li>
+        <li><b>횟수·적용 범위</b>카카오페이 결제 할인 1회, KB 3회는 남은 횟수로 추천해요. 최대 7% 매장 쿠폰은 ‘거래당 1회’로, 누적 횟수가 늘어도 전체 소진으로 처리하지 않아요. 실제 사용 가능한 쿠폰인지 매번 확인해주세요.<br>매장 쿠폰만 사용하면 결제 할인 횟수는 늘어나지 않아요.<br>간사이공항 10,000엔 미만은 보유한 트래블월렛 카드를 우선해요.</li>
+        <li><b>수수료·환전 비용 비교</b>노리 유니온페이의 이용료는 안내가 달라 할인 후 금액의 0.25~1.05% 범위로 표시해요. 트래블월렛은 엔화 환전·해외 결제 수수료 0%를 반영해요.<br>카카오페이는 앱 환율에 제휴사 수수료가 포함돼요. 모든 후보의 수수료 포함 환율을 입력하면 원화 총지출로 비교해요. 미확인이 있으면 잠정 추천이며 빈칸을 0원으로 채우지 않아요. 50달러 판정용 참고 환율은 실제 청구 환율이 아니에요.<br><a href="basis/#payment-costs">공식 수수료 안내와 확인 범위 보기 ↗</a></li>
         <li><b>예상액과 유효 기간</b>이번 한 건의 할인만 비교하며 면세액·다른 행사는 제외해요.<br>KB 행사는 2026. 9. 14. ~ 12. 31.이며 사전 등록이 필요하고 예산 소진 시 종료될 수 있어요.<br>최대 7% 쿠폰은 상단 기간과 본문 약관이 달라 더 이른 2027. 8. 31.까지를 기준으로 안내해요.<br><a href="prepare/#donki-store-coupon">실제 쿠폰 화면·약관과 사용법 보기 ↗</a></li>
       </ul>
     </details>
@@ -565,7 +565,7 @@
     }
 
     function renderOwnership() {
-      const owned = [settings.kakaoReady && '일본 페이머니', settings.unionCard && 'KB 유니온페이', settings.travelCard && '트래블카드'].filter(Boolean);
+      const owned = [settings.kakaoReady && '일본 페이머니', settings.unionCard && 'KB 유니온페이', settings.travelCard && '트래블월렛 카드'].filter(Boolean);
       const coupons = [settings.kakaoReady && settings.kakaoDonki && '2,000엔', settings.kakaoReady && settings.kakaoAirport && '공항 1,200엔', settings.kakaoReady && settings.kakaoStoreCoupon && '최대 7%', settings.unionCard && settings.unionStoreCoupon && '유니온페이 매장 쿠폰'].filter(Boolean);
       $('ownership-summary').textContent = settingsRevision ? '내 결제수단: ' + owned.join(' · ') + (coupons.length ? ' / 보유 쿠폰: ' + coupons.join(' · ') : ' / 보유 쿠폰 없음') : '보유 카드와 쿠폰을 먼저 설정해주세요. 설정한 항목 안에서 추천해요.';
       $('edit-settings').textContent = settingsRevision ? '카드·쿠폰 설정 변경 →' : '카드·쿠폰 설정하기 →';
@@ -1080,6 +1080,7 @@
       const referenceWonPerYen = rate && Number.isFinite(rate.krw) && rate.krw > 0 && rate.krw < 10000000 && rate.jpy > 0 ? rate.krw / rate.jpy : null;
       const priced = plans.map(plan => {
         // 노리 상품의 0.25%와 KB 일반 안내 상한 1.05%를 비교 범위로 사용한다.
+        // 트래블월렛 엔화 잔액 결제는 공식 환전·해외 결제 수수료 0%를 적용한다. 실제 충전 환율은 별도다.
         const feeMinYen = plan.method === 'kakao' ? null : plan.method === 'union' ? plan.payable * .0025 : 0;
         const feeMaxYen = plan.method === 'kakao' ? null : plan.method === 'union' ? plan.payable * .0105 : 0;
         return { ...plan, feeMinYen, feeMaxYen, feeMinWon: feeMinYen === null || referenceWonPerYen === null ? null : feeMinYen * referenceWonPerYen, feeMaxWon: feeMaxYen === null || referenceWonPerYen === null ? null : feeMaxYen * referenceWonPerYen, totalWon: quotes[plan.method] ? Math.round(plan.payable * quotes[plan.method].wonPer100 / 100) : null };
@@ -1112,7 +1113,7 @@
     }
 
     function planLabel(plan) {
-      return (plan.coupon ? (plan.couponSource === 'union' ? '유니온페이 쿠폰 + ' : '카카오페이 쿠폰 + ') : '') + (plan.benefit === 'unionDonki500' ? '유니온페이 500엔' : plan.benefit === 'unionDonki4000' ? '유니온페이 4,000엔' : plan.method === 'union' ? (plan.benefit ? 'KB 10%' : 'KB 카드 결제') : { kakao: '카카오페이', travel: '트래블카드' }[plan.method]);
+      return (plan.coupon ? (plan.couponSource === 'union' ? '유니온페이 쿠폰 + ' : '카카오페이 쿠폰 + ') : '') + (plan.benefit === 'unionDonki500' ? '유니온페이 500엔' : plan.benefit === 'unionDonki4000' ? '유니온페이 4,000엔' : plan.method === 'union' ? (plan.benefit ? 'KB 10%' : 'KB 카드 결제') : { kakao: '카카오페이', travel: '트래블월렛 카드' }[plan.method]);
     }
 
     function discountPercentage(discount, amount) {
@@ -1122,7 +1123,7 @@
     function feeDescription(plan) {
       if (plan.totalWon !== null && Number.isFinite(plan.totalWon)) return '예상 총지출 ' + format(plan.totalWon) + '원 · 입력 환율에 수수료 포함';
       if (plan.method === 'kakao') return '제휴사 수수료는 앱 환율에 포함 · 금액 미확인';
-      if (plan.method === 'travel') return '트래블로그 · 엔화 충전·결제 수수료 면제';
+      if (plan.method === 'travel') return '트래블월렛 · 엔화 환전·해외 결제 수수료 0%';
       const yen = value => new Intl.NumberFormat('ko-KR', { maximumFractionDigits: 2 }).format(value);
       return '예상 이용료 ' + yen(plan.feeMinYen) + '~' + yen(plan.feeMaxYen) + '엔 (0.25~1.05%)' + (plan.feeMaxWon !== null && Number.isFinite(plan.feeMaxWon) ? ' · 참고환율 약 ' + Math.round(plan.feeMinWon).toLocaleString('ko-KR') + '~' + Math.round(plan.feeMaxWon).toLocaleString('ko-KR') + '원' : '');
     }
@@ -1146,17 +1147,17 @@
       $('donki-coupon-link').href = choice.couponSource === 'union' ? 'https://japanportal.donki-global.com/coupon/cp001_ko.html' : KAKAO_PAYMENT_URL;
       $('donki-coupon-link').firstChild.textContent = choice.couponSource === 'union' ? '유니온페이 전용 돈키호테 쿠폰 열기 ' : '카카오페이 열고 현지 쿠폰 찾기 ';
       $('result-coupon-reminder').innerHTML = (choice.couponSource === 'union' ? '유니온페이 전용 매장 쿠폰' : '최대 7% 할인 쿠폰') + '을 먼저 점원에게 보여주세요.<br>쿠폰 할인 적용 후, 아래 결제수단으로 결제해주세요.';
-      const titles = { kakao: '카카오페이 머니(일본)로 결제해주세요', union: 'KB 유니온페이 카드를 사용해주세요', travel: '트래블카드를 사용해주세요' };
+      const titles = { kakao: '카카오페이 머니(일본)로 결제해주세요', union: 'KB 유니온페이 카드를 사용해주세요', travel: '트래블월렛 카드를 사용해주세요' };
       $('result-title').textContent = titles[choice.method];
       const consumed = [choice.coupon, choice.benefit].filter(Boolean);
       let instruction;
       if (choice.method === 'kakao') instruction = '앱에서 일본 · 페이머니 · Alipay+' + (choice.benefit ? '와 받은 결제 쿠폰' : '') + '을 확인해주세요.' + (!choice.benefit ? ' 추가 결제 할인 없이 보유한 결제수단으로 안내해요.' : '');
       else if (choice.method === 'union') instruction = choice.benefit === 'union' ? '사전 등록한 실물 카드로 결제해주세요. 50달러 기준은 결제 할인 전 청구 금액으로 확인해요.' : !choice.benefit ? (choice.coupon ? '유니온페이 전용 매장 쿠폰만 적용하며, 결제 할인 횟수는 늘어나지 않아요.' : '추가 결제 할인 없이 보유한 KB 유니온페이 카드로 안내해요.') : '유니온페이 실물 카드로 결제해주세요. 선택한 지점·등록 설정·오늘의 사용 기록으로 비교했어요. KB 10%는 합산하거나 횟수를 차감하지 않았어요. 결제 전에 행사 잔여 예산을 확인해주세요.';
-      else instruction = choice.reason === 'airport-minimum' ? '간사이공항 10,000엔 미만은 기존 기준대로 트래블카드예요.' : '보유 카드·쿠폰과 남은 혜택으로 비교한 결과예요.';
+      else instruction = choice.reason === 'airport-minimum' ? '간사이공항 10,000엔 미만은 기존 기준대로 트래블월렛 카드예요.' : '보유 카드·쿠폰과 남은 혜택으로 비교한 결과예요.';
       $('result-detail').textContent = (consumed.length ? consumed.map(key => PROVIDERS[key]).join(' · ') + '에 각각 1회를 반영했어요. ' : '혜택 사용 횟수는 늘어나지 않아요. ') + instruction;
       const totalDiscount = choice.totalDiscount || 0;
       $('result-savings').textContent = '예상 ' + format(totalDiscount) + '엔 할인 (' + discountPercentage(totalDiscount, amount) + '% 할인) · 예상 결제 ' + format(choice.payable ?? amount) + '엔';
-      $('result-cost').textContent = choice.costMode === 'quoted' ? '예상 원화 총지출 ' + format(choice.totalWon) + '원 · 수수료 포함 입력 환율 기준으로 비교했어요.' : choice.costMode === 'same-fx' ? '노리 유니온페이 이용료 0.25~1.05%를 반영했어요. 환율이 같다는 가정에서 수수료 상한까지 고려한 추천이에요. 실제 환전 차이는 미반영이에요.' : '카카오페이의 수수료 포함 환율이 미확인이라 할인액 기준 잠정 추천이에요. KB 이용료와 트래블로그 면제는 아래에 표시했어요.';
+      $('result-cost').textContent = choice.costMode === 'quoted' ? '예상 원화 총지출 ' + format(choice.totalWon) + '원 · 수수료 포함 입력 환율 기준으로 비교했어요.' : choice.costMode === 'same-fx' ? '노리 유니온페이 이용료 0.25~1.05%를 반영했어요. 환율이 같다는 가정에서 수수료 상한까지 고려한 추천이에요. 실제 환전 차이는 미반영이에요.' : '카카오페이의 수수료 포함 환율이 미확인이라 할인액 기준 잠정 추천이에요. KB 이용료와 트래블월렛 수수료 0%는 아래에 표시했어요.';
       $('comparison-caption').textContent = choice.costMode === 'quoted' ? '수수료 포함 예상 원화 지출 비교' : '할인 · 확인한 수수료 비교';
       $('result-eligibility').textContent = (choice.eligibility || []).join('\n');
       $('result-eligibility').style.whiteSpace = 'pre-line';
@@ -1190,7 +1191,7 @@
         $('comparison-body').append(row);
       }
       $('comparison').hidden = !(choice.plans?.length);
-      $('result-assumptions').textContent = (choice.coupon ? '매장 쿠폰 ' + format(choice.storeDiscount) + '엔 → 결제 기준 ' + format(choice.charge) + '엔 → 결제 할인 ' + format(choice.paymentDiscount) + '엔. ' : '') + (place === 'donki' ? (choice.coupon && choice.paymentDiscount > 0 ? 'KB 공식 전용 쿠폰과 가장 큰 즉시 할인 하나를 합산했어요. ' : '이 추천 조합은 중복 할인을 합산하지 않았어요. ') : '') + '할인율은 처음 입력한 금액 기준이에요. 노리 유니온페이·트래블로그 체크를 가정하며 KB 이용료는 즉시 할인 후 금액 기준의 추정 범위예요. 모든 수단의 수수료 포함 환율이 있을 때만 원화 총지출로 비교해요. 참고 USD/JPY·KRW는 실제 청구 환율이 아니며 미확인 비용은 0원이 아니에요. 면세액·다른 행사는 제외해요.';
+      $('result-assumptions').textContent = (choice.coupon ? '매장 쿠폰 ' + format(choice.storeDiscount) + '엔 → 결제 기준 ' + format(choice.charge) + '엔 → 결제 할인 ' + format(choice.paymentDiscount) + '엔. ' : '') + (place === 'donki' ? (choice.coupon && choice.paymentDiscount > 0 ? 'KB 공식 전용 쿠폰과 가장 큰 즉시 할인 하나를 합산했어요. ' : '이 추천 조합은 중복 할인을 합산하지 않았어요. ') : '') + '할인율은 처음 입력한 금액 기준이에요. KB 노리 유니온페이는 가정한 상품이며 트래블월렛은 엔화 잔액 결제 기준이에요. KB 이용료는 즉시 할인 후 금액 기준의 추정 범위예요. 모든 수단의 수수료 포함 환율이 있을 때만 원화 총지출로 비교해요. 참고 USD/JPY·KRW는 실제 청구 환율이 아니며 미확인 비용은 0원이 아니에요. 면세액·다른 행사는 제외해요.';
     }
 
 
