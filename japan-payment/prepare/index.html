@@ -1,13 +1,14 @@
-<!doctype html>
+<!DOCTYPE html>
+
 <html lang="ko">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#f5f6f2">
-  <meta name="color-scheme" content="light">
-  <meta name="description" content="일본 여행 전 카카오페이 할인 쿠폰과 KB 유니온페이 카드를 준비하는 방법을 화면으로 확인한다.">
-  <title>미리 할 작업 · 일본 결제 도우미</title>
-  <style>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1, viewport-fit=cover" name="viewport"/>
+<meta content="#f5f6f2" name="theme-color"/>
+<meta content="light" name="color-scheme"/>
+<meta content="일본 여행 전 카카오페이 할인 쿠폰과 KB 유니온페이 카드를 준비하는 방법을 화면으로 확인한다." name="description"/>
+<title>미리 할 작업 · 일본 결제 도우미</title>
+<style>
     :root { --ink:#20382e; --muted:#657267; --line:#e1e6dd; --green:#285d43; --paper:#f5f6f2; }
     * { box-sizing:border-box; }
     html { scroll-behavior:smooth; scroll-padding-top:24px; }
@@ -97,299 +98,312 @@
     @media (min-width:620px) { .coupons { grid-template-columns:1fr 1fr; } }
     @media (max-width:359px) { main { padding-left:15px; padding-right:15px; } .step-card { padding:17px; } .overview a { padding:15px 12px; } .overview strong { font-size:15px; } }
     @media (prefers-reduced-motion:reduce) { html { scroll-behavior:auto; } }
-  </style>
+
+.task-list { list-style:none; padding:0; margin:12px 0 0; }
+.task-card { margin:10px 0 0; padding:0 17px; border:1px solid var(--line); border-radius:14px; background:white; }
+.task-card > summary { min-height:65px; color:var(--ink); font-size:15px; line-height:1.6; }
+.task-card > summary span { display:block; }
+.task-card > summary small { display:block; font-size:11px; font-weight:400; color:var(--muted); }
+.task-body { padding:0 0 16px; font-size:14px; }
+.task-body p { margin:8px 0 12px; }
+.task-body h3 { font-size:15px; }
+.task-body ol,.task-body ul { padding-left:20px; line-height:1.9; }
+.guide-section { margin-top:24px; }
+.guide-section h2 { font-size:17px; }
+.topline { margin-bottom:20px; }
+.intro { font-size:14px; margin-bottom:15px; }
+.overview a { padding:9px 12px; border-radius:10px; font-size:12px; }
+.overview span { margin:0; }
+.action-link { margin-top:10px; min-height:45px; font-size:13px; }
+.numbered-list li { font-size:13px; }
+</style>
 </head>
 <body>
-  <main>
-    <header>
-      <div class="topline"><a class="back" href="../">← 결제 도우미</a><span class="eyebrow">BEFORE YOU PAY</span></div>
-      <h1>미리 할 작업</h1>
-      <p class="intro">현장에서 바로 결제할 수 있도록<br>쿠폰과 카드를 먼저 준비한다.</p>
-      <nav class="overview" aria-label="준비할 결제수단">
-        <a class="kakao" href="#kakaopay"><span>01 / 카카오페이</span><strong>일본 할인 쿠폰<br>미리 받기 ↓</strong><small>결제는 일본 · 페이머니로</small></a>
-        <a class="union" href="#unionpay"><span>02 / KB 유니온페이</span><strong>카드 발급하고<br>사전 등록하기 ↓</strong><small>카드 선택확인까지 완료</small></a>
-      </nav>
-    </header>
-
-    <section class="guide-section" id="kakaopay" aria-labelledby="kakao-heading">
-      <p class="section-label">01 / KAKAOPAY</p>
-      <h2 id="kakao-heading">쿠폰부터 받아두기</h2>
-      <p class="section-intro">결제 전에 매장에 맞는 쿠폰을 먼저 받는다.<br>쿠폰을 받은 뒤에는 일본 · 페이머니로 결제한다.</p>
-
-      <ol class="steps">
-        <li class="step-card">
-          <h3>카카오톡에서 카카오페이 열기</h3>
-          <div class="path" aria-label="카카오페이 진입 순서"><span>카카오톡</span><span class="arrow" aria-hidden="true">→</span><span>하단 ··· 더보기</span><span class="arrow" aria-hidden="true">→</span><span>노란색 pay 영역</span></div>
-          <p>카카오톡 오른쪽 아래의 <b>···</b>를 누른 다음, 상단 노란색 영역의 <b>pay 잔액</b>을 누른다.</p>
-          <details open>
-            <summary>카카오페이 여는 화면</summary>
-            <figure>
-              <a class="screen-button" href="images/kakao-entry.webp" data-screen data-title="카카오톡에서 카카오페이 열기"><img src="images/kakao-entry.webp" alt="카카오톡 더보기 화면. 주황색 1번은 하단 더보기 버튼, 2번은 상단 노란색 pay 잔액 영역을 가리킨다." width="946" height="2048" fetchpriority="high"></a>
-              <figcaption>1번 → 2번 순서로 누른다. 이미지를 누르면 크게 볼 수 있다.</figcaption>
-            </figure>
-          </details>
-        </li>
-
-        <li class="step-card">
-          <h3>해외 · 일본에서 현지 쿠폰 열기</h3>
-          <div class="path" aria-label="현지 쿠폰 진입 순서"><span>하단 결제</span><span class="arrow" aria-hidden="true">→</span><span>상단 해외</span><span class="arrow" aria-hidden="true">→</span><span>일본</span><span class="arrow" aria-hidden="true">→</span><span>현지 쿠폰 받기</span></div>
-          <p>카카오페이 하단의 <b>결제</b>를 누르고, 상단에서 <b>해외</b>를 선택한다.</p>
-          <p>국가가 <b>일본</b>인지 확인한 뒤, ‘미리 준비하는 해외결제’의 <b>현지 쿠폰 받기 Alipay+</b>를 누른다.</p>
-          <details>
-            <summary>현지 쿠폰 메뉴 화면 보기</summary>
-            <figure>
-              <a class="screen-button" href="images/kakao-overseas.webp" data-screen data-title="해외 · 일본에서 현지 쿠폰 열기"><img src="images/kakao-overseas.webp" alt="카카오페이 화면. 하단 결제, 상단 해외, 현지 쿠폰 받기 메뉴에 주황색 표시가 있으며 국가가 일본으로 표시된다." width="946" height="2048" loading="lazy"></a>
-              <figcaption>결제 → 해외 → 일본 확인 → 현지 쿠폰 받기</figcaption>
-            </figure>
-          </details>
-        </li>
-
-        <li class="step-card">
-          <h3>이용할 매장의 쿠폰 받기</h3>
-          <p>A+ REWARDS 화면에서 <b>Don Quijote</b> 또는 <b>Kansai International Airport</b>를 찾아 <b>지금 받기</b>를 누른다.</p>
-          <div class="coupons">
-            <section class="coupon" aria-labelledby="donki-coupon">
-              <h4 id="donki-coupon">돈키호테</h4>
-              <p class="offer"><strong>2,000엔 할인</strong><span>최소 거래 금액 15,000엔</span></p>
-              <p class="offer"><strong>최대 7% 할인</strong><span>최소 결제 금액 10,000엔 · 상세 약관은 아래 확인</span></p>
-              <details>
-                <summary>돈키호테 쿠폰 화면 보기</summary>
-                <figure>
-                  <a class="screen-button" href="images/kakao-donki-coupons.webp" data-screen data-title="돈키호테 쿠폰 받기"><img src="images/kakao-donki-coupons.webp" alt="A+ REWARDS의 Don Quijote 쿠폰. 최대 7% 할인은 최소 10,000엔, 2,000엔 할인은 최소 15,000엔이며 각각 지금 받기 버튼이 있다." width="946" height="2048" loading="lazy"></a>
-                  <figcaption>Don Quijote의 ‘지금 받기’ 버튼</figcaption>
-                </figure>
-              </details>
-            </section>
-            <section class="coupon" aria-labelledby="airport-coupon">
-              <h4 id="airport-coupon">간사이공항</h4>
-              <p class="offer"><strong>1,200엔 할인</strong><span>최소 거래 금액 10,000엔</span></p>
-              <details>
-                <summary>간사이공항 쿠폰 화면 보기</summary>
-                <figure>
-                  <a class="screen-button" href="images/kakao-airport-coupon.webp" data-screen data-title="간사이공항 쿠폰 받기"><img src="images/kakao-airport-coupon.webp" alt="A+ REWARDS의 Kansai International Airport 쿠폰. KIX 1,200엔 할인, 최소 거래 금액 10,000엔이며 지금 받기 버튼이 있다." width="946" height="2048" loading="lazy"></a>
-                  <figcaption>Kansai International Airport의 ‘지금 받기’ 버튼</figcaption>
-                </figure>
-              </details>
-            </section>
-          </div>
-          <p class="note">금액과 할인 내용은 제공된 화면 기준이다.<br>사용 기간·대상 매장·중복 할인 여부는 쿠폰 상세에서 확인한다.</p>
-        </li>
-
-        <li class="step-card" id="donki-store-coupon">
-          <h3>‘최대 7%’는 결제 전에 따로 제시하기</h3>
-          <p>카카오페이 결제 화면에서 <b>일본 → 현지 쿠폰 받기</b>로 들어가 <b>최대 7% 할인 Don Quijote</b>의 ‘지금 받기’를 누른다. 쿠폰 상세의 <b>‘살짝 밀어서 사용’</b>은 매장 직원과 함께 진행한다. 결제 후 제시하거나 캡처 화면을 쓰면 할인받을 수 없다.</p>
-          <details>
-            <summary>최대 7% 쿠폰 상세 화면 보기</summary>
-            <figure><a class="screen-button" href="images/kakao-donki-max7-detail.webp" data-screen data-title="A+ REWARDS 최대 7% 쿠폰 상세"><img src="images/kakao-donki-max7-detail.webp" alt="최대 7% 할인 Don Quijote 쿠폰 상세. 최소 결제 금액 10,000엔, 살짝 밀어서 사용 버튼과 이용 약관이 표시된다." width="946" height="2048" loading="lazy"></a><figcaption>일본 도착 후 수령하고 결제 전에 직원에게 제시한다.</figcaption></figure>
-          </details>
-          <a class="action-link" id="kakao-coupon-entry" href="https://link.kakaopay.com/p/payment" target="_blank" rel="noopener noreferrer"><span>카카오페이 열고 현지 쿠폰 찾기</span><span aria-hidden="true">↗</span></a>
-          <p class="note">앱을 연 뒤 결제 → 해외 · 일본 → 현지 쿠폰 받기 → Don Quijote 최대 7% 순서로 들어간다. 이 버튼은 해당 쿠폰을 자동 선택하지 않는다.</p>
-          <div class="reminder"><strong>‘지금 사용하기’는 결제 현장에서만</strong><p>‘살짝 밀어서 사용’ 뒤 교환 확인 팝업이 나온다. ‘지금 사용하기’를 누르면 즉시 ‘확인 완료’로 변경된다고 안내한다. 미리 누르지 말고 매장 직원에게 보여준 뒤 안내에 따라 진행한다.</p></div>
-          <details>
-            <summary>교환 확인 팝업과 주의 문구 보기</summary>
-            <figure><a class="screen-button" href="images/kakao-donki-max7-redeem.webp" data-screen data-title="지금 사용하기는 결제 현장에서만"><img src="images/kakao-donki-max7-redeem.webp" alt="지금 교환하시겠습니까 팝업. 지금 사용 버튼을 누르면 쿠폰이 즉시 확인 완료로 변경되니 주의하라는 안내와 지금 사용하기·나중에 버튼이 있다." width="946" height="2048" loading="lazy"></a><figcaption>미리 교환하지 않고 결제 현장에서 직원과 진행한다.</figcaption></figure>
-          </details>
-          <p>이 쿠폰은 <b>결제 전에 매장 직원에게 보여주는 할인 쿠폰</b>이다. 카카오페이 2,000엔 결제 할인 쿠폰과 별도로 계산한다.</p>
-          <p>쿠폰이 있다면 계산기 상단 <b>설정</b>에서 ‘돈키호테 최대 7% 할인 쿠폰이 있어요’를 체크한다. 받은 쿠폰의 10,000엔·30,000엔 구간 <b>할인율</b>을 설정에 한 번 저장한다. 이후 돈키호테와 금액만 입력하면 매장 할인 후 금액으로 결제 할인까지 자동 비교한다. 미확인 구간은 빈칸으로 두며 해당 구간의 할인액을 임의로 합산하지 않는다.</p>
-          <p>카카오페이의 최대 7% 쿠폰과 2,000엔 결제 할인은 <b>각각 따로 비교하고 합산하지 않는다.</b> 이용자가 중복 가능 여부를 판단하거나 체크할 필요는 없다. 유니온페이 전용 쿠폰은 아래 KB 행사에서 따로 받고 보유 설정을 저장한다. 공식 구간인 10,000엔 이상 30,000엔 미만 5%, 30,000엔 이상 50,000엔 미만 7%를 자동 계산한다. 이 비율로 카카오페이 쿠폰의 미확인 구간을 대신 설정하지 않는다.</p>
-          <p>예를 들어 16,000엔의 매장 쿠폰 할인액이 800엔이고 2,000엔 결제 혜택도 남아 있다면, 둘을 더한 2,800엔을 계산하지 않고 더 큰 <b>2,000엔 (12.5%)</b> 조합을 비교에 넣는다. 다른 보유 카드의 혜택이 더 크면 그 결제수단을 추천한다.</p>
-          <div class="reminder" id="stack-evidence"><strong>중복 할인은 확인된 근거로 계산한다</strong><p>최대 7% 쿠폰의 실제 약관 6항에는 <b>“알리페이에서 제공하는 프로모션과 중복 사용할 수 있습니다.”</b>라고 명시되어 있다. 다만 현재 2,000엔 결제 쿠폰의 전체 약관과 제외 조건은 공개 자료에서 확보하지 못했다. 따라서 계산기는 이 정확한 조합을 합산에서 제외한다. 이는 중복 불가가 확정됐다는 뜻이 아니라, 확인되지 않은 할인액을 추천에 더하지 않는 기준이다.</p></div>
-          <p class="note">2026년 10월 22일 확인한 <a class="reference-link" href="https://gauntlet.kakaopay.com/promotion/Gc3aa5288486d493d813" target="_blank" rel="noopener noreferrer">카카오페이 공식 돈키호테 행사</a>는 <b>15,000엔 이상 결제 시 1,000엔 할인</b>이며, 해당 페이지에서 연결하는 매장 쿠폰과 ‘중복 할인 가능’이라고 안내한다. 이 행사는 제공된 A+ REWARDS의 <b>2,000엔 쿠폰과 금액·발급 경로가 다르다.</b> 이 공식 안내를 근거로 A+ 두 쿠폰의 중복까지 확정하거나, 보유한 2,000엔 쿠폰을 1,000엔으로 바꾸어 계산하지 않는다.</p>
-          <details>
-            <summary>약관과 공개 사용 사례의 차이 보기</summary>
-            <p class="note">아래 ‘거래당 1회·중복 할인 약관’은 실제 제공된 최대 7% 쿠폰의 근거다. <a class="reference-link" href="https://blog.naver.com/ecko18/224385377139" target="_blank" rel="noopener noreferrer">10월 13일 갱신 후기</a>는 돈키호테 할인 쿠폰과 2,000엔 결제 프로모션을 함께 이용하는 방법을 안내한다. <a class="reference-link" href="https://blog.naver.com/hug387/224307344529" target="_blank" rel="noopener noreferrer">6월 사용 후기</a>에는 매장 할인 후 34,661엔에서 결제 할인 2,000엔을 추가로 받은 사례가 있다.</p>
-            <p class="note">공개 후기의 일반 돈키호테 쿠폰은 제공된 쿠폰과 발급 경로가 다르다. 과거 사용 사례나 후기만으로 현재 두 쿠폰의 중복 조건을 확정하지 않는다. 이 A+ 쿠폰을 KB에 그대로 적용하지 않는다. KB는 공식 행사에서 연결하는 유니온페이 전용 매장 쿠폰을 사용한다.</p>
-          </details>
-          <table class="discount-example">
-            <caption>30,000엔 · 실제 매장 쿠폰 할인액 2,100엔인 경우</caption>
-            <thead><tr><th scope="col">사용 조합</th><th scope="col">총 예상 할인</th></tr></thead>
-            <tbody>
-              <tr><td>카카오페이 2,000엔 결제 할인만</td><td>2,000엔<br>6.67%</td></tr>
-              <tr><td>카카오페이 최대 7% 매장 쿠폰만</td><td>2,100엔<br>7%</td></tr>
-              <tr><td>KB만 사용</td><td>3,000엔<br>10%</td></tr>
-              <tr><td>유니온페이 전용 쿠폰 2,100엔 + KB 10%</td><td>4,890엔<br>16.3%</td></tr>
-            </tbody>
-          </table>
-          <p class="note">1달러=150엔, 양쪽 쿠폰의 실제 할인액이 2,100엔이고 결제 혜택이 모두 남아 있다는 가정의 예시다. KB는 10%, 건당 최대 20달러다. 쿠폰 할인율을 모든 금액에서 7%로 가정하지 않으며 수수료·환전 차이·면세액은 제외한다.</p>
-          <p><b>20,000엔을 무조건 기준으로 나누지 않는다.</b> 보유한 카카오페이 매장 쿠폰과 2,000엔 결제 할인, KB 전용 매장 쿠폰과 결제 혜택을 각각 비교한다. KB 10%는 건당 20달러 한도와 매장 할인 후 금액을 반영하므로 환율과 보유 쿠폰에 따라 추천이 달라진다.</p>
-          <div class="reminder"><strong>‘거래당 1회’와 전체 사용 한도를 구분한다</strong><p>보내주신 약관은 거래당 1회만 사용 가능하다고 안내한다. 전체 사용 한도는 이 화면에 명시되어 있지 않다. 카카오페이 결제 할인 1회와 별도로 관리하고, 매번 앱에 유효한 쿠폰이 있는지 확인한다.</p></div>
-          <ul class="checks">
-            <li>세금 제외 10,000엔 또는 30,000엔 이상의 단일 면세 거래가 대상이다. 이 약관 화면만으로 각 금액 구간의 할인율을 단정하지 않는다.</li>
-            <li><b>알리페이 제공 프로모션과 중복 사용 가능</b>하다고 명시하지만 현행 2,000엔과의 정확한 조합은 계산에서 합산하지 않는다.</li>
-            <li>돈키호테 자체 할인·프로모션과 중복할 수 없다. KB 유니온페이에 이 A+ 쿠폰을 적용할 수 있다는 내용은 없다. 유니온페이 전용 쿠폰과 구분한다.</li>
-            <li>일본 돈키호테·APITA·PIAGO 일부 점포를 제외한 매장에서 사용한다. 일본 도착 후 쿠폰을 수령한다.</li>
-            <li>주류·담배·POSA 카드·게임 콘솔·단품 100,000엔(세금 제외) 이상·가격 제한 상품은 할인과 최소 금액 합산에서 제외된다.</li>
-            <li>스크린샷은 사용할 수 없으며 반드시 결제 완료 전에 제시한다.</li>
-          </ul>
-          <details>
-            <summary>거래당 1회·중복 할인 약관 보기</summary>
-            <figure><a class="screen-button" href="images/kakao-donki-max7-terms.webp" data-screen data-title="최대 7% 쿠폰 이용 약관"><img src="images/kakao-donki-max7-terms.webp" alt="최대 7% 쿠폰 약관. 거래당 1회, 알리페이 프로모션 중복 가능, 돈키호테 자체 프로모션 중복 불가, 제외 상품과 캡처 사용 불가가 명시된다." width="946" height="2048" loading="lazy"></a><figcaption>제공된 실제 쿠폰 약관을 기준으로 안내한다.</figcaption></figure>
-          </details>
-          <p class="note">쿠폰 상단 표시 기간은 2026. 10. 15. ~ 2027. 10. 1.이나, 본문 약관은 2027. 8. 31.까지로 서로 다르다. 안내는 더 이른 8월 31일을 기준으로 하고 실제 사용 전 앱의 최신 약관을 확인한다.</p>
-        </li>
-
-        <li class="step-card">
-          <h3>실제 결제는 일본 · 페이머니로</h3>
-          <div class="reminder"><strong>쿠폰 받기와 결제 수단 확인, 둘 다 필요</strong><p>카카오페이 결제 화면에서 국가가 <b>일본</b>, 결제 수단이 <b>페이머니</b>로 선택되어 있는지 확인한다.</p></div>
-          <div class="path" aria-label="일본 페이머니 결제 화면 진입 순서"><span>카카오페이</span><span class="arrow" aria-hidden="true">→</span><span>결제 · 결제하기</span><span class="arrow" aria-hidden="true">→</span><span>상단 태극기 버튼</span><span class="arrow" aria-hidden="true">→</span><span>일본 선택</span></div>
-          <ol class="walkthrough">
-            <li>
-              <h4>결제 화면 열기</h4>
-              <p>카카오페이 하단의 <b>결제</b>로 들어간 뒤, 노란색 <b>결제하기</b>를 누른다.</p>
-              <details>
-                <summary>결제하기 버튼 위치 보기</summary>
-                <figure>
-                  <a class="screen-button" href="images/kakao-payment-open.webp" data-screen data-title="카카오페이 결제 → 노란 결제하기 버튼"><img src="images/kakao-payment-open.webp" alt="카카오페이 해외 혜택 화면. 하단 결제 메뉴 바로 위에 노란색 결제하기 버튼이 있다." width="946" height="2048" loading="lazy"></a>
-                  <figcaption>화면 아래 노란색 ‘결제하기’ 버튼을 누른다.</figcaption>
-                </figure>
-              </details>
-            </li>
-            <li>
-              <h4>상단 태극기 버튼에서 일본 선택하기</h4>
-              <p>결제 화면 위쪽의 <b>태극기 모양 버튼</b>을 누르고, 국가를 <b>일본</b>으로 바꾼다.</p>
-              <figure class="payment-example">
-                <a class="screen-button country" href="images/kakao-payment-country.webp" data-screen data-title="주황색으로 표시한 태극기 버튼 → 일본 선택"><img src="images/kakao-payment-country.webp" alt="결제 화면 상단을 발췌했다. pay 로고 오른쪽의 태극기 모양 국가 선택 버튼을 주황색 원으로 표시했다." width="946" height="270" loading="lazy"></a>
-                <figcaption>주황색 원의 태극기 버튼을 눌러 일본으로 변경한다.</figcaption>
-              </figure>
-              <p class="note">이미 일본 국기로 표시되어 있으면, 아래의 일본 결제 화면인지 확인한다.</p>
-            </li>
-            <li>
-              <h4>일본 · Alipay+ · 페이머니 확인하기</h4>
-              <p>국가를 바꾸면 아래 화면처럼 나온다.<br>오른쪽 위 <b>일본</b>, 왼쪽 위 <b>Alipay+</b>, 아래쪽 <b>페이머니</b>를 확인한다.</p>
-              <figure class="payment-example">
-                <a class="screen-button" id="kakao-payment-example" href="images/kakao-japan-payment.webp" data-screen data-title="마지막 확인: 일본 · Alipay+ · 페이머니"><img src="images/kakao-japan-payment.webp" alt="일본으로 변경한 실제 카카오페이 결제 화면. 위쪽에 Alipay+와 일본, 아래쪽에 결제 가능한 잔액과 페이머니가 표시된다. 개인 충전계좌 정보는 가렸다." width="946" height="2048" loading="lazy"></a>
-                <figcaption>일본 + Alipay+ + 페이머니 표시를 확인한다.<br>개인 충전계좌 정보는 가린 화면이다.</figcaption>
-              </figure>
-            </li>
-          </ol>
-          <ul class="checks">
-            <li>이용할 매장의 쿠폰을 결제 전에 받았는지 확인한다.</li>
-            <li>결제할 금액에 맞게 카카오페이머니 잔액을 준비한다.</li>
-            <li>매장 직원에게 바코드·QR을 보여주거나, 매장의 QR을 스캔해 결제를 진행한다.</li>
-          </ul>
-          <p class="note">결제 도우미의 ‘카카오페이 결제 열기’로 이동해도 일본 · 페이머니 선택을 직접 확인한다.</p>
-          <p class="note"><a class="reference-link" href="https://story.kakaopay.com/338-kakaopay-global/" target="_blank" rel="noopener noreferrer">카카오페이 공식 해외결제 사용법 ↗</a></p>
-        </li>
-      </ol>
-    </section>
-
-    <section class="guide-section" id="unionpay" aria-labelledby="union-heading">
-      <p class="section-label">02 / KB UNIONPAY</p>
-      <h2 id="union-heading">카드 발급 후 사전 등록까지</h2>
-      <p class="section-intro">카드를 발급받은 다음, 유니온페이 행사에 사전 등록해야 할인받을 수 있다.</p>
-      <dl class="benefit-summary" aria-label="KB 유니온페이 행사 혜택">
-        <div><dt>건당 이용 조건</dt><dd>미화 50달러 이상</dd></div>
-        <div><dt>현지 오프라인 결제</dt><dd>10% 즉시 할인</dd></div>
-        <div><dt>건당 할인 한도</dt><dd>최대 20달러</dd></div>
-        <div><dt>카드 한 장당</dt><dd>최대 3회</dd></div>
-      </dl>
-      <p class="event-period">행사 기간: 2026. 9. 14. ~ 12. 31.<br>예산이 소진되면 조기 종료될 수 있다.</p>
-      <ol class="steps">
-        <li class="step-card">
-          <h3>KB 유니온페이 카드 발급받기</h3>
-          <p>대상은 <b>KB국민 유니온페이 개인 신용·체크카드</b>다.<br>KB국민 기업카드와 비씨카드는 제외된다.</p>
-          <p>이미 대상 카드가 있으면 새로 발급받지 않고 <b>다음 단계의 사전 등록</b>을 진행한다.</p>
-          <p>새로 발급받는 경우, 상품과 신청 화면에서 국제브랜드가 <b>UnionPay(유니온페이·은련)</b>인지 확인한다.</p>
-          <a class="action-link" id="kb-card-apply" href="https://card.kbcard.com/CRD/DVIEW/HCAMCXPRICAC0076?cooperationcode=01664" target="_blank" rel="noopener noreferrer"><span>노리 체크카드 발급·신청</span><span aria-hidden="true">↗</span></a>
-          <p class="note">유니온페이 발급이 가능한 카드의 예시다.<br>KB 공식 상품 페이지의 카드신청 메뉴에서 진행하고, 브랜드를 UnionPay로 선택한다.<br>모바일에서는 ‘KB Pay에서 카드신청’ 또는 ‘웹에서 카드신청’을 선택한다.</p>
-          <a class="action-link secondary" href="https://card.kbcard.com/CRD/DVIEW/HCAM0101" target="_blank" rel="noopener noreferrer"><span>다른 KB 카드 찾아보기</span><span aria-hidden="true">↗</span></a>
-        </li>
-        <li class="step-card">
-          <h3>결제 전에 행사 사전 등록하기</h3>
-          <div class="reminder"><strong>카드 발급 후, 사전 등록도 필수</strong><p><b>카드번호 등록 + 혜택받을 카드 ‘선택확인’</b>까지 완료해야 한다.</p></div>
-          <a class="action-link" id="union-registration" href="https://marketing.unionpayintl.com/offer-promote/?language=kr&amp;insCode=299990156#/offer?offerNo=260819112751" target="_blank" rel="noopener noreferrer"><span>유니온페이 행사 사전 등록하기</span><span aria-hidden="true">↗</span></a>
-          <ol class="numbered-list">
-            <li>위 링크로 열린 행사 등록 페이지에서 <b>등록하기</b>를 누른다.</li>
-            <li><b>SMS 인증 코드로 로그인</b>을 선택한다.</li>
-            <li>국가번호를 <b>+82</b>로 바꾸고 전화번호·자동입력 방지문자를 입력한 뒤, 약관 동의와 문자 인증을 진행한다.</li>
-            <li>로그인 후 <b>유효한 카드번호</b>를 입력해 카드를 추가한다.</li>
-            <li>혜택을 적용받을 카드를 선택하고 하단의 <b>선택확인</b>을 누른다.</li>
-            <li><b>이벤트 수령 기록</b>에서 카드번호와 등록 시각을 확인한다.</li>
-          </ol>
-          <p class="note">공식 안내상 등록 성공 후 혜택 적용까지 약 2분이 걸린다.<br>등록과 선택확인이 완료된 뒤 결제한다.</p>
-        </li>
-        <li class="step-card" id="union-donki">
-          <h3>돈키호테는 전용 쿠폰과 별도 행사도 준비하기</h3>
-          <p><b>매장 쿠폰</b>과 <b>카드 결제 즉시 할인</b>을 따로 준비한다. 카카오페이에서 받은 최대 7% 쿠폰과 유니온페이 전용 쿠폰은 발급 경로가 다르다.</p>
-          <a class="action-link" id="kb-japan-event" href="https://card.kbcard.com/BON/DVIEW/HBBMCXCRVNEC0001?mainCC=a&amp;eventNum=1002289" target="_blank" rel="noopener noreferrer"><span>KB 일본 10% + 추가 할인 전체 안내</span><span aria-hidden="true">↗</span></a>
-          <a class="action-link secondary" id="union-donki-coupon" href="https://japanportal.donki-global.com/coupon/cp001_ko.html" target="_blank" rel="noopener noreferrer"><span>유니온페이 전용 돈키호테 쿠폰</span><span aria-hidden="true">↗</span></a>
-          <ol class="numbered-list">
-            <li>위 KB 행사 안내의 <b>돈키호테 쿠폰다운</b>을 통해 전용 쿠폰을 준비한다. 공식 안내상 세금 제외 10,000엔 이상 30,000엔 미만은 5%, 30,000엔 이상 50,000엔 미만은 7%다. 그 외 금액과 제외 상품은 실제 쿠폰 조건을 확인한다.</li>
-            <li><b>결제 전에 쿠폰을 점원에게 보여준다.</b> 할인 바코드가 실제로 표시되는지 확인한다. 쿠폰이 표시되지 않으면 발급 완료로 보지 않는다.</li>
-            <li><b>4,000엔 행사 등록</b>은 KB 10% 행사와 따로 진행한다. 아래 등록 페이지에서 등록하기 → 문자 인증 → 카드 등록 → 혜택받을 카드 선택확인까지 마친다.</li>
-            <li>매장 쿠폰 적용 후에도 <b>40,000엔 이상</b>이고 오늘 혜택이 남아 있을 때 4,000엔 즉시 할인과 비교한다. 최대 3회, 하루 1회다. 10,000엔 이상 500엔 행사는 별도 등록 없이 적용되며 최대 3회·하루 1회다.</li>
-            <li>계산기 <b>설정</b>에는 쿠폰 보유·별도 등록만 저장한다. 돈키호테를 선택하면 <b>“혹시 아래 점포 중 한 곳인가요?”</b> 팝업이 나온다. 이번에 결제할 점포가 목록에 있으면 ‘네’, 없거나 모르겠으면 ‘아니요·모르겠어요’를 누른다. ‘네’인 거래만 전용 행사까지 자동 비교한다. KB 10%와 돈키호테 즉시 할인은 <b>가장 큰 하나만</b> 적용한다.</li>
-          </ol>
-          <a class="action-link" id="union-donki-registration" href="https://marketing.unionpayintl.com/offer-promote/?language=kr&amp;insCode=299990156#/offer?offerNo=260907112832" target="_blank" rel="noopener noreferrer"><span>돈키호테 4,000엔 행사 별도 등록</span><span aria-hidden="true">↗</span></a>
-          <a class="action-link secondary" id="union-donki-official" href="https://m.unionpayintl.com/cardholderServ/serviceCenter/wap/merchant/121795293892?type=1" target="_blank" rel="noopener noreferrer"><span>500엔·4,000엔 조건과 대상 점포 확인</span><span aria-hidden="true">↗</span></a>
-          <details>
-            <summary>직접 대조한 오사카 대상 15개 점포 보기</summary>
-            <p class="note">2026년 10월 22일, 유니온페이 행사의 전체 115개 점포와 돈키호테 공식 오사카부 목록을 대조했다. 공식 행사 페이지는 처음에 8곳만 보이며 목록 안에서 스크롤하면 다음 점포가 나온다. 앞서 안내한 ‘대상 8곳’은 첫 화면만 본 오류여서 정정했다.</p>
-            <ul class="checks" id="osaka-eligible-stores">
-              <li>도톤보리점 · 도톤보리 미도스지점 · 난바 센니치마에점</li>
-              <li>우메다 본점 · 에키돈키 에키마르쉐 오사카점 · MEGA 신세카이점</li>
-              <li>아베노 텐노지 에키마에점 · 교바시점 · 텐마에키점</li>
-              <li>쥬소점 · 우에혼마치점 · 사쿠라노미야점 · 호엔자카점</li>
-              <li>이즈미사노점 · 린쿠점</li>
-            </ul>
-            <p class="note">오사카부 공식 46곳 가운데 위 15곳의 참여를 확인했다. MEGA 벤텐초점·MEGA 후카에바시점·데라다초역점 등 나머지는 이 행사 목록에 없어 500엔·4,000엔을 자동 적용하지 않는다. 전용 행사 제외는 KB 일본 공통 10%나 매장 쿠폰까지 제외한다는 뜻이 아니다.</p>
-            <p class="note"><a class="reference-link" href="https://www.donki.com/store/shop_list.php?pref=28" target="_blank" rel="noopener noreferrer">돈키호테 공식 오사카부 점포 목록</a> · 행사 참여 목록은 위 ‘500엔·4,000엔 조건과 대상 점포 확인’에서 볼 수 있다.</p>
-          </details>
-          <div class="reminder"><strong>10% + 4,000엔으로 더하지 않는다</strong><p>KB 공식 안내는 ‘즉시할인 행사 할인이 중복되는 경우 가장 큰 할인 혜택이 적용됩니다’라고 명시한다. 전용 매장 쿠폰 할인액에, 조건이 맞는 결제 즉시 할인 하나를 더해 비교한다.</p></div>
-          <p>예를 들어 세금 제외 45,000엔에서 전용 쿠폰으로 3,150엔을 할인받으면 결제 기준은 41,850엔이다. 등록·대상 점포·잔여 혜택이 맞으면 4,000엔을 추가로 할인받아 <b>총 7,150엔 (15.89%)</b>이다. 위 점포 팝업에서 ‘아니요·모르겠어요’를 답하면 4,000엔을 제외하고 KB 공통 10% 등 나머지 혜택을 비교한다.</p>
-          <p class="note">행사 기간은 2026. 10. 1. ~ 12. 31.이다. 돈키호테 500엔·4,000엔 사용 기록은 KB 해외 10% 기록과 구분하고 일본 날짜로 하루 1회를 자동 기록한다. 실제 결제와 다르면 + / −로 수정한다. −는 오늘 사용 기록도 해제하고 +는 오늘 사용으로 기록한다. 앱 바깥의 결제나 기능 도입 전 당일 사용은 자동 조회하지 않는다. 예산이 소진되면 조기 종료될 수 있다.</p>
-        </li>
-        <li class="step-card">
-          <h3>현지에서 등록한 카드로 결제하기</h3>
-          <ul class="checks">
-            <li>일본의 대상 오프라인 가맹점에서 사전 등록한 카드로 건당 미화 환산 <b>50달러 이상</b> 결제한다.</li>
-            <li>네이버페이·카카오페이·토스페이 등을 통한 간편결제와 온라인 결제는 이 행사 대상에서 제외된다.</li>
-            <li>할인 금액은 가맹점 영수증에 표시되지 않으므로 <b>카드사 승인 문자</b>로 확인한다.</li>
-            <li>취소·환불해도 행사 할인 횟수는 사용한 것으로 간주된다.</li>
-          </ul>
-          <p class="note">아래 공식 페이지에서 행사 적용 여부와 최신 조건을 확인한다.</p>
-          <a class="action-link secondary" id="union-official-event" href="https://m.unionpayintl.com/cardholderServ/serviceCenter/merchant/1210618403647?type=1" target="_blank" rel="noopener noreferrer"><span>유니온페이 공식 행사 안내</span><span aria-hidden="true">↗</span></a>
-          <a class="action-link secondary" href="https://card.kbcard.com/BON/DVIEW/HBBMCXCRVNEC0001?eventNum=1001987&amp;mainCC=a" target="_blank" rel="noopener noreferrer"><span>KB국민카드 공식 행사 안내</span><span aria-hidden="true">↗</span></a>
-        </li>
-      </ol>
-      <details>
-        <summary>츠루하·빅카메라 전용 쿠폰도 확인하기</summary>
-        <p class="note"><a class="reference-link" href="https://marketing.unionpayintl.com/offer-promote/?language=kr&amp;insCode=299990156&amp;countryCode=all#/offer?couponno=230619106577&amp;couponType=04&amp;merchantNo=259803441637850&amp;createFlag=01" target="_blank" rel="noopener noreferrer">츠루하 전용 쿠폰</a> · <a class="reference-link" href="https://marketing.unionpayintl.com/offer-promote/?language=kr&amp;insCode=299990156&amp;countryCode=392#/offer?couponno=241126109048&amp;couponType=04&amp;merchantNo=259803449481335&amp;createFlag=01" target="_blank" rel="noopener noreferrer">빅카메라 전용 쿠폰</a></p>
-        <p class="note">위 KB 전체 안내에서 연결하는 공식 링크다. 계산기의 ‘그 외’는 KB 공통 10% 조건으로 계산하며, 이 매장들의 개별 쿠폰·추가 행사를 자동 비교하지 않는다.</p>
-      </details>
-    </section>
-
-    <section class="step-card" id="payment-costs">
-      <h2>할인 뒤 실제 지출도 확인하기</h2>
-      <p><b>가장 큰 할인과 가장 적은 원화 지출은 다를 수 있다.</b><br>실제 지출은 할인 후 결제금액을 각 결제수단의 적용 환율로 환산하고, 별도로 청구되는 수수료를 더해 비교해야 한다.</p>
-      <ol class="numbered-list">
-        <li><b>카카오페이 일본 페이머니</b><br>공식 FAQ에 따르면 결제대행 제휴사가 정한 환율로 원화 결제되며 그 환율에 제휴사 수수료가 포함된다. 별도 수수료가 표시되지 않아도 총비용이 무료라는 뜻은 아니다. 결제 화면과 결제내역 → 해외 결제 건 → 적용환율에서 확인한다. 수수료가 이미 포함된 환율에 같은 비용을 다시 더하지 않는다.<br><a class="reference-link" href="https://support.kakaopay.com/web/faq-result?data=%ED%95%B4%EC%99%B8%20%EA%B2%B0%EC%A0%9C&amp;gubun=03" target="_blank" rel="noopener noreferrer">공식 FAQ · 결제환율 / 해외 결제 시 환율 ↗</a></li>
-        <li><b>KB 유니온페이</b><br>KB 일반 안내에는 국제브랜드 수수료 0.6~0.8%와 해외서비스 수수료 0.25%가 표시되어 있다. 반면 발급 예시인 노리 체크카드의 상품 페이지에는 UPI 물품구매 수수료가 0.25%로 표시되어 있어 안내가 일치하지 않는다. 일반 안내의 브랜드 수수료 면제 주석도 2024년 말까지만 명시되어 있다. 실제 카드 상품과 현재 적용 조건이 확정되기 전에는 어느 요율도 모든 KB 카드에 일괄 적용하지 않는다. 은행 전신환매도율 등 환산 기준도 함께 확인해야 한다.<br><a class="reference-link" href="https://card.kbcard.com/SVC/DVIEW/HSDMCXPRIBMC0043?mainCC=b" target="_blank" rel="noopener noreferrer">KB 공식 해외이용 청구방법·수수료 ↗</a> · <a class="reference-link" href="https://card.kbcard.com/CRD/DVIEW/HCAMCXPRICAC0076?cooperationcode=01664" target="_blank" rel="noopener noreferrer">노리 체크카드 상품 안내 ↗</a></li>
-        <li><b>트래블카드</b><br>상품마다 조건이 다르다. 예를 들어 트래블로그 체크카드는 해외 가맹점의 국제브랜드·해외서비스 수수료 면제를 안내하고, 트래블로그의 엔화 충전은 상시 무료환전 대상이다. 이 조건을 다른 트래블카드에 그대로 적용하지 않는다. 이미 충전한 엔화를 쓴다면 충전 당시 실제 원화 지출도 비교에 필요하다. 남은 외화를 원화로 환급할 때의 비용은 매장 결제 수수료와 구분한다.<br><a class="reference-link" href="https://www.hanacard.co.kr/OPI41000000D.web?CD_PD_SEQ=15414" target="_blank" rel="noopener noreferrer">트래블로그 체크카드 공식 상품 안내 ↗</a> · <a class="reference-link" href="https://drt.hanacard.co.kr/MKCDPD7000M.web" target="_blank" rel="noopener noreferrer">트래블로그 환전·수수료 안내 ↗</a></li>
-      </ol>
-      <p class="note">현재 계산기는 확인된 할인액을 비교한다. 실제 KB·트래블카드 상품과 각 결제수단의 적용 환율이 확정되지 않아 원화 총지출과 수수료는 계산에 반영하지 않는다. 미확인 비용은 0원이 아니다. 자동 조회하는 USD/JPY는 50달러 혜택 판정용 참고 환율이며 실제 결제 환율이 아니다. 확인 기준: 2026. 10. 22.</p>
-    </section>
-
-    <section class="step-card" id="calculator-settings">
-      <h2>준비를 마치면 내 카드·쿠폰 설정하기</h2>
-      <ol class="numbered-list">
-        <li>계산 페이지에 로그인하고 상단 <b>설정</b>을 누른다.</li>
-        <li>보유한 KB 유니온페이·트래블카드, 일본 페이머니 준비 여부를 선택한다. 실제로 받은 쿠폰과 완료한 행사 등록만 체크한다.</li>
-        <li><b>저장하고 계산하기</b>를 누른다. 설정은 전화번호별로 유지되며, 보유하지 않은 카드·쿠폰은 추천에서 제외한다.</li>
-        <li>돈키호테를 선택하면 점포 이름을 보여주는 팝업에 답하고 금액을 입력한다. 답변은 이번 계산에만 사용하고 다음 거래에서 다시 묻는다. 간사이공항은 장소와 금액만 입력한다. ‘그 외’에서만 유니온페이 결제 가능 여부를 체크한다. 카드·쿠폰 보유, 행사 등록과 최대 7% 쿠폰의 확인한 구간 할인율은 설정에 한 번 저장한다.</li>
-      </ol>
-      <p class="note">설정을 바꾸거나 로그아웃해도 기존 사용 횟수는 유지된다. 계산 결과는 이번 한 건의 예상 할인액을 비교한다.</p>
-    </section>
-
-    <a class="next" href="../"><span>준비 후 카드·쿠폰 설정하고 계산하기</span><span aria-hidden="true">→</span></a>
-    <footer>준비 가이드는 로그인 없이 확인할 수 있다.<br>쿠폰 화면·공식 행사 확인 기준 · 2026. 10. 22.</footer>
-  </main>
-
-  <dialog id="screen-dialog" aria-labelledby="screen-title">
-    <div class="zoom-bar"><h2 id="screen-title">가이드 화면</h2><button id="close-screen" type="button" autofocus>닫기</button></div>
-    <img id="zoom-image" alt="">
-  </dialog>
-  <script>
+<main>
+<header>
+<div class="topline">
+<a class="back" href="../">← 결제 도우미</a>
+<span class="eyebrow">BEFORE YOU PAY</span>
+</div>
+<h1>미리 할 작업</h1>
+<p class="intro">필요한 항목만 펼쳐서 준비한다.</p>
+<nav aria-label="준비할 결제수단" class="overview">
+<a class="kakao" href="#kakaopay">
+<span>카카오페이 ↓</span>
+</a>
+<a class="union" href="#unionpay">
+<span>KB 유니온페이 ↓</span>
+</a>
+</nav>
+</header>
+<section class="guide-section" id="kakaopay">
+<h2>카카오페이</h2>
+<ol class="task-list">
+<li>
+<details class="task-card" id="kakao-payment-example">
+<summary>
+<span>일본 페이머니 준비<small>국가를 일본으로 바꾸고 잔액 준비</small>
+</span>
+</summary>
+<div class="task-body">
+<p>카카오페이 → <b>결제</b> → 상단 <b>태극기 버튼</b> → <b>일본</b>을 선택한다.<br/>마지막 화면의 <b>일본 · Alipay+ · 페이머니</b>를 확인하고 잔액을 준비한다.</p>
+<a class="action-link" href="https://link.kakaopay.com/p/payment" id="kakao-payment-entry" rel="noopener noreferrer" target="_blank">
+<span>카카오페이 결제 열기</span>
+<span aria-hidden="true">↗</span>
+</a>
+<details>
+<summary>카카오페이 여는 화면</summary>
+<figure>
+<a class="screen-button" data-screen="" data-title="카카오톡에서 카카오페이 열기" href="images/kakao-entry.webp">
+<img alt="카카오톡 더보기 화면. 주황색 1번은 하단 더보기 버튼, 2번은 상단 노란색 pay 잔액 영역을 가리킨다." fetchpriority="high" height="2048" src="images/kakao-entry.webp" width="946"/>
+</a>
+<figcaption>1번 → 2번 순서로 누른다. 이미지를 누르면 크게 볼 수 있다.</figcaption>
+</figure>
+</details>
+<details>
+<summary>1. 결제 메뉴 누르기</summary>
+<figure>
+<a class="screen-button" data-screen="" data-title="카카오페이 결제 → 노란 결제하기 버튼" href="images/kakao-payment-open.webp">
+<img alt="카카오페이 해외 혜택 화면. 하단 결제 메뉴 바로 위에 노란색 결제하기 버튼이 있다." height="2048" loading="lazy" src="images/kakao-payment-open.webp" width="946"/>
+</a>
+<figcaption>화면 아래 노란색 ‘결제하기’ 버튼을 누른다.</figcaption>
+</figure>
+</details>
+<details>
+<summary>2. 태극기 버튼 → 일본 선택</summary>
+<figure class="payment-example">
+<a class="screen-button country" data-screen="" data-title="주황색으로 표시한 태극기 버튼 → 일본 선택" href="images/kakao-payment-country.webp">
+<img alt="결제 화면 상단을 발췌했다. pay 로고 오른쪽의 태극기 모양 국가 선택 버튼을 주황색 원으로 표시했다." height="270" loading="lazy" src="images/kakao-payment-country.webp" width="946"/>
+</a>
+<figcaption>주황색 원의 태극기 버튼을 눌러 일본으로 변경한다.</figcaption>
+</figure>
+</details>
+<details>
+<summary>3. 일본 페이머니 화면 확인</summary>
+<figure class="payment-example">
+<a class="screen-button" data-screen="" data-title="마지막 확인: 일본 · Alipay+ · 페이머니" href="images/kakao-japan-payment.webp" id="kakao-payment-screen">
+<img alt="일본으로 변경한 실제 카카오페이 결제 화면. 위쪽에 Alipay+와 일본, 아래쪽에 결제 가능한 잔액과 페이머니가 표시된다. 개인 충전계좌 정보는 가렸다." height="2048" loading="lazy" src="images/kakao-japan-payment.webp" width="946"/>
+</a>
+<figcaption>일본 + Alipay+ + 페이머니 표시를 확인한다.<br/>개인 충전계좌 정보는 가린 화면이다.</figcaption>
+</figure>
+</details>
+</div>
+</details>
+</li>
+<li>
+<details class="task-card" id="donki-coupon">
+<summary>
+<span>결제 할인 쿠폰 받기<small>돈키호테 2,000엔 · 간사이공항 1,200엔</small>
+</span>
+</summary>
+<div class="task-body">
+<p>
+<b>결제 → 해외 · 일본 → 현지 쿠폰 받기</b>에서 이용할 매장의 <b>지금 받기</b>를 누른다.</p>
+<ul>
+<li>돈키호테: 15,000엔 이상 → 2,000엔 할인</li>
+<li id="airport-coupon">간사이공항: 10,000엔 이상 → 1,200엔 할인</li>
+</ul>
+<a class="action-link" href="https://link.kakaopay.com/p/payment" id="kakao-coupon-entry" rel="noopener noreferrer" target="_blank">
+<span>카카오페이 열고 쿠폰 찾기</span>
+<span aria-hidden="true">↗</span>
+</a>
+<details>
+<summary>현지 쿠폰 받기 메뉴</summary>
+<figure>
+<a class="screen-button" data-screen="" data-title="해외 · 일본에서 현지 쿠폰 열기" href="images/kakao-overseas.webp">
+<img alt="카카오페이 화면. 하단 결제, 상단 해외, 현지 쿠폰 받기 메뉴에 주황색 표시가 있으며 국가가 일본으로 표시된다." height="2048" loading="lazy" src="images/kakao-overseas.webp" width="946"/>
+</a>
+<figcaption>결제 → 해외 → 일본 확인 → 현지 쿠폰 받기</figcaption>
+</figure>
+</details>
+<details>
+<summary>돈키호테 쿠폰 화면</summary>
+<figure>
+<a class="screen-button" data-screen="" data-title="돈키호테 쿠폰 받기" href="images/kakao-donki-coupons.webp">
+<img alt="A+ REWARDS의 Don Quijote 쿠폰. 최대 7% 할인은 최소 10,000엔, 2,000엔 할인은 최소 15,000엔이며 각각 지금 받기 버튼이 있다." height="2048" loading="lazy" src="images/kakao-donki-coupons.webp" width="946"/>
+</a>
+<figcaption>Don Quijote의 ‘지금 받기’ 버튼</figcaption>
+</figure>
+</details>
+<details>
+<summary>간사이공항 쿠폰 화면</summary>
+<figure>
+<a class="screen-button" data-screen="" data-title="간사이공항 쿠폰 받기" href="images/kakao-airport-coupon.webp">
+<img alt="A+ REWARDS의 Kansai International Airport 쿠폰. KIX 1,200엔 할인, 최소 거래 금액 10,000엔이며 지금 받기 버튼이 있다." height="2048" loading="lazy" src="images/kakao-airport-coupon.webp" width="946"/>
+</a>
+<figcaption>Kansai International Airport의 ‘지금 받기’ 버튼</figcaption>
+</figure>
+</details>
+</div>
+</details>
+</li>
+<li>
+<details class="task-card" id="donki-store-coupon">
+<summary>
+<span>돈키호테 최대 7% 쿠폰 받기<small>돈키호테 이용 시 · 결제 전에 점원에게 제시</small>
+</span>
+</summary>
+<div class="task-body">
+<p>같은 현지 쿠폰 메뉴에서 <b>최대 7% 할인 Don Quijote</b>를 받는다.<br/>
+<b>살짝 밀어서 사용 → 지금 사용하기</b>는 미리 누르지 않고 <b>계산대에서 직원과 함께</b> 진행한다. 캡처 화면은 사용할 수 없다.</p>
+<details>
+<summary>쿠폰 상세 화면</summary>
+<figure>
+<a class="screen-button" data-screen="" data-title="A+ REWARDS 최대 7% 쿠폰 상세" href="images/kakao-donki-max7-detail.webp">
+<img alt="최대 7% 할인 Don Quijote 쿠폰 상세. 최소 결제 금액 10,000엔, 살짝 밀어서 사용 버튼과 이용 약관이 표시된다." height="2048" loading="lazy" src="images/kakao-donki-max7-detail.webp" width="946"/>
+</a>
+<figcaption>일본 도착 후 수령하고 결제 전에 직원에게 제시한다.</figcaption>
+</figure>
+</details>
+<details>
+<summary>사용 버튼 주의사항</summary>
+<figure>
+<a class="screen-button" data-screen="" data-title="지금 사용하기는 결제 현장에서만" href="images/kakao-donki-max7-redeem.webp">
+<img alt="지금 교환하시겠습니까 팝업. 지금 사용 버튼을 누르면 쿠폰이 즉시 확인 완료로 변경되니 주의하라는 안내와 지금 사용하기·나중에 버튼이 있다." height="2048" loading="lazy" src="images/kakao-donki-max7-redeem.webp" width="946"/>
+</a>
+<figcaption>미리 교환하지 않고 결제 현장에서 직원과 진행한다.</figcaption>
+</figure>
+</details>
+<details>
+<summary>쿠폰 약관 화면</summary>
+<figure>
+<a class="screen-button" data-screen="" data-title="최대 7% 쿠폰 이용 약관" href="images/kakao-donki-max7-terms.webp">
+<img alt="최대 7% 쿠폰 약관. 거래당 1회, 알리페이 프로모션 중복 가능, 돈키호테 자체 프로모션 중복 불가, 제외 상품과 캡처 사용 불가가 명시된다." height="2048" loading="lazy" src="images/kakao-donki-max7-terms.webp" width="946"/>
+</a>
+<figcaption>제공된 실제 쿠폰 약관을 기준으로 안내한다.</figcaption>
+</figure>
+</details>
+<p class="note">계산기 설정에 보유 여부와 쿠폰에 표시된 구간 할인율을 저장한다.<br/>
+<a class="reference-link" href="../basis/#stack-evidence">쿠폰 계산 기준 보기 ↗</a>
+</p>
+</div>
+</details>
+</li>
+</ol>
+</section>
+<section class="guide-section" id="unionpay">
+<h2>KB 유니온페이</h2>
+<ol class="task-list">
+<li>
+<details class="task-card" id="kb-card">
+<summary>
+<span>KB 유니온페이 실물 카드 준비<small>보유 중이면 발급 생략</small>
+</span>
+</summary>
+<div class="task-body">
+<p>
+<b>노리 체크카드 · UnionPay(은련)</b>를 기준으로 안내한다.<br/>신청 화면에서 국제브랜드를 <b>UnionPay</b>로 선택한다. 이미 대상 KB 개인 신용·체크카드가 있으면 새로 발급받지 않아도 된다.</p>
+<a class="action-link" href="https://card.kbcard.com/CRD/DVIEW/HCAMCXPRICAC0076?cooperationcode=01664" id="kb-card-apply" rel="noopener noreferrer" target="_blank">
+<span>노리 체크카드 발급·신청</span>
+<span aria-hidden="true">↗</span>
+</a>
+</div>
+</details>
+</li>
+<li>
+<details class="task-card" id="kb-registration">
+<summary>
+<span>일본 10% 행사 등록<small>카드 등록 후 ‘선택확인’까지</small>
+</span>
+</summary>
+<div class="task-body">
+<a class="action-link" href="https://marketing.unionpayintl.com/offer-promote/?language=kr&amp;insCode=299990156#/offer?offerNo=260819112751" id="union-registration" rel="noopener noreferrer" target="_blank">
+<span>일본 10% 행사 등록하기</span>
+<span aria-hidden="true">↗</span>
+</a>
+<ol>
+<li>등록하기 → <b>SMS 인증 코드로 로그인</b>을 누른다.</li>
+<li>국가번호 <b>+82</b>를 선택하고 문자 인증을 진행한다.</li>
+<li>카드번호 등록 → 사용할 카드 선택 → <b>선택확인</b>을 누른다.</li>
+<li>이벤트 수령 기록에서 등록 완료를 확인하고 <b>약 2분 뒤</b> 결제한다.</li>
+</ol>
+<p class="note">50달러 이상 현지 실물 카드 결제 · 10% 할인 · 건당 최대 20달러 · 최대 3회.<br/>2026. 9. 14. ~ 12. 31., 예산 소진 시 종료.</p>
+<a class="action-link" href="https://m.unionpayintl.com/cardholderServ/serviceCenter/merchant/1210618403647?type=1" id="union-official-event" rel="noopener noreferrer" target="_blank">
+<span>공식 행사 조건 보기</span>
+<span aria-hidden="true">↗</span>
+</a>
+</div>
+</details>
+</li>
+<li>
+<details class="task-card" id="union-donki">
+<summary>
+<span>돈키호테 전용 혜택 준비<small>매장 쿠폰 받기 · 4,000엔 행사는 별도 등록</small>
+</span>
+</summary>
+<div class="task-body">
+<a class="action-link" href="https://japanportal.donki-global.com/coupon/cp001_ko.html" id="union-donki-coupon" rel="noopener noreferrer" target="_blank">
+<span>유니온페이 전용 매장 쿠폰 받기</span>
+<span aria-hidden="true">↗</span>
+</a>
+<p>쿠폰 바코드가 표시되는지 확인하고 <b>결제 전에 점원에게 보여준다.</b> 표시되지 않으면 아래 KB 안내의 쿠폰다운으로 다시 들어간다.</p>
+<a class="action-link" href="https://marketing.unionpayintl.com/offer-promote/?language=kr&amp;insCode=299990156#/offer?offerNo=260907112832" id="union-donki-registration" rel="noopener noreferrer" target="_blank">
+<span>돈키호테 4,000엔 행사 별도 등록</span>
+<span aria-hidden="true">↗</span>
+</a>
+<p>위 10% 행사와 <b>별도로</b> 문자 인증 → 카드 등록 → 사용할 카드 <b>선택확인</b>까지 마친다.</p>
+<p class="note">쿠폰 후 40,000엔 이상이면 4,000엔, 10,000엔 이상 500엔 행사는 등록 없이 비교한다. 각 최대 3회·하루 1회다. 점포는 계산기의 팝업에서 확인한다.</p>
+<a class="action-link" href="https://card.kbcard.com/BON/DVIEW/HBBMCXCRVNEC0001?mainCC=a&amp;eventNum=1002289" id="kb-japan-event" rel="noopener noreferrer" target="_blank">
+<span>KB 전체 행사·쿠폰다운</span>
+<span aria-hidden="true">↗</span>
+</a>
+<a class="action-link" href="https://m.unionpayintl.com/cardholderServ/serviceCenter/wap/merchant/121795293892?type=1" id="union-donki-official" rel="noopener noreferrer" target="_blank">
+<span>전용 행사 공식 조건</span>
+<span aria-hidden="true">↗</span>
+</a>
+</div>
+</details>
+</li>
+</ol>
+</section>
+<section class="guide-section">
+<h2>마지막 준비</h2>
+<ol class="task-list">
+<li>
+<details class="task-card" id="travel">
+<summary>
+<span>트래블로그 엔화 충전<small>부족한 잔액을 미리 준비</small>
+</span>
+</summary>
+<div class="task-body">
+<p>트래블로그 앱에서 결제할 엔화 잔액을 준비한다.<br/>트래블로그 체크 기준으로 엔화 충전·해외 가맹점 결제 수수료 면제를 반영한다.</p>
+<a class="action-link" href="https://drt.hanacard.co.kr/MKCDPD7000M.web" id="travel-official" rel="noopener noreferrer" target="_blank">
+<span>트래블로그 공식 안내</span>
+<span aria-hidden="true">↗</span>
+</a>
+</div>
+</details>
+</li>
+<li>
+<details class="task-card" id="calculator-settings">
+<summary>
+<span>받은 쿠폰·등록 상태 저장<small>계산기 상단 설정에서 한 번 저장</small>
+</span>
+</summary>
+<div class="task-body">
+<p>계산기에 로그인한 뒤 <b>설정</b>에서 실제 보유 카드·쿠폰과 완료한 행사 등록만 선택한다.<br/>
+<b>저장하고 계산하기</b>를 누르면 준비가 끝난다.</p>
+</div>
+</details>
+</li>
+</ol>
+</section>
+<a class="next" href="../">
+<span>준비 완료 · 계산하러 가기</span>
+<span aria-hidden="true">→</span>
+</a>
+<footer>
+<a class="reference-link" href="../basis/">할인·수수료 계산 기준과 공식 근거</a>
+<br/>2026. 10. 22. 기준 · 로그인 없이 확인 가능</footer>
+</main>
+<dialog aria-labelledby="screen-title" id="screen-dialog">
+<div class="zoom-bar">
+<h2 id="screen-title">가이드 화면</h2>
+<button autofocus="" id="close-screen" type="button">닫기</button>
+</div>
+<img alt="" id="zoom-image"/>
+</dialog>
+<script>
     'use strict';
     const screenDialog = document.getElementById('screen-dialog');
     const zoomImage = document.getElementById('zoom-image');
@@ -410,6 +424,18 @@
       const bounds = screenDialog.getBoundingClientRect();
       if (event.clientX < bounds.left || event.clientX > bounds.right || event.clientY < bounds.top || event.clientY > bounds.bottom) screenDialog.close();
     });
-  </script>
+
+    function openAnchor() {
+      const id = decodeURIComponent(location.hash.slice(1));
+      if (['stack-evidence','payment-costs'].includes(id)) { location.replace('../basis/#' + id); return; }
+      const target = document.getElementById(id);
+      if (!target) return;
+      let parent = target;
+      while (parent) { if (parent.tagName === 'DETAILS') parent.open = true; parent = parent.parentElement; }
+      requestAnimationFrame(() => target.scrollIntoView({ block: 'start' }));
+    }
+    window.addEventListener('hashchange', openAnchor);
+    openAnchor();
+</script>
 </body>
 </html>

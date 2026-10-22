@@ -165,3 +165,50 @@ test('요청 옵션으로 미보유 혜택·미등록 행사나 미확인 중복
   assert.equal(unconfirmed.plans.some(p => p.coupon && p.benefit === 'kakao'), false);
   assert.equal(selectPayment('donki', 17000, available, null, {}, allSettings).reason, 'rate-required');
 });
+
+test('노리 UPI 비용 범위·트래블로그 면제를 반영하고 카카오 미확인 수수료는 null로 유지한다', () => {
+  const choice = choose(17000);
+  const union = choice.plans.find(plan => plan.benefit === 'union' && plan.couponSource === 'union');
+  assert.equal(union.feeMinYen, union.payable * .0025);
+  assert.equal(union.feeMaxYen, union.payable * .0105);
+  const kakao = choice.plans.find(plan => plan.method === 'kakao');
+  assert.equal(kakao.feeMinYen, null);
+  assert.equal(kakao.feeMaxYen, null);
+  assert.equal(kakao.totalWon, null);
+  assert.equal(choice.costMode, 'partial');
+  assert.equal(choice.plans.find(plan => plan.method === 'travel').feeMaxYen, 0);
+  const noKakao = { ...noSettings, unionCard: true, unionRegistered: true, travelCard: true };
+  const huge = selectPayment('other', 999999999, available, rate, { unionAccepted: true }, noKakao);
+  assert.equal(huge.method, 'travel', '할인 한도보다 이용료가 크면 같은 환율 가정에서 트래블로그를 추천한다');
+  assert.equal(huge.costMode, 'same-fx');
+});
+
+test('후보 전부의 수수료 포함 환율이 있으면 할인보다 적은 원화 총지출을 우선한다', () => {
+  const capturedAt = Date.now();
+  const quote = wonPer100 => ({ wonPer100, capturedAt });
+  const choice = choose(17000, allSettings, available, {}, { costQuotes: { kakao: quote(1000), union: quote(1000), travel: quote(800) } });
+  assert.equal(choice.costMode, 'quoted');
+  assert.equal(choice.method, 'travel');
+  assert.equal(choice.benefit, null);
+  assert.equal(choice.totalWon, 129200, '매장 쿠폰 850엔 적용 후 트래블로그 충전 환율로 비교한다');
+  const kb = choice.plans.find(plan => plan.benefit === 'union' && plan.couponSource === 'union');
+  assert.equal(kb.totalWon, 145350, '입력 환율에 포함된 KB 수수료를 또 더하지 않는다');
+  const onlyKb = { ...noSettings, unionCard: true, unionRegistered: true };
+  const result = choose(17000, onlyKb, available, {}, { costQuotes: { union: quote(920) } });
+  assert.equal(result.costMode, 'quoted', '보유하지 않은 결제수단의 환율은 필요 없다');
+  assert.equal(result.totalWon, 140760);
+});
+
+test('빠진·만료·비정상 실제 환율을 0원으로 채우거나 원화 순위에 사용하지 않는다', () => {
+  const now = Date.now();
+  for (const invalid of [0, -1, 100001, '900', NaN, Infinity]) {
+    const choice = choose(17000, allSettings, available, {}, { costQuotes: { kakao: { wonPer100: invalid, capturedAt: now } } });
+    assert.equal(choice.costMode, 'partial');
+    assert.equal(choice.plans.find(plan => plan.method === 'kakao').totalWon, null);
+  }
+  for (const capturedAt of [now - 30 * 60 * 1000 - 1, now + 60 * 1000]) {
+    const choice = choose(17000, allSettings, available, {}, { costQuotes: Object.fromEntries(['kakao', 'union', 'travel'].map(method => [method, { wonPer100: 900, capturedAt }])) });
+    assert.equal(choice.costMode, 'partial');
+    assert.equal(choice.plans.every(plan => plan.totalWon === null), true);
+  }
+});

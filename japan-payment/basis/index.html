@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1, viewport-fit=cover" name="viewport"/>
+<meta content="#f5f6f2" name="theme-color"/>
+<meta content="light" name="color-scheme"/>
+<meta content="일본 여행 전 카카오페이 할인 쿠폰과 KB 유니온페이 카드를 준비하는 방법을 화면으로 확인한다." name="description"/>
+<title>계산 기준 · 일본 결제 도우미</title>
+<style>
+    :root { --ink:#20382e; --muted:#657267; --line:#e1e6dd; --green:#285d43; --paper:#f5f6f2; }
+    * { box-sizing:border-box; }
+    html { scroll-behavior:smooth; scroll-padding-top:24px; }
+    body { margin:0; background:var(--paper); color:var(--ink); font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Noto Sans KR",sans-serif; -webkit-font-smoothing:antialiased; }
+    a,button,summary { -webkit-tap-highlight-color:transparent; touch-action:manipulation; }
+    button { font:inherit; cursor:pointer; }
+    :focus-visible { outline:3px solid #679c77; outline-offset:4px; }
+    main { max-width:680px; margin:auto; padding:calc(23px + env(safe-area-inset-top)) 20px calc(30px + env(safe-area-inset-bottom)); }
+    .topline { display:flex; justify-content:space-between; align-items:center; gap:10px; margin-bottom:31px; }
+    .back { display:inline-flex; align-items:center; min-height:44px; color:var(--green); text-decoration:none; font-size:13px; font-weight:650; }
+    .eyebrow { color:var(--muted); font-size:10px; font-weight:700; letter-spacing:1.5px; }
+    h1 { margin:0; font-size:35px; font-weight:760; letter-spacing:-1.5px; line-height:1.2; }
+    .intro { margin:13px 0 24px; color:var(--muted); font-size:15px; line-height:1.8; word-break:keep-all; }
+    .overview { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+    .overview a { display:block; padding:18px 15px; border:1px solid var(--line); border-radius:17px; background:#fff; color:var(--ink); text-decoration:none; }
+    .overview .kakao { background:#fff9d9; border-color:#ebe1ae; }
+    .overview .union { background:#edf3e8; border-color:#d5e0cc; }
+    .overview span { display:block; margin-bottom:13px; font-size:11px; font-weight:700; }
+    .overview strong { display:block; font-size:16px; line-height:1.5; letter-spacing:-.5px; word-break:keep-all; }
+    .overview small { display:block; margin-top:7px; font-size:11px; line-height:1.5; color:var(--muted); }
+    .guide-section { margin-top:38px; }
+    .section-label { margin:0 0 10px; color:var(--green); font-size:11px; font-weight:750; letter-spacing:1px; }
+    h2 { margin:0; font-size:24px; line-height:1.5; letter-spacing:-.8px; }
+    .section-intro { margin:8px 0 20px; color:var(--muted); font-size:14px; line-height:1.85; word-break:keep-all; }
+    .steps { padding:0; margin:0; list-style:none; counter-reset:step; }
+    .step-card { counter-increment:step; margin-top:14px; padding:21px; background:white; border:1px solid var(--line); border-radius:20px; }
+    .step-card h3 { display:flex; align-items:flex-start; gap:10px; margin:0 0 13px; font-size:17px; line-height:1.65; letter-spacing:-.5px; word-break:keep-all; }
+    .step-card h3::before { content:counter(step); display:grid; place-items:center; flex:none; width:25px; height:25px; margin-top:1px; border-radius:50%; background:#edf3e8; color:var(--green); font-size:12px; }
+    p { line-height:1.85; }
+    .step-card > p { margin:10px 0 0; font-size:14px; word-break:keep-all; }
+    .path { display:flex; flex-wrap:wrap; align-items:center; gap:6px; padding:12px; background:#f6f8f3; border-radius:11px; font-size:12px; font-weight:650; line-height:1.8; }
+    .path .arrow { color:#8d9a88; }
+    .note { color:var(--muted); font-size:12px !important; }
+    details { margin-top:17px; border-top:1px solid var(--line); }
+    summary { display:flex; align-items:center; justify-content:space-between; gap:10px; min-height:48px; padding:10px 0; color:var(--green); cursor:pointer; list-style:none; font-size:13px; font-weight:650; }
+    summary::-webkit-details-marker { display:none; }
+    summary::after { content:"＋"; }
+    details[open] > summary::after { content:"−"; }
+    figure { margin:0; }
+    .screen-button { display:block; width:100%; max-width:286px; margin:2px auto 0; padding:0; border:1px solid #e5e9e2; border-radius:13px; background:#fff; overflow:hidden; cursor:zoom-in; }
+    .screen-button img { display:block; width:100%; height:auto; }
+    .payment-example { margin-top:18px; }
+    .walkthrough { padding:0; margin:20px 0 0; list-style:none; counter-reset:payment; }
+    .walkthrough > li { counter-increment:payment; margin-top:22px; padding-top:20px; border-top:1px solid var(--line); }
+    .walkthrough h4 { margin:0 0 10px; font-size:15px; line-height:1.7; letter-spacing:-.3px; }
+    .walkthrough h4::before { content:counter(payment, decimal-leading-zero) " / "; color:var(--green); }
+    .walkthrough p { margin:8px 0 0; font-size:14px; word-break:keep-all; }
+    .screen-button.country { max-width:none; }
+    figcaption { margin:10px 0 2px; color:var(--muted); text-align:center; font-size:11px; line-height:1.7; }
+    .coupons { display:grid; gap:14px; margin-top:18px; }
+    .coupon { min-width:0; padding:15px; border:1px solid #e1e7dc; border-radius:14px; background:#fafbf8; }
+    .coupon h4 { margin:0 0 12px; font-size:15px; }
+    .offer { margin:0 0 9px; font-size:14px; }
+    .offer strong { display:block; margin-bottom:2px; }
+    .offer span { color:var(--muted); font-size:12px; }
+    .coupon p:last-of-type { margin-bottom:0; }
+    .coupon details { margin-top:12px; }
+    .reminder { margin-top:18px; padding:16px; border:1px solid #ebe1ae; border-radius:13px; background:#fffae2; font-size:14px; line-height:1.8; word-break:keep-all; }
+    .reminder strong { display:block; margin-bottom:4px; }
+    .reminder p { margin:0; }
+    .reminder + .path { margin-top:16px; }
+    .checks { padding:0; margin:14px 0 0; list-style:none; }
+    .checks li { position:relative; margin-top:10px; padding-left:23px; font-size:14px; line-height:1.85; word-break:keep-all; }
+    .checks li::before { content:"✓"; position:absolute; left:0; color:var(--green); font-weight:750; }
+    .action-link { display:flex; justify-content:space-between; align-items:center; gap:10px; min-height:50px; margin-top:16px; padding:13px 15px; border:1px solid var(--green); border-radius:11px; background:var(--green); color:white; text-decoration:none; font-size:14px; font-weight:700; line-height:1.6; word-break:keep-all; }
+    .action-link.secondary { border-color:#d3decb; background:#f3f7ef; color:var(--green); }
+    .reference-link { color:var(--green); text-underline-offset:3px; }
+    .discount-example { width:100%; margin-top:14px; border-collapse:collapse; font-size:13px; line-height:1.7; }
+    .discount-example caption { margin-bottom:8px; text-align:left; font-weight:700; }
+    .discount-example th,.discount-example td { padding:10px 5px; border-bottom:1px solid var(--line); text-align:left; vertical-align:top; }
+    .discount-example th:last-child,.discount-example td:last-child { width:39%; text-align:right; }
+    .numbered-list { margin:14px 0 0; padding-left:23px; }
+    .numbered-list li { margin-top:10px; padding-left:3px; font-size:14px; line-height:1.85; word-break:keep-all; }
+    .benefit-summary { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin:18px 0; }
+    .benefit-summary div { padding:13px; border:1px solid #dbe4d4; border-radius:12px; background:#edf3e8; }
+    .benefit-summary dt { color:var(--muted); font-size:11px; line-height:1.6; }
+    .benefit-summary dd { margin:4px 0 0; font-size:16px; font-weight:750; line-height:1.6; }
+    .event-period { margin:0; color:var(--muted); font-size:12px; line-height:1.8; }
+    .next { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-top:32px; min-height:55px; padding:16px 20px; border-radius:14px; color:white; background:var(--green); text-decoration:none; font-size:14px; font-weight:700; }
+    footer { margin-top:23px; color:var(--muted); font-size:11px; line-height:1.8; text-align:center; }
+    dialog { width:calc(100% - 20px); max-width:720px; max-height:calc(100dvh - 20px); margin:auto; padding:0; border:0; border-radius:15px; color:var(--ink); background:var(--paper); }
+    dialog::backdrop { background:#10241cbb; }
+    .zoom-bar { position:sticky; z-index:1; top:0; display:flex; justify-content:space-between; align-items:center; gap:10px; padding:10px 14px; background:var(--paper); border-bottom:1px solid var(--line); }
+    .zoom-bar h2 { font-size:14px; }
+    #close-screen { flex:none; min-width:55px; min-height:44px; padding:6px 10px; border:1px solid #d1d9cb; border-radius:9px; color:var(--ink); background:white; font-size:13px; }
+    #zoom-image { display:block; width:100%; height:auto; }
+    @media (min-width:620px) { .coupons { grid-template-columns:1fr 1fr; } }
+    @media (max-width:359px) { main { padding-left:15px; padding-right:15px; } .step-card { padding:17px; } .overview a { padding:15px 12px; } .overview strong { font-size:15px; } }
+    @media (prefers-reduced-motion:reduce) { html { scroll-behavior:auto; } }
+
+.task-list { list-style:none; padding:0; margin:12px 0 0; }
+.task-card { margin:10px 0 0; padding:0 17px; border:1px solid var(--line); border-radius:14px; background:white; }
+.task-card > summary { min-height:65px; color:var(--ink); font-size:15px; line-height:1.6; }
+.task-card > summary span { display:block; }
+.task-card > summary small { display:block; font-size:11px; font-weight:400; color:var(--muted); }
+.task-body { padding:0 0 16px; font-size:14px; }
+.task-body p { margin:8px 0 12px; }
+.task-body h3 { font-size:15px; }
+.task-body ol,.task-body ul { padding-left:20px; line-height:1.9; }
+.guide-section { margin-top:24px; }
+.guide-section h2 { font-size:17px; }
+.topline { margin-bottom:20px; }
+.intro { font-size:14px; margin-bottom:15px; }
+.overview a { padding:9px 12px; border-radius:10px; font-size:12px; }
+.overview span { margin:0; }
+.action-link { margin-top:10px; min-height:45px; font-size:13px; }
+.numbered-list li { font-size:13px; }
+</style>
+</head>
+<body>
+<main>
+<a class="back" href="../">← 결제 도우미</a>
+<h1>계산 기준</h1>
+<p class="intro">할인·수수료 계산에 반영한 근거</p>
+<section class="step-card">
+<div class="reminder" id="stack-evidence">
+<strong>중복 할인은 확인된 근거로 계산한다</strong>
+<p>최대 7% 쿠폰의 실제 약관 6항에는 <b>“알리페이에서 제공하는 프로모션과 중복 사용할 수 있습니다.”</b>라고 명시되어 있다. 다만 현재 2,000엔 결제 쿠폰의 전체 약관과 제외 조건은 공개 자료에서 확보하지 못했다. 따라서 계산기는 이 정확한 조합을 합산에서 제외한다. 이는 중복 불가가 확정됐다는 뜻이 아니라, 확인되지 않은 할인액을 추천에 더하지 않는 기준이다.</p>
+</div>
+</section>
+<section class="step-card" id="payment-costs">
+<h2>수수료·환전 비용</h2>
+<p>사용자 선택에 따라 <b>KB 노리 체크(UnionPay)·트래블로그 체크</b>를 가정한다. 카드가 다르면 이 기준도 바꿔야 한다.</p>
+<ul class="checks">
+<li>
+<b>KB 이용료:</b> 노리 상품 페이지 0.25%와 KB 일반 안내의 0.6~0.8%+0.25%가 달라 <b>할인 후 결제액의 0.25~1.05%</b>를 예상 범위로 계산한다. 확정 요율이나 모든 환전 비용의 상한은 아니다. 실제 수수료 부과 기준·환산 시점에 따라 달라질 수 있다.</li>
+<li>
+<b>트래블로그:</b> 엔화 충전·해외 가맹점 결제 수수료 면제를 반영한다. 남은 외화의 원화 환급 수수료는 이번 매장 결제에 더하지 않는다.</li>
+<li>
+<b>카카오페이:</b> 제휴사 수수료가 앱 적용 환율에 포함된다. 고정 요율과 공개 실결제 환율 API를 확보하지 못해 미확인 비용은 <b>0원 대신 미확인</b>으로 둔다.</li>
+</ul>
+<h3>추천이 달라지는 기준</h3>
+<p>카카오페이 후보가 없고 실제 환율도 없으면 <b>동일 환율 가정에서 KB 수수료 상한</b>을 차감한 혜택으로 트래블로그와 비교한다. 이는 실제 원화 총지출 확정이 아니다.</p>
+<p>카카오페이의 실제 환율이 미확인이면 할인액 기준의 <b>잠정 추천</b>으로 표시하고 수수료 범위를 따로 보여준다.</p>
+<p>계산기 아래 <b>수수료 · 실제 원화 지출 비교</b>에 모든 보유 후보의 <b>100엔당 원화 비용(수수료 포함)</b>을 입력하면, 할인 후 금액 × 입력 환율로 <b>예상 원화 총지출</b>이 가장 작은 조합을 고른다. 이미 포함된 수수료를 다시 더하지 않는다. 실제 충전 환율·카드 청구 내역 등 확인한 값을 사용한다.</p>
+<p class="note">입력값은 화면 메모리에서 30분간만 유효하며 브라우저에 저장하지 않는다. 로그아웃 시 초기화한다. 계산 요청의 환율은 서버 요청 기록에 결과와 함께 남는다. 자동 USD/JPY·KRW는 최신 영업일 참고값으로, 실제 결제 환율이 아니다.</p>
+<details>
+<summary>공식 출처 확인하기</summary>
+<ul class="numbered-list">
+<li>
+<a class="reference-link" href="https://support.kakaopay.com/web/faq-result?data=%ED%95%B4%EC%99%B8%20%EA%B2%B0%EC%A0%9C&amp;gubun=03" rel="noopener noreferrer" target="_blank">카카오페이 FAQ · 결제환율</a>: 결제 화면과 결제내역 → 해외 결제 건 → 적용환율에서 확인한다.</li>
+<li>
+<a class="reference-link" href="https://card.kbcard.com/SVC/DVIEW/HSDMCXPRIBMC0043?mainCC=b" rel="noopener noreferrer" target="_blank">KB 해외이용 청구방법·수수료</a> · <a class="reference-link" href="https://card.kbcard.com/CRD/DVIEW/HCAMCXPRICAC0076?cooperationcode=01664" rel="noopener noreferrer" target="_blank">노리 체크카드 상품 안내</a>: 일반 안내의 UPI 면제 주석은 2024년 말까지다. 두 페이지의 불일치 때문에 0.25%를 현재 확정 총요율로 단정하지 않는다. KB의 브랜드 환산·은행 전신환매도율과 매입 시 차액도 있어야 실제 원화 지출을 알 수 있다.</li>
+<li>
+<a class="reference-link" href="https://www.hanacard.co.kr/OPI41000000D.web?CD_PD_SEQ=15414" rel="noopener noreferrer" target="_blank">트래블로그 체크카드 상품 안내</a> · <a class="reference-link" href="https://drt.hanacard.co.kr/MKCDPD7000M.web" rel="noopener noreferrer" target="_blank">트래블로그 환전·수수료 안내</a>
+</li>
+</ul>
+</details>
+</section>
+<section class="step-card">
+<h2>돈키호테 행사 대상 점포</h2>
+<details>
+<summary>직접 대조한 오사카 대상 15개 점포 보기</summary>
+<p class="note">2026년 10월 22일, 유니온페이 행사의 전체 115개 점포와 돈키호테 공식 오사카부 목록을 대조했다. 공식 행사 페이지는 처음에 8곳만 보이며 목록 안에서 스크롤하면 다음 점포가 나온다. 앞서 안내한 ‘대상 8곳’은 첫 화면만 본 오류여서 정정했다.</p>
+<ul class="checks" id="osaka-eligible-stores">
+<li>도톤보리점 · 도톤보리 미도스지점 · 난바 센니치마에점</li>
+<li>우메다 본점 · 에키돈키 에키마르쉐 오사카점 · MEGA 신세카이점</li>
+<li>아베노 텐노지 에키마에점 · 교바시점 · 텐마에키점</li>
+<li>쥬소점 · 우에혼마치점 · 사쿠라노미야점 · 호엔자카점</li>
+<li>이즈미사노점 · 린쿠점</li>
+</ul>
+<p class="note">오사카부 공식 46곳 가운데 위 15곳의 참여를 확인했다. MEGA 벤텐초점·MEGA 후카에바시점·데라다초역점 등 나머지는 이 행사 목록에 없어 500엔·4,000엔을 자동 적용하지 않는다. 전용 행사 제외는 KB 일본 공통 10%나 매장 쿠폰까지 제외한다는 뜻이 아니다.</p>
+<p class="note">
+<a class="reference-link" href="https://www.donki.com/store/shop_list.php?pref=28" rel="noopener noreferrer" target="_blank">돈키호테 공식 오사카부 점포 목록</a> · 행사 참여 목록은 위 ‘500엔·4,000엔 조건과 대상 점포 확인’에서 볼 수 있다.</p>
+</details>
+</section>
+<a class="next" href="../prepare/">미리 할 작업 보기 →</a>
+</main>
+</body>
+</html>
