@@ -258,9 +258,10 @@
         <strong class="result-title" id="result-title"></strong>
         <p class="result-detail" id="result-detail"></p>
         <p id="result-savings" class="savings"></p>
+        <p class="input-note">수수료·환전 차이는 반영하지 않은 할인액 비교예요.<br>실제 원화 지출은 달라질 수 있어요. <a href="prepare/#payment-costs">결제수단별 수수료 기준 ↗</a></p>
         <p id="result-warnings" class="input-note" hidden></p>
         <p id="result-eligibility" class="input-note"></p>
-        <table id="comparison" class="comparison" hidden><caption>이번 결제의 예상 할인 비교</caption><thead><tr><th scope="col">사용 조합</th><th scope="col">총 할인</th></tr></thead><tbody id="comparison-body"></tbody></table>
+        <table id="comparison" class="comparison" hidden><caption>이번 결제의 예상 할인 비교 · 수수료 미포함</caption><thead><tr><th scope="col">사용 조합</th><th scope="col">총 할인</th></tr></thead><tbody id="comparison-body"></tbody></table>
         <p id="result-assumptions" class="input-note"></p>
         <a class="pay-link coupon-link" id="donki-coupon-link" href="https://link.kakaopay.com/p/payment" target="_blank" rel="noopener noreferrer" hidden>카카오페이 열고 현지 쿠폰 찾기 <span aria-hidden="true">↗</span></a>
         <a class="pay-link" id="kakao-link" href="https://link.kakaopay.com/p/payment" target="_blank" rel="noopener noreferrer" hidden>카카오페이 결제 열기 <span aria-hidden="true">↗</span></a>
@@ -337,7 +338,8 @@
         <li><b>쿠폰도 함께 비교해요</b>카카오페이는 ‘최대 7% 매장 쿠폰’과 ‘2,000엔 결제 할인’을 별도 조합으로 비교해요. KB는 ‘전용 매장 쿠폰 + 가장 큰 즉시 할인 하나’로 비교해요.<br>유니온페이 전용 쿠폰은 공식 구간(10,000엔 이상 30,000엔 미만 5%, 30,000엔 이상 50,000엔 미만 7%)으로 자동 계산해요.<br>결제 할인은 매장 쿠폰 후 금액으로 최소 조건을 판단해요. 할인율은 처음 입력한 금액 기준이에요. ‘그 외’에서는 매장의 유니온페이 결제 가능 여부만 체크해주세요.</li>
         <li><b>보유한 카드·쿠폰 안에서 추천</b>상단 설정에서 결제수단, 보유 쿠폰과 행사 등록 여부를 저장해주세요. 설정은 전화번호별로 유지하고 체크를 해제해도 사용 횟수는 지우지 않아요. 계산할 때 최신 설정과 남은 횟수를 다시 확인해요.</li>
         <li><b>횟수·적용 범위</b>카카오페이 결제 할인 1회, KB 3회는 남은 횟수로 추천해요. 최대 7% 매장 쿠폰은 ‘거래당 1회’로, 누적 횟수가 늘어도 전체 소진으로 처리하지 않아요. 실제 사용 가능한 쿠폰인지 매번 확인해주세요.<br>매장 쿠폰만 사용하면 결제 할인 횟수는 늘어나지 않아요.<br>간사이공항 10,000엔 미만은 보유한 트래블카드를 우선해요.</li>
-        <li><b>예상액과 유효 기간</b>이번 한 건의 할인만 비교해요. 환전 차이·수수료·면세액·다른 행사는 제외해요.<br>KB 행사는 2026. 9. 14. ~ 12. 31.이며 사전 등록이 필요하고 예산 소진 시 종료될 수 있어요.<br>최대 7% 쿠폰은 상단 기간과 본문 약관이 달라 더 이른 2027. 8. 31.까지를 기준으로 안내해요.<br><a href="prepare/#donki-store-coupon">실제 쿠폰 화면·약관과 사용법 보기 ↗</a></li>
+        <li><b>환전·수수료는 아직 미반영</b>카카오페이는 제휴사 수수료가 결제 환율에 포함돼요. KB는 카드 상품별 해외 이용 수수료와 적용 환율, 트래블카드는 상품별 면제 조건을 확인해야 해요.<br>미확인 비용을 0원으로 간주하지 않으며 현재 추천은 할인액 기준이에요. 50달러 판정용 참고 환율은 실제 원화 청구 환율이 아니에요.<br><a href="prepare/#payment-costs">공식 수수료 안내와 확인 범위 보기 ↗</a></li>
+        <li><b>예상액과 유효 기간</b>이번 한 건의 할인만 비교하며 면세액·다른 행사는 제외해요.<br>KB 행사는 2026. 9. 14. ~ 12. 31.이며 사전 등록이 필요하고 예산 소진 시 종료될 수 있어요.<br>최대 7% 쿠폰은 상단 기간과 본문 약관이 달라 더 이른 2027. 8. 31.까지를 기준으로 안내해요.<br><a href="prepare/#donki-store-coupon">실제 쿠폰 화면·약관과 사용법 보기 ↗</a></li>
       </ul>
     </details>
     </div>
