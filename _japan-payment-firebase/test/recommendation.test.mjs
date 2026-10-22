@@ -23,6 +23,28 @@ const spent = { kakao: 1, union: 3, unionDonki500: 3, unionDonki4000: 3 };
 const kakaoCoupon = discount => ({ eligible: true, discount, stackKakao: true });
 const bothCoupons = discount => ({ ...kakaoCoupon(discount), unionCoupon: true, unionDiscount: discount });
 
+test('돈키호테 17,000엔은 보유한 2,000엔 쿠폰과 미사용 횟수를 빠뜨리지 않는다', () => {
+  const owned = { ...noSettings, kakaoReady: true, kakaoDonki: true, travelCard: true };
+  const choice = selectOwned('donki', 17000, available, null, {}, owned);
+  assert.equal(choice.method, 'kakao');
+  assert.equal(choice.benefit, 'kakao');
+  assert.equal(choice.totalDiscount, 2000);
+  assert.equal(choice.payable, 15000);
+  assert.match(choice.eligibility[0], /계산 전 사용 0\/1회/);
+  for (const options of [{}, { eligible: true, discount: 1190 }]) {
+    const compared = selectOwned('donki', 17000, available, rate, options, { ...allSettings, kakaoStackConfirmed: false });
+    assert.equal(compared.method, 'kakao');
+    assert.equal(compared.totalDiscount, 2000);
+    assert.equal(compared.coupon, null);
+  }
+  const consumed = selectOwned('donki', 17000, { kakao: 1 }, null, {}, owned);
+  assert.equal(consumed.method, 'travel');
+  assert.match(consumed.eligibility[0], /1회를 이미 사용/);
+  const restored = selectOwned('donki', 17000, available, null, {}, owned);
+  assert.equal(restored.method, 'kakao');
+  assert.equal(restored.benefit, 'kakao');
+});
+
 test('최대 7%를 정률로 가정하지 않고 실제 할인액을 검증한다', () => {
   for (const options of [{ eligible: true }, { eligible: true, discount: 701 }, { unionCoupon: true, unionDiscount: 701 }]) {
     assert.equal(select('donki', 10000, spent, rate, options).coupon, null);

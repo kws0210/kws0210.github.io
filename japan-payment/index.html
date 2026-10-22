@@ -269,12 +269,14 @@
         <p class="error" id="calculation-error" role="alert" hidden></p>
       </form>
 
+      <p id="result-stale" class="input-note" role="status" hidden>사용 횟수나 카드·쿠폰 설정이 바뀌어 이전 결과를 숨겼어요. 다시 계산해주세요.</p>
       <div id="result" class="result" role="status" aria-live="polite" aria-atomic="true" hidden>
         <p class="result-meta" id="result-meta"></p>
         <p id="result-coupon-reminder" class="coupon-reminder" hidden>최대 7% 할인 쿠폰을 먼저 점원에게 보여주세요.<br>쿠폰 할인 적용 후, 아래 결제수단으로 결제해주세요.</p>
         <strong class="result-title" id="result-title"></strong>
         <p class="result-detail" id="result-detail"></p>
         <p id="result-savings" class="savings"></p>
+        <p id="result-eligibility" class="input-note"></p>
         <table id="comparison" class="comparison" hidden><caption>이번 결제의 예상 할인 비교</caption><thead><tr><th scope="col">사용 조합</th><th scope="col">총 할인</th></tr></thead><tbody id="comparison-body"></tbody></table>
         <p id="result-assumptions" class="input-note"></p>
         <a class="pay-link coupon-link" id="donki-coupon-link" href="https://link.kakaopay.com/p/payment" target="_blank" rel="noopener noreferrer" hidden>카카오페이 열고 현지 쿠폰 찾기 <span aria-hidden="true">↗</span></a>
@@ -468,6 +470,8 @@
     function applyState(data, generation) {
       if (generation !== sessionGeneration || !session) return false;
       if (!validCounts(data.counts) || !Number.isSafeInteger(data.version) || data.version < 0) throw new Error('서버 응답을 확인하지 못했어요. 다시 시도해주세요.');
+      const previousVersion = countsVersion;
+      const previousSettingsRevision = settingsRevision;
       if (data.version >= countsVersion) {
         counts = normalizeCounts(data.counts);
         countsVersion = data.version;
@@ -478,6 +482,10 @@
         settings = normalizeSettings(data.settings);
         settingsRevision = data.settingsRevision;
         renderOwnership();
+      }
+      if (!$('result').hidden && (countsVersion > previousVersion || settingsRevision > previousSettingsRevision)) {
+        $('result').hidden = true;
+        $('result-stale').hidden = false;
       }
       return true;
     }
@@ -593,6 +601,7 @@
       updatePlace();
       $('login-form').reset();
       $('result').hidden = true;
+      $('result-stale').hidden = true;
       $('result-title').textContent = '';
       $('result-detail').textContent = '';
       $('result-meta').textContent = '';
@@ -935,7 +944,17 @@
       // 동률이면 매장 쿠폰을 아끼고, 결제 혜택끼리는 카카오페이 1회를 보존한다.
       const priority = plan => plan.benefit ? (plan.method === 'union' ? 0 : 1) : ({ travel: 2, union: 3, kakao: 4 }[plan.method]);
       plans.sort((a, b) => b.totalDiscount - a.totalDiscount || Number(Boolean(a.coupon)) - Number(Boolean(b.coupon)) || priority(a) - priority(b));
-      return { ...plans[0], reason: 'best-discount', plans };
+      const eligibility = [];
+      if (place === 'donki' || place === 'airport') {
+        const minimum = place === 'donki' ? 15000 : 10000;
+        const couponOwned = place === 'donki' ? owned.kakaoDonki : owned.kakaoAirport;
+        const couponName = place === 'donki' ? '카카오페이 2,000엔' : '카카오페이 1,200엔';
+        const status = !owned.kakaoReady ? '일본 페이머니 준비가 설정되지 않았어요.' : !couponOwned ? '쿠폰 보유가 설정되지 않았어요.' : used.kakao >= LIMITS.kakao ? '결제 할인 1회를 이미 사용했어요.' : amount < minimum ? '최소 ' + minimum.toLocaleString('ko-KR') + '엔에 미달해요.' : '쿠폰 보유 · 계산 전 사용 ' + used.kakao + '/1회 · 매장 쿠폰 없이도 사용 가능.';
+        eligibility.push(couponName + ': ' + status);
+      }
+      const unionStatus = !owned.unionCard ? '카드 보유가 설정되지 않았어요.' : !owned.unionRegistered ? '사전 등록이 설정되지 않았어요.' : used.union >= LIMITS.union ? '3회를 모두 사용했어요.' : '계산 전 사용 ' + used.union + '/3회 · ' + (rate && amount >= yenThreshold(rate) ? '50달러 이상 금액 충족.' : '50달러 이상 금액에 미달해요.');
+      eligibility.push('KB 10%: ' + unionStatus);
+      return { ...plans[0], reason: 'best-discount', plans, eligibility };
     }
 
     function validCouponDiscount(amount, discount) {
@@ -980,6 +999,7 @@
 
     function showResult(choice, place, amount, rate, options = {}) {
       const result = $('result');
+      $('result-stale').hidden = true;
       result.hidden = false;
       result.dataset.method = choice.method;
       $('result-meta').textContent = PLACES[place] + ' · ' + format(amount) + '엔' + (place === 'donki' ? ' (세금 제외·쿠폰 전)' : '');
@@ -999,6 +1019,8 @@
       $('result-detail').textContent = (consumed.length ? consumed.map(key => PROVIDERS[key]).join(' · ') + '에 각각 1회를 반영했어요. ' : '혜택 사용 횟수는 늘어나지 않아요. ') + instruction;
       const totalDiscount = choice.totalDiscount || 0;
       $('result-savings').textContent = '예상 ' + format(totalDiscount) + '엔 할인 (' + discountPercentage(totalDiscount, amount) + '% 할인) · 예상 결제 ' + format(choice.payable ?? amount) + '엔';
+      $('result-eligibility').textContent = (choice.eligibility || []).join('\n');
+      $('result-eligibility').style.whiteSpace = 'pre-line';
       $('comparison-body').replaceChildren();
       for (const plan of choice.plans || []) {
         const row = document.createElement('tr');
