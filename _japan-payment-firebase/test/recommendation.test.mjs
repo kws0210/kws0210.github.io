@@ -155,7 +155,8 @@ test('간사이공항은 금액·보유 쿠폰·잔여 횟수만으로 자동 �
   const select = (amount, used = available, owned = allSettings) => selectPayment('airport', amount, used, rate, {}, owned);
   assert.equal(select(9999).method, 'travel');
   assert.equal(select(10000).benefit, 'kakao');
-  assert.equal(select(12000).benefit, 'union');
+  assert.equal(select(12000).benefit, 'kakao', 'KB 이용료 차감 후 카카오 1,200엔 할인이 더 크다');
+  assert.equal(select(13300).benefit, 'union');
   assert.equal(select(15000, { ...available, union: 3 }).benefit, 'kakao');
   assert.equal(select(10000, available, { ...allSettings, kakaoAirport: false }).benefit, 'union');
   assert.equal(select(45000).coupon, null);
@@ -204,32 +205,32 @@ test('노리 UPI 비용 범위·트래블월렛 면제를 반영하고 카카오
   assert.equal(huge.costMode, 'same-fx');
 });
 
-test('후보 전부의 수수료 포함 환율이 있으면 할인보다 적은 원화 총지출을 우선한다', () => {
-  const capturedAt = Date.now();
-  const quote = wonPer100 => ({ wonPer100, capturedAt });
-  const choice = choose(17000, allSettings, available, {}, { costQuotes: { kakao: quote(1000), union: quote(1000), travel: quote(800) } });
-  assert.equal(choice.costMode, 'quoted');
-  assert.equal(choice.method, 'travel');
-  assert.equal(choice.benefit, null);
-  assert.equal(choice.totalWon, 129200, '매장 쿠폰 850엔 적용 후 트래블월렛 충전 환율로 비교한다');
-  const kb = choice.plans.find(plan => plan.benefit === 'union' && plan.couponSource === 'union');
-  assert.equal(kb.totalWon, 145350, '입력 환율에 포함된 KB 수수료를 또 더하지 않는다');
-  const onlyKb = { ...noSettings, unionCard: true, unionRegistered: true };
-  const result = choose(17000, onlyKb, available, {}, { costQuotes: { union: quote(920) } });
-  assert.equal(result.costMode, 'quoted', '보유하지 않은 결제수단의 환율은 필요 없다');
-  assert.equal(result.totalWon, 140760);
+test('수수료 입력 없이 KB 이용료를 차감해 카카오·트래블월렛과 자동 비교한다', () => {
+  const owned = { ...noSettings, kakaoReady: true, kakaoDonki: true, unionCard: true, unionRegistered: true, travelCard: true };
+  const choice = choose(22000, owned);
+  assert.equal(choice.method, 'kakao');
+  assert.equal(choice.totalDiscount, 2000);
+  const kb = choice.plans.find(plan => plan.benefit === 'union');
+  assert.equal(kb.totalDiscount, 2200);
+  assert.equal(kb.feeMaxYen, 207.9);
+  assert.equal(kb.totalDiscount - kb.feeMaxYen, 1992.1);
+  assert.equal(choose(22100, owned).method, 'union');
+  assert.equal(choice.costMode, 'partial');
+  const huge = selectPayment('other', 999999999, available, rate, { unionAccepted: true }, owned);
+  assert.equal(huge.method, 'travel', '카카오 후보가 있어도 KB 이용료가 할인보다 크면 트래블월렛을 우선한다');
 });
 
-test('빠진·만료·비정상 실제 환율을 0원으로 채우거나 원화 순위에 사용하지 않는다', () => {
+test('폐기한 수동 환율 옵션은 무시하고 미확인 원화 총지출을 만들어내지 않는다', () => {
   const now = Date.now();
-  for (const invalid of [0, -1, 100001, '900', NaN, Infinity]) {
-    const choice = choose(17000, allSettings, available, {}, { costQuotes: { kakao: { wonPer100: invalid, capturedAt: now } } });
+  const expected = choose(17000);
+  for (const value of [1, 900, 100000, 0, -1, 100001, '900', NaN, Infinity]) {
+    const choice = choose(17000, allSettings, available, {}, { costQuotes: Object.fromEntries(['kakao', 'union', 'travel'].map(method => [method, { wonPer100: method === 'travel' ? 1 : value, capturedAt: now }])) });
     assert.equal(choice.costMode, 'partial');
+    assert.equal(choice.method, expected.method);
+    assert.equal(choice.totalDiscount, expected.totalDiscount);
+    assert.equal(choice.plans.every(plan => plan.totalWon === null), true);
     assert.equal(choice.plans.find(plan => plan.method === 'kakao').totalWon, null);
   }
-  for (const capturedAt of [now - 30 * 60 * 1000 - 1, now + 60 * 1000]) {
-    const choice = choose(17000, allSettings, available, {}, { costQuotes: Object.fromEntries(['kakao', 'union', 'travel'].map(method => [method, { wonPer100: 900, capturedAt }])) });
-    assert.equal(choice.costMode, 'partial');
-    assert.equal(choice.plans.every(plan => plan.totalWon === null), true);
-  }
+  assert.equal(/data-cost=|id="cost-(kakao|union|travel)"/.test(html), false);
+  assert.equal(html.includes('normalizeCostQuotes'), false);
 });
