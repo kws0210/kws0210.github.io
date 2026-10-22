@@ -6,20 +6,21 @@ import vm from 'node:vm';
 const html = await readFile(new URL('../../japan-payment/index.html', import.meta.url), 'utf8');
 const source = html.slice(html.indexOf('    function selectPayment('), html.indexOf('    function paymentOptions('));
 const settingsSource = html.slice(html.indexOf('    const DEFAULT_SETTINGS ='), html.indexOf('    const PLACES ='));
-const { selectPayment, DEFAULT_SETTINGS, japanDate, normalizeSettings, validSettings } = vm.runInNewContext(`
+const { selectPayment, DEFAULT_SETTINGS, DONKI_STORES, japanDate, normalizeSettings, validSettings } = vm.runInNewContext(`
   const LIMITS = { kakao: 1, union: 3, unionDonki500: 3, unionDonki4000: 3, donkiCoupon: 1000000 };
   const normalizeCounts = value => ({ kakao: 0, union: 0, unionDonki500: 0, unionDonki4000: 0, donkiCoupon: 0, ...value });
   ${settingsSource}
   const yenThreshold = rate => Math.ceil(Number((rate.jpy * 50).toFixed(7)));
   ${source}
-  ({ selectPayment, DEFAULT_SETTINGS, japanDate, normalizeSettings, validSettings });
+  ({ selectPayment, DEFAULT_SETTINGS, DONKI_STORES, japanDate, normalizeSettings, validSettings });
 `);
 const noSettings = { ...DEFAULT_SETTINGS };
 const allSettings = { ...Object.fromEntries(Object.entries(noSettings).map(([key, value]) => [key, typeof value === 'boolean'])), kakaoRateLow: 5, kakaoRateHigh: 7, unionDonkiEligible: false };
 const rate = { jpy: 150 };
 const available = { kakao: 0, union: 0 };
 const spent = { kakao: 1, union: 3, unionDonki500: 3, unionDonki4000: 3 };
-const choose = (amount, owned = allSettings, used = available, today = {}) => selectPayment('donki', amount, used, rate, {}, owned, today);
+const choose = (amount, owned = allSettings, used = available, today = {}, options = {}) => selectPayment('donki', amount, used, rate, options, owned, today);
+const atListedStore = (amount, owned = allSettings, used = available, today = {}) => choose(amount, owned, used, today, { donkiStoreGroup: 'osaka-listed' });
 
 test('돈키호테 17,000엔에서 추가 입력 없이 보유한 2,000엔 쿠폰을 비교한다', () => {
   const owned = { ...noSettings, kakaoReady: true, kakaoDonki: true, travelCard: true };
@@ -48,7 +49,7 @@ test('돈키호테 보유 쿠폰의 금액 구간을 자동 계산하고 출처�
   assert.equal(choice.plans.some(p => p.couponSource === 'union' && p.method !== 'union'), false);
   const outside = choose(50000, { ...allSettings, kakaoReady: false });
   assert.equal(outside.coupon, null);
-  assert.match(outside.warnings[0], /50,000엔 미만/);
+  assert.match(outside.warnings.join('\n'), /50,000엔 미만/);
 });
 
 test('최대 7%를 항상 7%로 가정하지 않고 계정에 저장한 구간만 자동 반영한다', () => {
@@ -57,9 +58,9 @@ test('최대 7%를 항상 7%로 가정하지 않고 계정에 저장한 구간�
   assert.equal(choose(17000, unknown).coupon, null);
   assert.match(choose(17000, unknown).warnings[0], /할인율이 아직 설정되지 않아/);
   const configured = { ...unknown, kakaoRateLow: 5 };
-  assert.equal(choose(17000, configured).totalDiscount, 2850);
+  assert.equal(choose(17000, configured).totalDiscount, 2000);
   assert.equal(choose(30000, configured).totalDiscount, 2000);
-  assert.equal(choose(30000, { ...configured, kakaoRateHigh: 7 }).totalDiscount, 4100);
+  assert.equal(choose(30000, { ...configured, kakaoRateHigh: 7 }).totalDiscount, 2100);
   const legacy = normalizeSettings({ kakaoReady: true, kakaoDonki: true });
   assert.equal(legacy.kakaoRateLow, 0);
   assert.equal(legacy.unionDonkiEligible, false);
@@ -67,42 +68,61 @@ test('최대 7%를 항상 7%로 가정하지 않고 계정에 저장한 구간�
   for (const value of [-1, 7.1, '7', true, NaN, Infinity]) assert.equal(validSettings({ ...noSettings, kakaoRateLow: value }), false);
 });
 
-test('카카오 중복 확인과 쿠폰 할인 후 최소 15,000엔 조건을 자동 판단한다', () => {
+test('카카오 두 쿠폰은 폐기한 확인 설정과 무관하게 각각 비교하고 합산하지 않는다', () => {
   const owned = { ...allSettings, unionCard: false };
-  assert.equal(choose(17000, { ...owned, kakaoStackConfirmed: false }).totalDiscount, 2000);
-  assert.equal(choose(17000, owned).totalDiscount, 2850);
-  const below = choose(15788, owned);
-  assert.equal(below.plans.some(p => p.coupon && p.benefit === 'kakao'), false);
-  const boundary = choose(15789, owned);
-  assert.equal(boundary.charge, 15000);
-  assert.equal(boundary.totalDiscount, 2789);
+  for (const previousFlag of [true, false]) {
+    const setting = { ...owned, kakaoStackConfirmed: previousFlag };
+    assert.equal(choose(14999, setting).totalDiscount, 749);
+    assert.equal(choose(15000, setting).totalDiscount, 2000);
+    assert.equal(choose(17000, setting).totalDiscount, 2000);
+    assert.equal(choose(30000, setting).totalDiscount, 2100);
+    assert.equal(choose(30000, setting).benefit, null);
+    assert.equal(choose(30000, setting).plans.some(p => p.coupon && p.benefit === 'kakao'), false);
+    assert.match(choose(17000, setting).warnings[0], /각각 따로 비교/);
+  }
 });
 
-test('돈키호테 등록·대상 점포 설정과 최소 금액에 따라 전용 행사를 자동 비교한다', () => {
+test('이번 거래의 점포 팝업 답변과 등록·최소 금액으로 전용 행사를 판단한다', () => {
   assert.equal(choose(45000).benefit, 'union');
-  const target = { ...allSettings, unionDonkiEligible: true };
-  assert.equal(choose(45000, target).benefit, 'unionDonki4000');
-  assert.equal(choose(45000, target).totalDiscount, 7150);
-  assert.equal(choose(45000, target).payable, 37850);
-  assert.equal(choose(45000, { ...target, unionDonki4000Registered: false }).benefit, 'union');
-  const forty = choose(40000, target);
+  assert.equal(atListedStore(45000).benefit, 'unionDonki4000');
+  assert.equal(atListedStore(45000).totalDiscount, 7150);
+  assert.equal(atListedStore(45000).payable, 37850);
+  assert.equal(atListedStore(45000, { ...allSettings, unionDonki4000Registered: false }).benefit, 'union');
+  const forty = atListedStore(40000);
   assert.equal(forty.plans.some(p => p.coupon && p.benefit === 'unionDonki4000'), false);
   assert.equal(forty.totalDiscount, 5800);
-  const noCoupons = { ...noSettings, unionCard: true, unionDonkiEligible: true, unionDonki4000Registered: true, travelCard: true };
-  assert.equal(choose(9999, noCoupons, spent).method, 'travel');
-  assert.equal(choose(10000, noCoupons).benefit, 'unionDonki500');
-  assert.equal(choose(40000, noCoupons).benefit, 'unionDonki4000');
+  const noCoupons = { ...noSettings, unionCard: true, unionDonki4000Registered: true, travelCard: true };
+  assert.equal(atListedStore(9999, noCoupons, spent).method, 'travel');
+  assert.equal(atListedStore(10000, noCoupons).benefit, 'unionDonki500');
+  assert.equal(atListedStore(40000, noCoupons).benefit, 'unionDonki4000');
+  for (const group of ['other', undefined, true, 'unknown', 'toString']) {
+    const choice = choose(45000, { ...allSettings, unionDonkiEligible: true }, available, {}, { donkiStoreGroup: group });
+    assert.equal(choice.benefit, 'union');
+    assert.equal(choice.totalDiscount, 6150);
+    assert.equal(choice.plans.some(p => p.benefit === 'unionDonki500' || p.benefit === 'unionDonki4000'), false);
+  }
+  assert.equal(choose(45000, { ...noCoupons, unionDonkiEligible: true }).method, 'travel');
 });
 
 test('전용 행사는 당일 기록·전체 3회 한도·수동 복원에 따라 후보에서 제외하거나 복원한다', () => {
-  const owned = { ...noSettings, unionCard: true, unionDonkiEligible: true, unionDonki4000Registered: true, travelCard: true };
+  const owned = { ...noSettings, unionCard: true, unionDonki4000Registered: true, travelCard: true };
   const onlyFour = { ...spent, unionDonki4000: 2 };
-  assert.equal(choose(45000, owned, onlyFour).benefit, 'unionDonki4000');
-  assert.equal(choose(45000, owned, onlyFour, { unionDonki4000: 1 }).method, 'travel');
-  assert.equal(choose(45000, owned, spent).method, 'travel');
-  assert.equal(choose(45000, owned, onlyFour, { unionDonki4000: 0 }).benefit, 'unionDonki4000');
-  assert.equal(choose(12000, owned, { ...spent, unionDonki500: 2 }, { unionDonki500: 1 }).method, 'travel');
-  assert.equal(choose(12000, owned, { ...spent, unionDonki500: 2 }, {}).benefit, 'unionDonki500');
+  assert.equal(atListedStore(45000, owned, onlyFour).benefit, 'unionDonki4000');
+  assert.equal(atListedStore(45000, owned, onlyFour, { unionDonki4000: 1 }).method, 'travel');
+  assert.equal(atListedStore(45000, owned, spent).method, 'travel');
+  assert.equal(atListedStore(45000, owned, onlyFour, { unionDonki4000: 0 }).benefit, 'unionDonki4000');
+  assert.equal(atListedStore(12000, owned, { ...spent, unionDonki500: 2 }, { unionDonki500: 1 }).method, 'travel');
+  assert.equal(atListedStore(12000, owned, { ...spent, unionDonki500: 2 }, {}).benefit, 'unionDonki500');
+});
+
+test('전체 참여 목록과 대조한 오사카 15곳을 점포 팝업에 사용한다', () => {
+  assert.equal(Object.keys(DONKI_STORES).length, 15);
+  assert.equal(DONKI_STORES['38923398742572'], '도톤보리점');
+  assert.equal(DONKI_STORES['38923401142452'], '난바 센니치마에점');
+  assert.equal(DONKI_STORES['38925870283070'], '교바시점');
+  assert.equal(Object.values(DONKI_STORES).some(name => /벤텐초|후카에바시|데라다초/.test(name)), false);
+  assert.equal(html.includes('data-setting="kakaoStackConfirmed"'), false);
+  assert.equal(html.includes('data-setting="unionDonkiEligible"'), false);
 });
 
 test('일본 자정에 날짜가 바뀌어도 다른 시간대에서 같은 일일 키를 사용한다', () => {
@@ -118,7 +138,7 @@ test('간사이공항은 금액·보유 쿠폰·잔여 횟수만으로 자동 �
   assert.equal(select(15000, { ...available, union: 3 }).benefit, 'kakao');
   assert.equal(select(10000, available, { ...allSettings, kakaoAirport: false }).benefit, 'union');
   assert.equal(select(45000).coupon, null);
-  assert.equal(select(45000).plans.some(p => p.benefit === 'unionDonki4000'), false);
+  assert.equal(selectPayment('airport', 45000, available, rate, { donkiStoreGroup: 'osaka-listed' }, allSettings).plans.some(p => p.benefit === 'unionDonki4000'), false);
 });
 
 test('그 외에서만 유니온페이 결제 가능 확인을 받고 50달러·20달러 한도를 적용한다', () => {
