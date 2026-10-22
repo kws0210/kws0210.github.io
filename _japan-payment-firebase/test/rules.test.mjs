@@ -19,11 +19,12 @@ beforeEach(async () => { await environment.clearFirestore(); });
 const authenticated = () => environment.authenticatedContext('anonymous-test', { firebase: { sign_in_provider: 'anonymous' } }).firestore();
 const reference = db => doc(db, 'paymentAccounts', account);
 
-async function writeOperation(db, counts, version, kind = 'adjust') {
+async function writeOperation(db, counts, version, kind = 'adjust', daily = null) {
   const id = randomUUID();
   const batch = writeBatch(db);
   batch.set(reference(db), { counts, version, lastOperation: id });
   batch.set(doc(reference(db), 'operations', id), { kind, result: { counts, version }, createdAt: serverTimestamp() });
+  if (daily) batch.set(doc(reference(db), 'daily', '2026-10-22'), daily);
   return batch.commit();
 }
 
@@ -36,6 +37,40 @@ test('인증 없이는 읽거나 쓸 수 없고 익명 인증 뒤에는 개별 �
   await assertSucceeds(getDoc(reference(db)));
   await assertFails(getDocs(collection(db, 'paymentAccounts')));
   await assertFails(deleteDoc(reference(db)));
+});
+
+test('자동 쿠폰 설정은 구버전에서 확장할 수 있지만 확인된 값의 삭제와 범위 밖 할인율은 거절한다', async () => {
+  const db = authenticated();
+  await setDoc(reference(db), initial);
+  const preference = doc(reference(db), 'preferences', 'current');
+  const old = { kakaoReady: true, kakaoDonki: true, kakaoAirport: false, kakaoStoreCoupon: true, kakaoStackConfirmed: false, unionCard: false, unionRegistered: false, unionStoreCoupon: false, unionDonki4000Registered: false, travelCard: true };
+  await assertSucceeds(setDoc(preference, { settings: old, revision: 1 }));
+  const settings = { ...old, unionDonkiEligible: false, kakaoRateLow: 5, kakaoRateHigh: 7 };
+  await assertSucceeds(setDoc(preference, { settings, revision: 2 }));
+  for (const invalid of [-1, 7.1, '7', true]) await assertFails(setDoc(preference, { settings: { ...settings, kakaoRateHigh: invalid }, revision: 3 }));
+  await assertFails(setDoc(preference, { settings: { ...settings, unionDonkiEligible: 'yes' }, revision: 3 }));
+  await assertFails(setDoc(preference, { settings: old, revision: 3 }));
+  await assertSucceeds(setDoc(preference, { settings: { ...settings, kakaoRateLow: 0 }, revision: 3 }));
+});
+
+test('하루 사용 기록은 번호·일자별로 읽고 횟수 변경과 원자적으로 0~1회만 저장한다', async () => {
+  const db = authenticated();
+  await setDoc(reference(db), initial);
+  const daily = doc(reference(db), 'daily', '2026-10-22');
+  await assertFails(getDoc(doc(reference(environment.unauthenticatedContext().firestore()), 'daily', '2026-10-22')));
+  await assertSucceeds(getDoc(daily));
+  await assertFails(setDoc(daily, { unionDonki500: 0, unionDonki4000: 1 }));
+  const counts = { kakao: 0, union: 0, unionDonki500: 0, unionDonki4000: 1 };
+  await assertSucceeds(writeOperation(db, counts, 1, 'calculate', { unionDonki500: 0, unionDonki4000: 1 }));
+  assert.equal((await getDoc(daily)).data().unionDonki4000, 1);
+  await assertFails(writeOperation(db, counts, 2, 'adjust', { unionDonki500: 0, unionDonki4000: 2 }));
+  await assertFails(writeOperation(db, counts, 2, 'adjust', { unionDonki500: 0, unionDonki4000: -1 }));
+  await assertFails(writeOperation(db, counts, 2, 'adjust', { unionDonki500: 0, unionDonki4000: 1, phone: 'x' }));
+  await assertSucceeds(writeOperation(db, { ...counts, unionDonki4000: 0 }, 2, 'adjust', { unionDonki500: 0, unionDonki4000: 0 }));
+  assert.equal((await getDoc(daily)).data().unionDonki4000, 0);
+  assert.equal((await getDoc(doc(reference(db), 'daily', '2026-10-23'))).exists(), false);
+  await assertFails(getDocs(collection(reference(db), 'daily')));
+  await assertFails(deleteDoc(daily));
 });
 
 test('새 계정은 0회로 생성하며 원문 전화번호나 임의 필드는 저장할 수 없다', async () => {
